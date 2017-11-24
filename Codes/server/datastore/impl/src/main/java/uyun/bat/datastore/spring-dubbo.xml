@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:dubbo="http://code.alibabatech.com/schema/dubbo"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+        http://www.springframework.org/schema/beans/spring-beans.xsd  
+        http://code.alibabatech.com/schema/dubbo  
+        http://code.alibabatech.com/schema/dubbo/dubbo.xsd">
+
+	<!-- 提供方应用信息，用于计算依赖关系 -->
+	<dubbo:application name="bat-datastore-provider" />
+
+	<!-- 使用multicast广播注册中心/zookeeper暴露服务地址 -->
+	<dubbo:registry address="${zk.url}" client="curator" timeout="30000"/>
+
+	<!-- 用rmi协议暴露服务 protocol="rmi" <dubbo:protocol name="rmi" port="${bat.datastore.port}"/> -->
+	<!-- 用dubbo协议暴露服务 serialization="kryo" -->
+	<dubbo:protocol name="dubbo" port="${bat.datastore.port}"
+		serialization="kryo" />
+
+	<!-- 监控服务 -->
+	<dubbo:monitor protocol="${dubbo.monitor.protocol}" />
+
+	<!-- 发布服务接口声明 -->
+	<dubbo:service interface="uyun.bat.datastore.api.service.MetricService"
+				   ref="metricService" timeout="${datastore.MetricService.timeout}">
+		<dubbo:method name="querySeriesGroupBy" timeout="4000"/>
+		<dubbo:method name="queryPerfForEachResource" timeout="10000"/>
+	</dubbo:service>
+
+	<dubbo:service interface="uyun.bat.datastore.api.service.ResourceService"
+		ref="resourceService">
+		<dubbo:method name="queryAllRes" timeout="5000" />
+	</dubbo:service>
+
+	<dubbo:service interface="uyun.bat.datastore.api.service.PacificResourceService"
+		ref="pacificResourceLogic">
+		<dubbo:method name="save" timeout="5000" />
+	</dubbo:service>
+
+	<dubbo:service interface="uyun.bat.datastore.api.service.MetricMetaDataService"
+		ref="metricMetaDataService" />
+
+	<dubbo:service interface="uyun.bat.datastore.api.service.StateService"
+		ref="stateService" timeout="10000"/>
+
+	<dubbo:service interface="uyun.bat.datastore.api.service.TagService"
+		ref="tagService" timeout="10000"/>
+
+	<dubbo:reference id="eventService"
+		interface="uyun.bat.event.api.service.EventService" check="false" />
+
+	<!-- 引入统一资源库API(pacific service) -->
+	<dubbo:reference id="pacificResObjectService"
+		interface="uyun.pacific.resource.api.service.ResObjectService" check="false" />
+	<dubbo:reference id="pacificAuditService"
+		interface="uyun.pacific.resource.api.service.AuditService" check="false" />
+	<dubbo:reference id="pacificResRelationService"
+		interface="uyun.pacific.resource.api.service.ResRelationService"
+		check="false" />
+	<dubbo:reference id="pacificResZoneService"
+		interface="uyun.pacific.resource.api.service.ResZoneService" check="false" />
+
+	<dubbo:reference id="pacificModelService"
+		interface="uyun.pacific.model.api.service.ModelService" check="false" />
+	<dubbo:reference id="pacificResAttributeService"
+		interface="uyun.pacific.model.api.service.ResAttributeService" check="false" />
+	<dubbo:reference id="pacificResClassService"
+		interface="uyun.pacific.model.api.service.ResClassService" check="false" />
+	<dubbo:reference id="pacificInterfaceService"
+		interface="uyun.pacific.model.api.service.ResInterfaceService" check="false" />
+	<dubbo:reference id="pacificResRelationMetaService"
+		interface="uyun.pacific.model.api.service.ResRelationMetaService"
+		check="false" />
+	<dubbo:reference id="pacificResRelationTypeService"
+		interface="uyun.pacific.model.api.service.ResRelationTypeService"
+		check="false" />
+	<dubbo:reference id="pacificResUniqueKeyService"
+		interface="uyun.pacific.model.api.service.ResUniqueKeyService" check="false" />
+	<dubbo:reference id="pacificInlineObjectService"
+		interface="uyun.pacific.resource.api.service.InlineObjectService" check="false" />
+
+	<!-- 引入统一资源库API(pacific service) -->
+
+	<dubbo:service interface="uyun.bat.datastore.api.service.StateMetricService"
+		ref="stateMetricService" />
+
+	<bean class="uyun.bat.datastore.service.PacificManager"
+		factory-method="getInstance">
+		<property name="pacificResObjectService" ref="pacificResObjectService" />
+		<property name="pacificAuditService" ref="pacificAuditService" />
+		<property name="pacificResRelationService" ref="pacificResRelationService" />
+		<property name="pacificResZoneService" ref="pacificResZoneService" />
+		
+		<property name="pacificModelService" ref="pacificModelService" />
+		<property name="pacificResAttributeService" ref="pacificResAttributeService" />
+		<property name="pacificResClassService" ref="pacificResClassService" />
+		<property name="pacificInterfaceService" ref="pacificInterfaceService" />
+		<property name="pacificResRelationMetaService" ref="pacificResRelationMetaService" />
+		<property name="pacificResRelationTypeService" ref="pacificResRelationTypeService" />
+		<property name="pacificResUniqueKeyService" ref="pacificResUniqueKeyService" />
+		<property name="pacificInlineObjectService" ref="pacificInlineObjectService" />
+	</bean>
+</beans>  

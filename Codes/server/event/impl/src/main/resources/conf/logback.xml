@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+	<!-- 主机名  -->
+	<contextName>${HOSTNAME}</contextName>
+	<appender name="stdout" class="ch.qos.logback.core.ConsoleAppender">
+		<encoder>
+			<pattern>
+				%d{yyyy-MM-dd HH:mm:ss.SSS}|%contextName|%level|event|%class|%thread|%method|%line|%msg%n
+			</pattern>
+		</encoder>
+	</appender>
+
+	<appender name="file" class="ch.qos.logback.core.rolling.RollingFileAppender">
+		<file>${logs.dir}/bat-event.log</file>
+		<rollingPolicy class="ch.qos.logback.core.rolling.FixedWindowRollingPolicy">
+			<FileNamePattern>${logs.dir}/bat-event.%i.log</FileNamePattern>
+			<minIndex>1</minIndex>
+			<maxIndex>1</maxIndex>
+		</rollingPolicy>
+		<triggeringPolicy class="ch.qos.logback.core.rolling.SizeBasedTriggeringPolicy">
+			<maxFileSize>30MB</maxFileSize>
+		</triggeringPolicy>
+		<encoder>
+			<charset>UTF-8</charset>
+			<Pattern>
+				%d{yyyy-MM-dd HH:mm:ss.SSS}|%contextName|%level|event|%class|%thread|%method|%line|%msg%n
+			</Pattern>
+		</encoder>
+	</appender>
+
+	<!-- all,debug,info,warn,error -->
+	<root>
+		<level value="WARN" />
+		<appender-ref ref="stdout" />
+		<appender-ref ref="file" />
+	</root>
+
+	<logger name="uyun" level="INFO" />
+	
+	<!-- 取消没有无参构造函数的警告，kryo会采用JavaSerializer序列化数据（非默认序列化数据方式） -->
+	<logger
+		name="com.alibaba.dubbo.common.serialize.support.kryo.CompatibleKryo"
+		level="ERROR" />
+	<logger name="org.apache.activemq.transport.failover.FailoverTransport" level="ERROR"/>
+</configuration>

@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="uyun.bat.datastore.dao.ResourceIdTransformDao">
+
+	<resultMap type="uyun.bat.datastore.entity.ResourceIdTransform" id="ResourceIdTransformResultMap">
+		<result property="resId" column="res_id" jdbcType="BINARY"
+			typeHandler="uyun.whale.common.mybatis.type.UUIDTypeHandler"/>
+		<result property="tenantId" column="tenant_id" jdbcType="BINARY"
+			typeHandler="uyun.whale.common.mybatis.type.UUIDTypeHandler"/>
+		<result property="unitId" column="unit_id" jdbcType="BINARY"
+			typeHandler="uyun.whale.common.mybatis.type.UUIDTypeHandler"/>
+	</resultMap>
+	
+	<insert id="saveResourceIdTransform" parameterType="uyun.bat.datastore.entity.ResourceIdTransform">
+		insert into
+		res_id_transform(res_id, tenant_id, unit_id)
+		values(#{resId,typeHandler=uyun.whale.common.mybatis.type.UUIDTypeHandler},
+		       #{tenantId,typeHandler=uyun.whale.common.mybatis.type.UUIDTypeHandler}, 
+		       #{unitId,typeHandler=uyun.whale.common.mybatis.type.UUIDTypeHandler})
+		on duplicate key
+		update
+		unit_id = #{unitId,typeHandler=uyun.whale.common.mybatis.type.UUIDTypeHandler}
+	</insert>
+
+	<select id="getTransformIdByIds" resultMap="ResourceIdTransformResultMap" parameterType="uyun.bat.datastore.entity.ResourceIdTransform">
+		SELECT * FROM res_id_transform where res_id = #{resId, typeHandler=uyun.whale.common.mybatis.type.UUIDTypeHandler}
+		<if test="tenantId != null"> and tenant_id = #{tenantId, typeHandler=uyun.whale.common.mybatis.type.UUIDTypeHandler}</if>
+	</select>
+	
+	<select id="getAllResourceIdTransform" resultMap="ResourceIdTransformResultMap">
+		SELECT * FROM res_id_transform
+	</select>
+	
+	<delete id="delete" parameterType="uyun.bat.datastore.entity.ResourceIdTransform">
+		DELETE FROM res_id_transform where res_id = #{resId, typeHandler=uyun.whale.common.mybatis.type.UUIDTypeHandler}
+		and tenant_id = #{tenantId, typeHandler=uyun.whale.common.mybatis.type.UUIDTypeHandler}
+	</delete>
+
+</mapper>	 

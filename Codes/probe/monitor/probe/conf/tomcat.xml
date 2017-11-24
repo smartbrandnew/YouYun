@@ -1,0 +1,14 @@
+<Server port="-1" shutdown="SHUTDOWN">
+	<Service name="Catalina">
+		<Connector port="${port}" maxThreads="150" minSpareThreads="5" enableLookups="false" acceptCount="100" connectionTimeout="20000"
+			disableUploadTimeout="true" URIEncoding="UTF-8" />
+		<Engine name="monitor-probe" defaultHost="localhost">
+			<Host name="localhost" appBase="webapp" unpackWARs="true" autoDeploy="true">
+				<Context docBase="./" path="/">
+					<Loader delegate="true" />
+				</Context>
+			</Host>
+		</Engine>
+	</Service>
+</Server>
+

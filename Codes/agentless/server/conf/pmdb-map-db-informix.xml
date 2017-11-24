@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<pmdb-map>
+	<monitor type="INFORMIX-BASIC" >
+		<!-- 
+		INFORMIX-BASIC-1	数据库连接数	个
+		INFORMIX-BASIC-2	读缓存命中率	%
+		INFORMIX-BASIC-3	写缓存命中率	%
+		INFORMIX-BASIC-4	死锁数	个
+		INFORMIX-BASIC-5	回滚数	个
+		 -->
+		<object local="resource" remote="Informix" states="SUCCESSED,FAILED,OVERSTEP">
+			<item local="monitor.state" remote="state.available_status" function="monitorState2availableStatus"/>
+			<item local="method.port" remote="attr.usePort" />
+			<item local="perf.INFORMIX-BASIC-1" remote="perf.db.current_conns" />
+			<item local="perf.INFORMIX-BASIC-2" remote="perf.infomix.read_cache_hit_ratio" />
+			<item local="perf.INFORMIX-BASIC-3" remote="perf.infomix.write_cache_hit_ratio" />
+			<item local="perf.INFORMIX-BASIC-4" remote="perf.infomix.deadlocks" />
+			<item local="perf.INFORMIX-BASIC-5" remote="perf.infomix.rollbacks" />
+			<item local="perf.INFORMIX-BASIC-2" remote="perf.infomix-buff.read_cache_hit_ratio" />
+			<item local="perf.INFORMIX-BASIC-3" remote="perf.infomix-buff.write_cache_hit_ratio" />
+		</object>
+	</monitor>
+	
+	<monitor type="INFORMIX-CHKPT-JDBC" >
+		<!-- 
+		INFORMIX-CHKPT-JDBC-1	检查点速率	次/秒
+		INFORMIX-CHKPT-JDBC-2	检查点等待速率	次/秒
+		 -->
+		<object local="resource" remote="Informix">
+			<item local="perf.INFORMIX-CHKPT-JDBC-1" remote="perf.infomix-chkpt.ckpts_rate" />
+			<item local="perf.INFORMIX-CHKPT-JDBC-2" remote="perf.infomix-chkpt.ckpt_waits_rate" />
+		</object>
+	</monitor>	
+	
+	<monitor type="INFORMIX-DBSPACE" >
+		<!-- 
+		INFORMIX-DBSPACE-1	数据空间使用率	%
+		 -->
+		<object local="resource" remote="Informix">
+		<![CDATA[
+			util.setOutputValue("INFORMIX-DBSPACE-1", "max", "perf.infomix.dbspace_used_pct");
+		]]>		
+		</object>
+		<object local="instance" remote="InformixInstance">
+			<item local="resource.id" remote="rs.ComponentOf" />
+			<item local="instance.code" remote="attr.code" />
+			<item local="instance.name" remote="attr.name" />							
+			<item local="perf.INFORMIX-DBSPACE-1" remote="perf.db-instance.dbspace_used_pct" />
+		</object>
+	</monitor>	
+	
+	<monitor type="INFORMIX-DISK-JDBC" >
+		<!-- 
+		INFORMIX-DISK-JDBC-1	物理磁盘读速率	次/分
+		INFORMIX-DISK-JDBC-2	物理磁盘写速率	次/分
+		INFORMIX-DISK-JDBC-3	页读速率	页/分
+		INFORMIX-DISK-JDBC-4	页写速率	页/分
+		 -->
+		<object local="resource" remote="Informix">
+			<item local="perf.INFORMIX-DISK-JDBC-1" remote="perf.infomix-io.read_rate" />
+			<item local="perf.INFORMIX-DISK-JDBC-2" remote="perf.infomix-io.write_rate" />
+			<item local="perf.INFORMIX-DISK-JDBC-3" remote="perf.infomix-io.pages_read_rate" />
+			<item local="perf.INFORMIX-DISK-JDBC-4" remote="perf.infomix-io.pages_write_rate" />
+		</object>
+	</monitor>	
+	
+	<monitor type="INFORMIX-LOCK-JDBC" >
+		<!-- 
+		INFORMIX-LOCK-JDBC-1	锁请求速率	个/秒
+		INFORMIX-LOCK-JDBC-2	死锁率	个/秒
+		INFORMIX-LOCK-JDBC-3	锁等待率	个/秒
+		INFORMIX-LOCK-JDBC-4	锁超时率	个/秒
+		 -->
+		<object local="resource" remote="Informix">
+			<item local="perf.INFORMIX-LOCK-JDBC-1" remote="perf.infomix-io.lock_reqs_rate" />
+			<item local="perf.INFORMIX-LOCK-JDBC-2" remote="perf.infomix-io.deadlocks_rate" />
+			<item local="perf.INFORMIX-LOCK-JDBC-3" remote="perf.infomix-io.lock_waits_rate" />
+			<item local="perf.INFORMIX-LOCK-JDBC-4" remote="perf.infomix-io.lock_timeouts_rate" />
+		</object>
+	</monitor>
+	
+	<monitor type="INFORMIX-LOG-JDBC" >
+		<!-- 
+		INFORMIX-LOG-JDBC-1	逻辑日志记录写速率	次/分
+		INFORMIX-LOG-JDBC-2	逻辑日志写速率	次/分
+		INFORMIX-LOG-JDBC-3	逻辑日志页面写速率	次/分
+		INFORMIX-LOG-JDBC-4	物理日志写速率	次/分
+		INFORMIX-LOG-JDBC-5	物理日志页面写速率	次/分
+		 -->
+		<object local="resource" remote="Informix">
+			<item local="perf.INFORMIX-LOG-JDBC-1" remote="perf.infomix-log.logclog_records_rate" />
+			<item local="perf.INFORMIX-LOG-JDBC-2" remote="perf.infomix-log.logclog_writes_rate" />
+			<item local="perf.INFORMIX-LOG-JDBC-3" remote="perf.infomix-log.logclog_page_writes_rate" />
+			<item local="perf.INFORMIX-LOG-JDBC-4" remote="perf.infomix-log.phylog_writes_rate"/>
+			<item local="perf.INFORMIX-LOG-JDBC-5" remote="perf.infomix-log.phylog_page_writes_rate"/>
+		</object>
+	</monitor>	
+	
+	<monitor type="INFORMIX-SHM-JDBC" >
+		<!-- 
+		INFORMIX-SHM-JDBC-1	缓冲区读命中率	%
+		INFORMIX-SHM-JDBC-2	缓冲区写命中率	%
+		INFORMIX-SHM-JDBC-3	缓冲区等待速率	次/秒
+		INFORMIX-SHM-JDBC-4	LRU写速率	次/秒
+		INFORMIX-SHM-JDBC-5	顺序扫描速率	次/秒
+		INFORMIX-SHM-JDBC-6	Latch等待速率	次/秒
+		INFORMIX-SHM-JDBC-7	缓冲刷新到磁盘速率	次/秒
+		INFORMIX-SHM-JDBC-8	Foreground写速	次/秒
+		INFORMIX-SHM-JDBC-9	块写速率	次/秒
+		 -->
+		<object local="resource" remote="Informix">
+			<item local="perf.INFORMIX-SHM-JDBC-3" remote="perf.infomix-buff.buff_waits_rate" />
+			<item local="perf.INFORMIX-SHM-JDBC-4" remote="perf.infomix-buff.lru_writes_rate"/>
+			<item local="perf.INFORMIX-SHM-JDBC-5" remote="perf.infomix-buff.sequential_scans_rate"/>
+			<item local="perf.INFORMIX-SHM-JDBC-6" remote="perf.infomix-buff.latch_waits_rate"/>
+			<item local="perf.INFORMIX-SHM-JDBC-7" remote="perf.infomix-buff.buff_flushes_rate"/>
+			<item local="perf.INFORMIX-SHM-JDBC-8" remote="perf.infomix-buff.foreground_writes_rate"/>
+			<item local="perf.INFORMIX-SHM-JDBC-9" remote="perf.infomix-buff.block_writes_rate"/>
+		</object>
+	</monitor>	
+	
+	<monitor type="INFORMIX-SORT-JDBC" >
+		<!-- 
+		INFORMIX-SORT-JDBC-1	内存排序速率	次/秒
+		INFORMIX-SORT-JDBC-2	磁盘排序速率	次/秒
+		 -->
+		<object local="resource" remote="Informix">
+			<item local="perf.INFORMIX-SORT-JDBC-1" remote="perf.infomix-buff.mem_sorts_rate" />
+			<item local="perf.INFORMIX-SORT-JDBC-2" remote="perf.infomix-buff.disk_sorts_rate" />
+		</object>
+	</monitor>	
+	
+	<monitor type="INFORMIX-TRANS-JDBC" >
+		<!-- 
+		INFORMIX-TRANS-JDBC-1	事务提交速率	个/秒
+		INFORMIX-TRANS-JDBC-2	事务回滚速率	个/秒
+		 -->
+		<object local="resource" remote="Informix">
+			<item local="perf.INFORMIX-TRANS-JDBC-1" remote="perf.infomix-buff.commits_rate" />
+			<item local="perf.INFORMIX-TRANS-JDBC-2" remote="perf.infomix-buff.rollbacks_rate" />
+		</object>
+	</monitor>	
+</pmdb-map>

@@ -1,0 +1,361 @@
+<?xml version="1.0" encoding="GBK"?>
+
+<collection-define>
+  <cliconfiguration sysname="SCOUNIX">
+  	<shellInteract>
+  		<shellStart>
+  			<command cliPrompt=">" output="false">
+			  	<![CDATA[
+			  		cat << "EOF" > ${remoteFilePath}
+			  		#!/bin/sh
+					 	if [ "$1" = "check" ];
+						then echo ${sequence}
+						else 
+						${commands}
+						fi
+			  	]]>
+		  	</command>
+	  	</shellStart>
+	  	<shellEnd>
+	  		<command cliPrompt="default" output="false">
+			  	<![CDATA[
+				  		EOF
+				  		chmod +x ${remoteFilePath}
+				  	]]>
+			  </command>
+		  </shellEnd>
+		  <shellExec>
+			   <command cliPrompt="default" output="true">
+			  	<![CDATA[
+			  		 ${remoteFilePath}
+				  	]]>
+			  </command>
+			</shellExec>
+  	</shellInteract>
+    <category name="disk" sysversion="all" description="SCOUNIX disk">
+      <commands>
+        <command>df -P</command>
+      </commands>
+      <parserRule start="1" end="0" datatype="table" delimeter="\s">
+        <parserItem name="blocks" token="1">
+          <bsh>"" + Float.parseFloat(blocks)/1024.0</bsh>
+        </parserItem>
+        <parserItem name="used" token="2">
+          <bsh>"" + Float.parseFloat(used)/1024.0</bsh>
+        </parserItem>
+        <parserItem name="available" token="3">
+          <bsh>"" + Float.parseFloat(available)/1024.0</bsh>
+        </parserItem>
+        <parserItem name="capacity" token="4">
+          <bsh>
+            if(capacity.endsWith("%")){ capacity = capacity.substring(0, capacity.length()-1); } return capacity;
+          </bsh>
+        </parserItem>
+        <parserItem name="diskname" token="5" />
+      </parserRule>
+    </category>
+
+    <category name="cpu" sysversion="all" description="SCOUNIX cpu">
+      <commands>
+        <command>vmstat 1 3</command>
+      </commands>
+
+      <parserRule start="3" end="0" delimeter="\s" datatype="property">
+        <parserItem line="3" token="17" name="user" />
+        <parserItem line="3" token="18" name="sys" />
+      </parserRule>
+    </category>
+    
+    <category name="cpu" sysversion="5" description="SCOUNIX cpu">
+      <commands>
+        <command>sar 1 3</command>
+      </commands>
+
+      <parserRule start="6" end="0" delimeter="\s" datatype="property">
+        <parserItem line="6" token="1" name="user" />
+        <parserItem line="6" token="2" name="sys" />
+      </parserRule>
+    </category>
+    
+	<category name="ls" sysversion="all" description="SCOUNIX file">
+	   <commands>
+	      <command>ls -dl</command>
+	   </commands>
+	   <parserRule start="0" end="0" datatype="table" delimeter="\s">	      
+        <bsh>
+      	<![CDATA[
+      	  import com.broada.carrier.monitor.impl.host.cli.file.CLIFileExecutor;
+      	  import com.broada.carrier.monitor.impl.host.cli.file.CLIFileMonitorCondition;
+      	  
+      	  String[] lines = collectData.split("\n");
+      	  List result = new ArrayList();		
+		  for(int index = 0; index < lines.length; index++){
+			CLIFileMonitorCondition row = CLIFileExecutor.parseFileline(lines[index]);
+			if (row != null)
+			  result.add(row);
+		  }
+		  return result;
+      	]]>
+		</bsh>      
+	   </parserRule>
+    </category>
+    
+    <category name="memory" sysversion="all" description="SCOUNIX memory" remoteFilePath="/tmp/broadaSCOunixMemory.sh" sequence="1000">
+      <commands>
+        <command output="false">
+		<![CDATA[
+	   total=`memsize |awk '{print $1}'`;total=`expr $total \/ 1024 \/ 1024`;
+	   sar -r 1 3 > /tmp/sar_memory_out 2>&1;
+	   cat /tmp/sar_memory_out | grep Average > /tmp/memory_temp;
+	   free=`sed -n 1p /tmp/memory_temp | awk '{ print $2 }'`;
+	   free=`expr $free \* 4 \/ 1024`;used=`echo|awk '{print (c1-c2)}' c1=$total c2=$free`;
+	   mem=`echo|awk '{print ((c1*100)/c2) }' c1=$used c2=$total`;
+	   virblocks=`swap -l|awk 'BEGIN{total=0}{total=total+$4}END{print total}'`;
+	   virtotal=`expr $virblocks \/ 2 \/ 1024`;
+	   virfreeblocks=`swap -l|awk 'BEGIN{total=0}{total=total+$5}END{print total}'`;
+	   virfree=`expr $virfreeblocks \/ 2 \/ 1024`;
+	   virused=`expr $virtotal \- $virfree`;
+	   virutil=`expr $virused \/ $virtotal`;
+	   echo $used $mem $virused $virutil > /tmp/broada.memory.out
+		]]>
+		</command>
+		<command>cat /tmp/broada.memory.out</command>
+    </commands>
+    <parserRule start="0" end="0" delimeter="\s" datatype="property">
+        <parserItem line="0" token="0" name="real" />
+        <parserItem line="0" token="1" name="realuseutil" />
+        <parserItem line="0" token="2" name="virtualused"/>
+        <parserItem line="0" token="3" name="virtualutil" />
+      </parserRule>
+    </category>
+
+	<category name="hostinfo" sysversion="all" description="SCOUNIX hostinfo" remoteFilePath="/tmp/broadaSCOunixHostinfo.sh" sequence="1000">
+		<commands>
+			<command  output="false">
+			<![CDATA[
+				a=`/etc/hw | grep NumCPU | awk '{print $2}'`;
+				b=`uname -s`;
+				c=`uname -v`;
+				d=`uname -m`;
+				e=`df -k | awk '{print $1}' | tr '\n' '@'`;
+				m=`memsize`;
+				f=`expr $m \/ 1048576`;
+				g=`ps -ef|wc -l`;
+				h=`ifconfig -a|grep ether|awk '{print $2}'`;
+				echo $a $d $b $c $f $g $h $e>/tmp/broada.hostinfo.out
+			]]>
+			</command>
+			<command>
+				cat /tmp/broada.hostinfo.out
+			</command>
+		</commands>
+			<parserRule start="0" end="0" delimeter="\s" datatype="property">
+        <parserItem line="0" token="0" name="processorCount"/>
+        <parserItem line="0" token="1" name="machineType"/>
+        <parserItem line="0" token="2" name="systemName"/>
+        <parserItem line="0" token="3" name="systemVersion"/>
+        <parserItem line="0" token="4" name="memorySize"/>
+        <parserItem line="0" token="5" name="processCount"/>
+        <parserItem line="0" token="6" name="macAddress"/>
+        <parserItem line="0" token="7" name="diskInfo"/>
+      </parserRule>
+	</category>
+	
+	<category name="hostinfo" sysversion="5" description="SCOUNIX hostinfo" remoteFilePath="/tmp/broadaSCOunixHostinfo.sh" sequence="1000">
+		<commands>
+			<command  output="false">
+			<![CDATA[
+				a=`/etc/hw | grep num_cpu |awk 'BEGIN{FS="="} {print $2}'`;
+				b=`uname -s`;
+				c=`uname -v`;
+				d=`uname -m`;
+				e=`df -k | awk '{print $1}' | tr '\n' '@'`;
+				m=`memsize |awk '{print $1}'`;
+				f=`expr $m \/ 1048576`;
+				g=`ps -ef|wc -l`;
+				h=`ifconfig -a|grep ether|awk '{print $2}'`;
+				echo $a $d $b $c $f $g $h $e>/tmp/broada.hostinfo.out
+			]]>
+			</command>
+			<command>
+				cat /tmp/broada.hostinfo.out
+			</command>
+		</commands>
+			<parserRule start="0" end="0" delimeter="\s" datatype="property">
+        <parserItem line="0" token="0" name="processorCount"/>
+        <parserItem line="0" token="1" name="machineType"/>
+        <parserItem line="0" token="2" name="systemName"/>
+        <parserItem line="0" token="3" name="systemVersion"/>
+        <parserItem line="0" token="4" name="memorySize"/>
+        <parserItem line="0" token="5" name="processCount"/>
+        <parserItem line="0" token="6" name="macAddress"/>
+        <parserItem line="0" token="7" name="diskInfo"/>
+      </parserRule>
+	</category>
+	
+	<category name="process" sysversion="all" description="SCOUNIX process">
+		<commands>
+			<command>ps -Al -o "pid=" -o "s=" -o "pcpu=" -o "size=" -o "args=" </command>
+		</commands>
+		<parserRule start="1" end="0" delimeter="\s" datatype="table" >
+			<parserItem token="4" name="command"/>
+			<parserItem token="2" name="cpu"/>
+			<parserItem token="3" name="memory">
+				<bsh>
+					<![CDATA[
+					import java.text.DecimalFormat;
+					DecimalFormat format = new DecimalFormat("#0.00");
+					format.format(Float.parseFloat(memory)/1024.0);
+					]]>
+				</bsh>
+			</parserItem>
+			<parserItem token="1" name="status"/>
+		</parserRule>
+	</category>
+	
+	<category name="process" sysversion="5" description="SCOUNIX process">
+		<commands>
+			<command>ps -eo comm,pcpu,vsz</command>
+		</commands>
+		<parserRule start="1" end="0" delimeter="\s" datatype="table" >
+			<parserItem token="0" name="command"/>
+			<parserItem token="1" name="cpu"/>
+			<parserItem token="2" name="memory">
+				<bsh>
+					<![CDATA[
+					import java.text.DecimalFormat;
+					DecimalFormat format = new DecimalFormat("#0.00");
+					format.format(Float.parseFloat(memory)/1024.0);
+					]]>
+				</bsh>
+			</parserItem>
+			<bsh>
+        <![CDATA[
+        String[] rows = collectData.split("\n");
+        String result = "";
+				for(int index = 0; index < rows.length; index++){
+					String row = rows[index].trim();
+					if(row.split("\\s+").length < 3){
+						continue;
+					}  
+					result += row + "\n";
+				}
+				return result.trim();
+        	]]>
+      </bsh>
+		</parserRule>
+	</category>
+	
+	<category name="totalmemory" sysversion="all" description="SCOUNIX totalmemory">
+		<commands>
+			<command>memsize |awk '{print $1}'</command>
+		</commands>
+			<parserRule start="0" end="0" delimeter="\s" datatype="property" >
+				<parserItem name="totalMemory" line="0" token="0">
+				<bsh>
+				<![CDATA[
+					import java.text.DecimalFormat;
+					DecimalFormat format = new DecimalFormat("#0.00");
+					format.format(Float.parseFloat(totalMemory)/1048576);
+				]]>
+				</bsh>
+				</parserItem>
+			</parserRule>
+	</category>
+	
+    <category name="sysversion" sysversion="all" description="SCOUNIX version">
+      <commands>
+        <command>uname -a</command>
+      </commands>
+      <parserRule start="0" end="0" delimeter="\s" datatype="property">
+        <parserItem line="0" token="0" name="os">
+        <bsh>
+        <![CDATA[
+        if(os.indexOf("UnixWare") != -1)
+        	return "SCOUNIX";
+        ]]>
+        </bsh>
+        </parserItem>
+        <parserItem line="0" token="2" name="sysversion" />
+      </parserRule>
+    </category>
+    
+    <category name="userinfo" sysversion="all" description="SCOUNIX current login users">
+      <commands>
+        <command>who -Hx</command>
+      </commands>
+      <parserRule start="1" end="0" delimeter="\s" datatype="table">
+        <parserItem line="0" token="0" name="user" />
+        <parserItem line="0" token="1" name="tty" />
+        <parserItem start="24" end="36" name="logintime" />
+        <parserItem line="0" token="2" name="loginfrom"/>
+      </parserRule>
+   </category>
+   
+   <category name="userinfo" sysversion="5" description="SCOUNIX current login users">
+      <commands>
+        <command>who -Hx</command>
+      </commands>
+      <parserRule start="1" end="0" delimeter="\s" datatype="table">
+        <parserItem line="0" token="0" name="user" />
+        <parserItem line="0" token="1" name="tty" />
+        <parserItem start="24" end="-1" name="logintime" />
+      </parserRule>
+   </category>
+    
+   <category name="useraccounts" sysversion="all" description="SCOUNIX user accounts">
+      <commands>
+        <command>cat /etc/passwd</command>
+      </commands>
+      <parserRule start="0" end="0" delimeter=":" datatype="table">
+        <parserItem line="0" token="0" name="user" />
+        <parserItem line="0" token="1" name="passwd"/>
+        <parserItem line="0" token="2" name="uid" />
+        <parserItem line="0" token="3" name="gid"/>
+        <parserItem line="0" token="4" name="comment"/>
+        <parserItem line="0" token="5" name="home"/>        
+      </parserRule>
+   </category>
+   
+   <category name="io" sysversion="all" description="SCOUNIX device io">
+      <commands>
+        <command>sar -d 10 1</command>
+      </commands>
+      <parserRule start="0" end="0" delimeter="\s" datatype="table">
+        <parserItem name="device" token="0" />
+        <parserItem name="busy" token="1" />
+        <parserItem name="avque" token="2" />
+        <parserItem name="r+w/s" token="3" />
+        <parserItem name="blks/s" token="4" />
+        <parserItem name="avwait" token="5" />
+        <parserItem name="avserv" token="6" />
+         <bsh>
+	      <![CDATA[
+	      	int pos = collectData.indexOf("avserv (-d)");
+	      	collectData = collectData.substring(pos + 11).trim();
+	      	pos = collectData.indexOf(" ");
+	      	if(pos == -1)
+	      	 return "";
+	      	return collectData.substring(pos).trim();
+	      ]]>
+	     </bsh>
+      </parserRule>
+    </category>
+    
+    <category name="io" sysversion="5" description="SCOUNIX device io">
+      <commands>
+        <command>sar -d 10 1</command>
+      </commands>
+      <parserRule start="3" end="0" delimeter="\s" datatype="table">
+        <parserItem name="device" token="1" />
+        <parserItem name="busy" token="3" />
+        <parserItem name="avque" token="4" />
+        <parserItem name="r+w/s" token="5" />
+        <parserItem name="blks/s" token="6" />
+        <parserItem name="avwait" token="7" />
+        <parserItem name="avserv" token="8" />
+      </parserRule>
+    </category>
+
+  </cliconfiguration>
+</collection-define>

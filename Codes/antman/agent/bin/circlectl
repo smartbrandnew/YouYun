@@ -1,0 +1,18 @@
+# coding: utf-8
+"exec" "./embedded/bin/python" "./bin/circlectl" "$@"
+
+
+if __name__ == '__main__':
+    import sys, os
+    from os.path import dirname, abspath
+
+    # Set module path
+    root_dir = dirname(dirname(abspath(__file__)))
+    sys.path.insert(0, root_dir)
+
+    os.environ.setdefault('ANT_PYTHON', sys.executable)
+    os.environ.setdefault('ANT_ROOT_DIR', root_dir)
+
+    # Handle CLI
+    from circle.circlectl import handle_cli
+    handle_cli()

@@ -1,0 +1,40 @@
+######################
+# user configuration #
+######################
+id:  # agent uuid
+upstream:  # place upstream url here
+ip: # place agent main ip here, otherwise will guess
+network_domain: # network domain id
+tenant: # tenant id
+
+#########################################
+# system configuration (PAY ATTENTION!) #
+#########################################
+transfer: http  # tranfer scheme for uploading messages (http | kinesis)
+heartbeat: 30  # heartbeat cycle in seconds
+message_cache_file: message.cache  # message cache stored in sqlite3 format
+message_cache_limit: 1000  # maximum size of messages store in database
+message_resend_interval: 30  # message resending in seconds
+framework_port: 16600  # port that listened by framework on local
+framework_max_body_size: 1048576  # max body size per request, defaults to 1MB
+forwarder_port: 16603  # port that listened for forwarder
+message_fetch_timeout: 60 # time in seconds to wait until the response is returned
+message_fetch_retry_interval: 5  # unit time to wait before starting next fetching
+task_sync_interval: 1  # interval time to check tasks status, in seconds
+file_service_semaphore: 5  # numbers about how much files can be downloading concurrently
+file_service_connect_timeout: 3600  # timeout for initial connection in seconds
+file_service_request_timeout: 3600  # timeout for entire request in seconds
+file_service_lock_watch_interval: 5  # interval time to check if file has been completed, in seconds
+
+#############################################################################
+# kinesis configuration. only "transfer: kinesis" will make this in effect. #
+# kinesis_stream is required.                                               #
+# aws_access_key_id, aws_secret_access_key, aws_region must be valued       #
+# together or be empty. If they three are empty, will use shared credential #
+# file and aws config file.                                                 #
+# see http://boto3.readthedocs.io/en/latest/guide/configuration.html.       #
+#############################################################################
+kinesis_stream:  # kinesis stream name
+aws_access_key_id:  # aws access key id for kinesis
+aws_secret_access_key:  # aws secret access key for kinesis
+aws_region:  # aws region name for kinesis

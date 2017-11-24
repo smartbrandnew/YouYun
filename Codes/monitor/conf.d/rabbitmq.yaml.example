@@ -1,0 +1,20 @@
+init_config:
+
+instances:
+  - rabbitmq_api_url: http://localhost:15672/api/
+    rabbitmq_user: guest
+    rabbitmq_pass: "******"
+    nodes:
+    nodes_regexes:
+      - bla.*
+
+    queues:
+      - queue1
+      - queue2
+    queues_regexes:
+      - thisqueue-.*
+      - another_\d+queue
+
+    vhosts:
+      - vhost1
+      - vhost2

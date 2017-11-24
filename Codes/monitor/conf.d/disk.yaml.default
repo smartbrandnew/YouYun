@@ -1,0 +1,14 @@
+init_config:
+
+instances:
+  - use_mount: yes
+    excluded_filesystems:
+      - tmpfs
+
+    excluded_disks:
+      - /dev/sda1
+      - /dev/sda2
+
+    excluded_disk_re: /dev/sde*
+    tag_by_filesystem: no
+    all_partitions: no

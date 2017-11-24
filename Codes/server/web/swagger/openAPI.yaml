@@ -1,0 +1,823 @@
+swagger: '2.0'
+info:
+  version: '2.0'
+  title: 优云 Monitor OpenAPI
+  description: ''
+  contact:
+    name: 优云 Monitor
+    url: http://www.uyun.cn
+    email: BD@uyun.cn
+  license:
+    name:
+    url:
+host: monitor.uyun.cn
+schemes:
+  - https
+basePath: /openapi/v2
+consumes:
+  - application/json
+tags:
+  - name: datapoint
+    description: '性能'
+  - name: event
+    description: '事件'
+  - name: host
+    description: '设备'
+  - name: checkpoint
+    description: '状态'
+paths:
+  '/datapoints/create':
+    post:
+      description: '批量插入性能指标,若host和hostId均为NULL则至少要添加一个标签'
+      summary: '提交性能指标'
+      tags:
+        - datapoint
+      nickname:
+      parameters:
+        - name: apikey
+          in: query
+          description: '租户apikey'
+          required: true
+          type: string
+        - name: Params
+          in: body
+          description: '入参'
+          schema:
+            $ref: '#/definitions/intakeDatapoints'
+      responses:
+        204:
+          description: '批量插入成功'
+      operationId: intakePerfMetric
+  '/events/create':
+    post:
+      description: '批量插入事件'
+      summary: '提交事件'
+      tags:
+        - event
+      parameters:
+        - name: apikey
+          in: query
+          description: '租户apikey'
+          required: true
+          type: string
+        - name: Params
+          in: body
+          description: '入参'
+          schema:
+            $ref: '#/definitions/intakeEvents'
+      responses:
+        204:
+          description: '批量插入成功'
+      operationId: intakeEvent
+  '/events':
+    get:
+      description: '通过过滤条件返回分页event列表'
+      summary: '查询事件(分页)'
+      tags:
+        - event
+      parameters:
+        - name: apikey
+          in: query
+          description: '租户apikey'
+          required: true
+          type: string
+        - name: page_index
+          in: query
+          description: '查询记录起始行默认传1'
+          type: integer
+          default: 1
+        - name: page_size
+          in: query
+          description: '每查询记录结束行默认20条'
+          type: integer
+          default: 20
+        - name: search_value
+          in: query
+          description: '查询条件,以;分割条件，如aa;bb'
+          type: string
+        - name: severity
+          in: query
+          description: '事件等级0:提醒,1:正常,2:警告,3错误,以;分割条件如0;1即查询提醒和正常的事件'
+          type: integer
+        - name: begin_time
+          in: query
+          description: '如：1486454685958'
+          type: number
+          format: long
+        - name: end_time
+          in: query
+          description: '如：1486454685958'
+          type: number
+          format: long
+      responses:
+        200:
+          description: '返回事件列表'
+          schema:
+             $ref: '#/definitions/PageEvents'
+             examples:
+              {
+                "application/json": {
+                  "name": "Redis",
+                  "desc": "NoSQL database",
+                  "icoUrl": "images/redis.png",
+                  "manualUrl": "manual/redis.md",
+                  "category": "database"
+                }
+              }
+      operationId: getEvents
+  '/hosts/create':
+    post:
+      description: '批量插入设备'
+      summary: '建立设备'
+      tags:
+        - host
+      parameters:
+        - name: apikey
+          in: query
+          description: '租户apikey'
+          required: true
+          type: string
+        - name: Params
+          in: body
+          description: '入参'
+          schema:
+            $ref: '#/definitions/intakeHosts'
+      responses:
+        204:
+          description: '批量插入成功'
+      operationId: intakeHost
+  '/host/get':
+    get:
+      description: '通过Id查询设备详情'
+      summary: '查询单个设备'
+      tags:
+        - host
+      parameters:
+        - name: apikey
+          in: query
+          description: '租户apikey'
+          required: true
+          type: string
+        - name: id
+          in: query
+          type: string
+          required: true
+          description: 'hostId'
+      responses:
+        200:
+          description: '返回该设备详情'
+          schema:
+            $ref: '#/definitions/SingleHost'
+      operationId: getHostsById
+  '/hosts':
+    get:
+      description: '返回分页host列表'
+      summary: '查询设备(分页)'
+      tags:
+        - host
+      parameters:
+        - name: apikey
+          in: query
+          description: '租户apikey'
+          required: true
+          type: string
+        - name: page_index
+          in: query
+          description: '查询记录起始行默认传1'
+          type: integer
+          default: 1
+        - name: page_size
+          in: query
+          description: '每查询记录结束行默认20条'
+          type: integer
+          default: 20
+        - name: name
+          in: query
+          description: '设备名称'
+          type: string
+        - name: ip
+          in: query
+          description: '设备ip'
+          type: string
+        - name: type
+          in: query
+          description: '设备类型'
+          type: string
+        - name: tags
+          in: query
+          description: '设备标签'
+          type: array
+          items:
+            type: string
+        - name: apps
+          in: query
+          description: '设备app'
+          type: array
+          items:
+            type: string
+        - name: min_update_time
+          in: query
+          description: '最近更新时间,格式:yyyy-MM-dd hh:MM:ss或yyyy-MM-dd'
+          type: string
+      responses:
+        200:
+          description: '返回设备列表'
+          schema:
+            $ref: '#/definitions/PageHosts'
+      operationId: getPageHosts
+  '/hosts/query':
+    get:
+      description: '返回host列表'
+      summary: '查询设备'
+      tags:
+        - host
+      parameters:
+        - name: apikey
+          in: query
+          description: '租户apikey'
+          required: true
+          type: string
+        - name: name
+          in: query
+          description: '设备名称'
+          type: string
+        - name: ip
+          in: query
+          description: '设备ip'
+          type: string
+        - name: type
+          in: query
+          description: '设备类型'
+          type: string
+        - name: tags
+          in: query
+          description: '设备标签'
+          type: array
+          items:
+            type: string
+        - name: apps
+          in: query
+          description: '设备app'
+          type: array
+          items:
+            type: string
+        - name: min_update_time
+          in: query
+          description: '最近更新时间,格式:yyyy-MM-dd hh:MM:ss或yyyy-MM-dd'
+          type: string
+      responses:
+        200:
+          description: '返回设备列表'
+          schema:
+            $ref: '#/definitions/Hosts'
+      operationId: getHosts
+  '/datapoints/query':
+    post:
+      description: '查询性能指标'
+      summary: '查询性能指标'
+      tags:
+        - datapoint
+      parameters:
+        - name: apikey
+          in: query
+          description: '租户apikey'
+          required: true
+          type: string
+        - name: Params
+          in: body
+          description: '入参'
+          schema:
+            $ref: '#/definitions/querySeries'
+      responses:
+        200:
+          description: '返回查询的指标的时间序列'
+          schema:
+            $ref: '#/definitions/seriesResult'
+      operationId: getPerfMetricList
+  '/hosts/metric_snapshoot':
+    get:
+      description: '通过hostId和性能指标名返回指标快照'
+      summary: '查询设备性能快照'
+      tags:
+        - host
+      parameters:
+        - name: apikey
+          in: query
+          description: '租户apikey'
+          required: true
+          type: string
+        - name: id
+          in: query
+          description: 'hostId'
+          required: true
+          type: string
+        - name: metric_name
+          in: query
+          description: '性能指标名'
+          required: true
+          type: string
+        - name: group_by
+          in: query
+          description: '分组条件,如:host按主机分组'
+          required: true
+          type: string
+      responses:
+        200:
+          description: '返回性能指标快照'
+          schema:
+            $ref: '#/definitions/metricSnapshoot'
+      operationId: getMetricSnapshot
+  '/checkpoints/create':
+    post:
+      description: '批量插入状态指标'
+      summary: '提交状态指标'
+      tags:
+        - checkpoint
+      parameters:
+        - name: apikey
+          in: query
+          description: '租户apikey'
+          required: true
+          type: string
+        - name: Params
+          in: body
+          description: '入参'
+          schema:
+            $ref: '#/definitions/intakeCheckPoints'
+      responses:
+        204:
+          description: '批量插入成功'
+      operationId: intakeCheckPoints
+  '/hosts/state_snapshoot':
+    get:
+      description: '通过hostId和状态指标名返回指标快照'
+      summary: '查询设备状态快照'
+      tags:
+        - host
+      parameters:
+        - name: apikey
+          in: query
+          description: '租户apikey'
+          required: true
+          type: string
+        - name: id
+          in: query
+          description: 'hostId'
+          required: true
+          type: string
+        - name: state
+          in: query
+          description: '状态指标名'
+          required: true
+          type: string
+      responses:
+        200:
+          description: '返回状态指标名'
+          schema:
+            $ref: '#/definitions/StateSnapshoot'
+      operationId: getStateSnapshot
+  '/hosts/state_history':
+    get:
+      description: '通过hostId、状态指标名、首末次时间以及模糊的tag标签返回指标状态历史'
+      summary: '查询设备状态历史'
+      tags:
+        - host
+      parameters:
+        - name: apikey
+          in: query
+          description: '租户apikey'
+          required: true
+          type: string
+        - name: id
+          in: query
+          description: 'hostId'
+          required: true
+          type: string
+        - name: state
+          in: query
+          description: '状态指标名'
+          required: true
+          type: string
+        - name: first_time
+          in: query
+          description: '首次时间,如：1486454685958'
+          required: true
+          type: number
+          format: long
+        - name: last_time
+          in: query
+          description: '末次时间,如：1486454685958'
+          required: true
+          type: number
+          format: long
+        - name: tags
+          in: query
+          description: 'tag标签'
+          required: true
+          type: array
+          items:
+            type: string
+      responses:
+        200:
+          description: '返回历史状态'
+          schema:
+            $ref: '#/definitions/StateHistory'
+      operationId: getStateHistory
+  '/metadata/metric/create':
+    post:
+      description: '批量插入指标元数据'
+      summary: '提交指标元数据'
+      tags:
+        - datapoint
+      parameters:
+        - name: apikey
+          in: query
+          description: '租户apikey'
+          required: true
+          type: string
+        - name: Params
+          in: body
+          description: '入参'
+          schema:
+            $ref: '#/definitions/intakeMetricMetaData'
+      responses:
+        204:
+          description: '批量插入成功'
+      operationId: intakeMetricMetaData
+definitions:
+  intakeDatapoints:
+    type: array
+    items:
+      type: object
+      required:
+        - metric
+      properties:
+        host:
+          type: string
+          description: '设备名称'
+        host_id:
+          type: string
+          description: '设备ID'
+        metric:
+          type: string
+          description: '指标名，如：sytem.mem.test'
+        timestamp:
+          type: number
+          format: long
+          description: '如：1486454685958'
+        value:
+          type: number
+          format: double
+        tags:
+          type: array
+          description: '如：["location:a","level:high"]'
+          items:
+            type: string
+        type:
+          type: string
+          description: '可选:gauge,counter,rate'
+  intakeEvents:
+    type: array
+    items:
+      type: object
+      required:
+        - host_id
+        - name
+        - message
+        - state
+      properties:
+        host_id:
+          type: string
+        type:
+          type: string
+        name:
+          type: string
+        timestamp:
+          type: number
+          format: long
+          description: '如：1486454685958'
+        message:
+          type: string
+        state:
+          type: string
+          description: '可选:error,warning,info,success'
+        tags:
+          type: array
+          description: '如：["location:a","level:high"]'
+          items:
+            type: string
+  intakeHosts:
+    type: array
+    items:
+      type: object
+      required:
+        - id
+        - name
+        - ip
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        ip:
+          type: string
+          description: '如：10.1.10.1'
+        type:
+          type: string
+          description: '设备类型,可选:Server,Network,VM'
+        tags:
+          type: array
+          description: '如：["location:a","level:high"]'
+          items:
+            type: string
+        apps:
+          type: array
+          description: '如：["system","vsphere"]'
+          items:
+            type: string
+        os:
+          type: string
+          description: '可选:windows,linux,netdev'
+        online_state:
+          type: boolean
+  Event:
+    type: object
+    properties:
+      host_id:
+        type: string
+      type:
+        type: string
+      name:
+        type: string
+      timestamp:
+        type: number
+        format: long
+      message:
+        type: string
+      state:
+        type: string
+      tags:
+        type: array
+        items:
+          type: string
+      source:
+        type: string
+  PageEvents:
+    type: object
+    properties:
+      total:
+        type: integer
+      page_index:
+        type: integer
+      page_size:
+        type: integer
+      lists:
+        type: array
+        items:
+          $ref: '#/definitions/Event'
+  SingleHost:
+    type: object
+    properties:
+      id:
+        type: string
+      name:
+        type: string
+      ip:
+        type: string
+      type:
+        type: string
+      modified:
+        type: number
+        format: long
+      tags:
+        type: array
+        items:
+          type: string
+      apps:
+        type: array
+        items:
+          type: string
+      os:
+          type: string
+      dev:
+        type: object
+        properties:
+          desc:
+            type: string
+          online_state:
+            type: boolean
+          tags:
+            type: array
+            items:
+              type: string
+          agent_descr:
+            type: string
+      info:
+        type: array
+        items:
+          type: object
+          properties:
+            name:
+              type: string
+            attr:
+              type: string
+      online_state:
+        type: boolean
+  Host:
+    type: object
+    properties:
+      id:
+        type: string
+      name:
+        type: string
+      ip:
+        type: string
+      type:
+        type: string
+      os:
+        type: string
+      modified:
+        type: number
+        format: long
+      tags:
+        type: array
+        items:
+          type: string
+      apps:
+        type: array
+        items:
+          type: string
+      online_state:
+        type: boolean
+  PageHosts:
+    type: object
+    properties:
+      total:
+        type: integer
+      page_index:
+        type: integer
+      page_size:
+        type: integer
+      lists:
+        type: array
+        items:
+          $ref: '#/definitions/Host'
+  Hosts:
+    type: array
+    items:
+      $ref: '#/definitions/Host'
+  querySeries:
+    type: object
+    required:
+        - metric
+        - from
+        - to
+        - aggregator
+        - interval
+    properties:
+      metric:
+        type: string
+        description: '如：system.cpu.idle'
+      from:
+        type: number
+        format: long
+        description: '如：1486454685958'
+      to:
+        type: number
+        format: long
+        description: '如：1486454685958'
+      tags:
+        type: array
+        description: '如：["location:a","level:high"]'
+        items:
+          type: string
+      aggregator:
+        type: string
+        description: '可选：max、min、sum、avg、last'
+      interval:
+        type: string
+        description: '如20'
+      group_by:
+        type: object
+        properties:
+          tag_key:
+            type: string
+          aggregator:
+            type: string
+            description: '可选：max、min、sum、avg、last'
+  seriesResult:
+    type: array
+    items:
+      type: object
+      properties:
+        scope:
+          type: string
+        points:
+          type: array
+          items:
+            type: array
+            items:
+              type: string
+              format: double
+        unit: 
+          type: string
+  intakeCheckPoints:
+    type: array
+    items:
+      type: object
+      required:
+        - host_id
+        - state
+        - value
+      properties:
+        host_id:
+          type: string
+        timestamp:
+          type: number
+          format: long
+          description: '如：1486454685958'
+        state:
+          type: string
+        value:
+          type: string
+        tags:
+          type: array
+          description: '如：["location:a","level:high"]'
+          items:
+            type: string
+  metricSnapshoot:
+    type: array
+    items:
+      type: object
+      properties:
+        tag:
+          type: string
+        point:
+          type: array
+          items:
+            type: string
+            format: double
+        unit:
+          type: string
+  StateSnapshoot:
+    type: array
+    items:
+      type: object
+      properties:
+        tags:
+          type: array
+          items:
+            type: string
+        value:
+          type: string
+  StateHistory:
+    type: array
+    items:
+      type: object
+      properties:
+        first_time:
+          type: number
+          format: long
+          description: '如：1486454685958'
+        last_time:
+          type: number
+          format: long
+          description: '如：1486454685958'
+        value:
+          type: string
+        count:
+          type: integer
+  intakeMetricMetaData:
+    type: array
+    items:
+      type: object
+      required:
+        - name
+      properties:
+        name:
+          type: string
+          description: '指标名,如:mysql.test'
+        unit:
+          type: string
+          description: '指标单位,如:MB,KB,%等'
+        value_min:
+          type: number
+          format: double
+        value_max:
+          type: number
+          format: double
+        accuracy:
+          type: integer
+          description: '精确度,如:2即保留两位小数点'
+        data_type:
+          type: string
+          description: '采集类型,可选:gauge,counter,rate'
+        cn:
+          type: string
+          description: '指标中文名称'
+        cdescr:
+          type: string
+          description: '指标中文描述'
+        integration:
+          type: string
+          description: '集成,如:mysql'

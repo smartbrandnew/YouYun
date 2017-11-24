@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="uyun.bat.report.impl.dao.ReportMetricDataDao" >
+  <resultMap id="BaseResultMap" type="uyun.bat.report.api.entity.ReportMetricData" >
+    <id column="report_data_id" property="reportDataId" typeHandler="uyun.whale.common.mybatis.type.UUIDTypeHandler" />
+    <id column="resource_id" property="resourceId" typeHandler="uyun.whale.common.mybatis.type.UUIDTypeHandler" />
+    <id column="metric_name" property="metricName" jdbcType="VARCHAR" />
+    <result column="points" property="points" jdbcType="BLOB" />
+    <result column="val_avg" property="valAvg" jdbcType="DOUBLE" />
+    <result column="unit" property="unit" jdbcType="VARCHAR" />
+    <result column="report_id" property="reportId" typeHandler="uyun.whale.common.mybatis.type.UUIDTypeHandler" />
+  </resultMap>
+
+  <sql id="Base_Column_List" >
+    report_data_id, resource_id, metric_name, points, val_avg, unit, report_id
+  </sql>
+
+  <insert id="insertBatch" parameterType="java.util.List">
+    insert into report_metric_data (report_data_id, resource_id, metric_name, val_avg, points, unit, report_id)
+    values
+    <foreach collection="list" item="item" separator=",">
+      (
+        #{item.reportDataId, typeHandler=uyun.whale.common.mybatis.type.UUIDTypeHandler},
+        #{item.resourceId, typeHandler=uyun.whale.common.mybatis.type.UUIDTypeHandler},
+        #{item.metricName, jdbcType=VARCHAR}, #{item.valAvg, jdbcType=DOUBLE}, #{item.points, jdbcType=BLOB},
+        #{item.unit, jdbcType=VARCHAR}, #{item.reportId, typeHandler=uyun.whale.common.mybatis.type.UUIDTypeHandler}
+      )
+    </foreach>
+  </insert>
+
+  <delete id="deleteByReportId" parameterType="java.lang.String" >
+    delete from report_metric_data
+    where report_id = #{reportId, typeHandler=uyun.whale.common.mybatis.type.UUIDTypeHandler}
+  </delete>
+</mapper>

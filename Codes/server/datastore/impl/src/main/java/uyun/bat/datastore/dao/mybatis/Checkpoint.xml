@@ -1,0 +1,166 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="uyun.bat.datastore.dao.CheckpointDao">
+	<resultMap type="uyun.bat.datastore.entity.CheckpointRecord" id="entityMap">
+		<id property="objectId" column="object_id" jdbcType="BINARY"/>
+		<id property="stateId" column="state_id" jdbcType="BINARY"/>
+		<id property="firstTime" column="first_time" jdbcType="BIGINT"/>
+		<id property="lastTime" column="last_time" jdbcType="BIGINT"/>
+		<id property="value" column="value"/>
+		<id property="priorValue" column="prior_value"/>
+		<id property="count" column="count"/>
+		<id property="descr" column="descr"/>
+	</resultMap>
+
+	<select id="getSnapshot" resultMap="entityMap">
+		select * from checkpoint_snapshot where object_id = #{1, jdbcType=BINARY} and state_id = #{0, jdbcType=BINARY}
+	</select>
+
+	<insert id="createSnapshot">
+		insert into checkpoint_snapshot(object_id, state_id, first_time, last_time, `value`, prior_value, `count`, descr)
+		values(#{objectId, jdbcType=BINARY}, #{stateId, jdbcType=BINARY}, #{firstTime}, #{lastTime}, #{value}, #{priorValue}, #{count}, #{descr})
+		ON DUPLICATE KEY UPDATE
+		object_id =  #{objectId, jdbcType=BINARY},
+		state_id =  #{stateId, jdbcType=BINARY},
+		`value` = #{value},
+		prior_value = #{priorValue},
+		first_time = #{firstTime},
+		last_time = #{lastTime},
+	 	`count` = #{count},
+		descr = #{descr}
+	</insert>
+
+	<update id="updateSnapshot">
+		update checkpoint_snapshot set
+			`value` = #{0.value},
+			prior_value = #{0.priorValue},
+			first_time = #{0.firstTime},
+			last_time = #{0.lastTime},
+			`count` = #{0.count},
+			descr = #{0.descr}
+		where object_id = #{0.objectId, jdbcType=BINARY} and state_id = #{0.stateId, jdbcType=BINARY} and last_time = #{1}
+	</update>
+
+	<update id="deleteSnapshot">
+		delete from checkpoint_snapshot where object_id = #{objectId, jdbcType=BINARY}
+		<if test="stateId != null">
+			and state_id = #{stateId, jdbcType=BINARY}
+		</if>
+	</update>
+
+	<insert id="createHistory">
+		insert into checkpoint_history(object_id, state_id, first_time, last_time, `value`, prior_value, `count`, descr)
+		values(#{objectId, jdbcType=BINARY}, #{stateId, jdbcType=BINARY}, #{firstTime}, #{lastTime}, #{value}, #{priorValue}, #{count}, #{descr})
+		ON DUPLICATE KEY UPDATE
+		object_id =  #{objectId, jdbcType=BINARY},
+		state_id =  #{stateId, jdbcType=BINARY},
+		first_time = #{firstTime},
+		last_time = #{lastTime},
+		`value` = #{value},
+		prior_value = #{priorValue},
+		`count` = #{count},
+		descr = #{descr}
+	</insert>
+
+	<update id="deleteHistory">
+		delete from checkpoint_history where object_id = #{objectId, jdbcType=BINARY}
+		<if test="stateId != null">
+			and state_id = #{stateId, jdbcType=BINARY}
+		</if>
+	</update>
+
+	<update id="deleteSnapshotByStateId">
+		delete from checkpoint_snapshot where state_id = #{0, jdbcType=BINARY}
+	</update>
+
+	<update id="deleteHistoryByStateId">
+		delete from checkpoint_history where state_id = #{0, jdbcType=BINARY}
+	</update>
+
+	<select id="getSnapshotsCount" resultType="int">
+		select count(*)
+		<foreach collection="param2" item="item" index="index">
+			<if test="index == 0">
+				from (select * from tag_object where tag_id = #{item, jdbcType=BINARY}) t0
+			</if>
+			<if test="index > 0">
+				inner join tag_object t${index} on t${index}.tag_id = #{item, jdbcType=BINARY} and t${index}.object_id = t0.object_id
+			</if>
+		</foreach>
+		inner join checkpoint_snapshot c on c.object_id = t0.object_id and c.state_id = #{0, jdbcType=BINARY} and c.value = #{2}
+	</select>
+
+	<select id="getSnapshots" resultMap="entityMap">
+		select c.*
+		<foreach collection="param2" item="item" index="index">
+			<if test="index == 0">
+				from (select * from tag_object where tag_id = #{item, jdbcType=BINARY}) t0
+			</if>
+			<if test="index > 0">
+				inner join tag_object t${index} on t${index}.tag_id = #{item, jdbcType=BINARY} and t${index}.object_id = t0.object_id
+			</if>
+		</foreach>
+		inner join checkpoint_snapshot c on c.object_id = t0.object_id and c.state_id = #{0, jdbcType=BINARY}
+	</select>
+
+	<select id="getRecords" resultMap="entityMap">
+		<![CDATA[
+		select s.*
+		from (
+			select *
+			from checkpoint_history h
+			where h.state_id = #{0, jdbcType=BINARY} and h.object_id = #{1, jdbcType=BINARY}
+				and (h.first_time between #{2} and #{3}
+					or h.last_time between #{2} and #{3}
+					or h.first_time < #{2} and h.last_time >= #{3})
+			union
+			select *
+			from checkpoint_snapshot h
+			where h.state_id = #{0, jdbcType=BINARY} and h.object_id = #{1, jdbcType=BINARY}
+				and (h.first_time between #{2} and #{3}
+					or h.last_time between #{2} and #{3}
+					or h.first_time < #{2} and h.last_time >= #{3})
+		) s order by s.first_time
+		]]>
+	</select>
+
+	<select id="getLastRecords" resultMap="entityMap">
+		<![CDATA[
+		select s.*
+		from (
+			select *
+			from checkpoint_history h
+			where h.state_id = #{0, jdbcType=BINARY} and h.object_id = #{1, jdbcType=BINARY}
+				and (h.first_time between #{2} and #{3}
+					or h.last_time between #{2} and #{3}
+					or h.first_time < #{2} and h.last_time >= #{3})
+			union
+			select *
+			from checkpoint_snapshot h
+			where h.state_id = #{0, jdbcType=BINARY} and h.object_id = #{1, jdbcType=BINARY}
+				and (h.first_time between #{2} and #{3}
+					or h.last_time between #{2} and #{3}
+					or h.first_time < #{2} and h.last_time >= #{3})
+		) s order by s.first_time desc limit 1
+		]]>
+	</select>
+
+	<select id="getLastRecordsByObject"  resultMap="entityMap">
+		<![CDATA[
+		select s.*
+		from (
+			select *
+			from checkpoint_history h
+			where h.state_id = #{0, jdbcType=BINARY} and h.object_id = #{1, jdbcType=BINARY}
+			union
+			select *
+			from checkpoint_snapshot h
+			where h.state_id = #{0, jdbcType=BINARY} and h.object_id = #{1, jdbcType=BINARY}
+		) s order by s.first_time desc limit 1
+		]]>
+	</select>
+
+	<select id="getObjectIdsByStateId" resultType="string">
+		select LOWER(HEX(object_id)) from checkpoint_snapshot where state_id = #{0, jdbcType=BINARY}
+	</select>
+</mapper>

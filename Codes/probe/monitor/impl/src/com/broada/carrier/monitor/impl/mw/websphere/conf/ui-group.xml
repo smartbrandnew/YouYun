@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="GBK"?>
+<!-- type[0:等于;1:不等于;2:大于;3:大于等于;4:小于;5:小于等于] -->
+<ui-groups>
+  
+  <!-- 连接池 -->
+  <ui-group goupId="WASJDBC" name="连接池" desc="监测JDBC并发等待者、故障数和使用百分率,超过阈值告警." hasMonitorCol="true">   
+    <perf-item itemCode="WASJDBC-7" name="并发等待数" showPerf="false" showCondition="true" conditionName="最大并发等待者(个)" type="5" defaultCondValue="20"/>
+    <perf-item itemCode="WASJDBC-8" name="故障数" showPerf="false" showCondition="true" conditionName="最大故障数(个)" type="5" defaultCondValue="80"/>
+    <perf-item itemCode="WASJDBC-9" name="使用百分率" showPerf="false" showCondition="true" conditionName="最大使用率(%)" type="5" defaultCondValue="90"/>
+  </ui-group>
+  
+  <!-- 线程池 -->
+  <ui-group goupId="WASTHREADPOOL" name="线程池" desc="监测WebSphere线程池" hasMonitorCol="true">    
+    <perf-item itemCode="WASTHREADPOOL-1" name="线程创建数" showPerf="true" showCondition="true" conditionName="最大线程数" type="5" defaultCondValue="50"/> 
+    <perf-item itemCode="WASTHREADPOOL-2" name="线程销毁数" showPerf="true" showCondition="false"/>
+    <perf-item itemCode="WASTHREADPOOL-3" name="活动线程数" showPerf="true" showCondition="true" conditionName="最大活动数" type="5" defaultCondValue="50"/>
+    <perf-item itemCode="WASTHREADPOOL-4" name="线程池大小" showPerf="true" showCondition="false"/>
+    <perf-item itemCode="WASTHREADPOOL-5" name="最大百分数" showPerf="true" showCondition="false"/>
+    <perf-item itemCode="WASTHREADPOOL-6" name="未释放线程" showPerf="true" showCondition="false"/>
+    <perf-item itemCode="WASTHREADPOOL-7" name="线程池利用率" showPerf="true" showCondition="true" conditionName="最大利用率(%)" type="5" defaultCondValue="90"/>
+  </ui-group>
+  
+  <!-- JVM -->
+  <ui-group goupId="WASJVM" name="JVM" desc="监测JVM堆栈大小和利用率,超过阈值告警." hasMonitorCol="true">   
+    <perf-item itemCode="WASJVM-1" name="JVM堆栈大小" showPerf="false" showCondition="true" conditionName="堆栈大小阈值(MB)" type="4" defaultCondValue="64"/> 
+    <perf-item itemCode="WASJVM-2" name="JVM堆栈利用率" showPerf="false" showCondition="true" conditionName="堆栈利用率阈值(%)" type="4" defaultCondValue="90"/> 
+  </ui-group>
+  
+  <!-- Web应用 -->
+  <ui-group goupId="WASWEBAPP" name="Web应用" desc="监测Web模块并发处理请求数、完成servlet请求的平均响应时间和servlet/JSP中的错误总数,超过阈值告警." hasMonitorCol="true">   
+    <perf-item itemCode="WASWEBAPP-4" name="并发处理请求数" showPerf="false" showCondition="true" conditionName="并发处理请求数阈值(个)" type="4" defaultCondValue="50"/>
+    <perf-item itemCode="WASWEBAPP-5" name="完成servlet请求平均响应时间" showPerf="false" showCondition="true" conditionName="servlet请求的平均响应时间阈值(毫秒)" type="4" defaultCondValue="500"/>  
+    <perf-item itemCode="WASWEBAPP-6" name="servlet/JSP错误总数" showPerf="false" showCondition="true" conditionName="servlet/JSP错误总数阈值(个)" type="4" defaultCondValue="200"/> 
+  </ui-group>  
+  
+  <!-- Servlet会话 -->
+  <ui-group goupId="WASSERVLET" name="Servlet会话" desc="监测Servlet会话新建会话数、活动会话数,超出阈值告警." hasMonitorCol="true">
+    <perf-item itemCode="WASSERVLET-3" name="超时会话数" showPerf="true" showCondition="false"/>
+    <perf-item itemCode="WASSERVLET-4" name="新建会话数" showPerf="true" showCondition="true" conditionName="新建会话数阈值(个)" type="4" defaultCondValue="300"/> 
+    <perf-item itemCode="WASSERVLET-5" name="活动会话数" showPerf="true" showCondition="true" conditionName="活动会话数阈值(个)" type="4" defaultCondValue="200"/> 
+  </ui-group>
+  
+  <!-- 事务 -->
+  <ui-group goupId="WAS-TRANS-PMI" name="事务" desc="监测事务的超时率,超出阈值告警." hasMonitorCol="true">
+    <perf-item itemCode="WAS-TRANS-PMI-3" name="全局事务响应时间(秒)" showPerf="true" showCondition="false"/>
+    <perf-item itemCode="WAS-TRANS-PMI-4" name="本地事务响应时间(秒)" showPerf="true" showCondition="false"/>
+    <perf-item itemCode="WAS-TRANS-PMI-9" name="全局超时事务率(%)" showPerf="true" showCondition="true" conditionName="全局超时事务率阈值(%)" type="4" defaultCondValue="10"/>
+    <perf-item itemCode="WAS-TRANS-PMI-10" name="本地超时事务率(%)" showPerf="true" showCondition="true" conditionName="本地超时事务率阈值(%)" type="4" defaultCondValue="10"/>
+  </ui-group>
+  
+  <!-- J2C -->
+  <ui-group goupId="WAS-J2C-PMI" name="Java2连接器" desc="监测J2C的使用时间增量,超出阈值告警." hasMonitorCol="true">
+    <perf-item itemCode="WAS-J2C-PMI-2" name="J2C使用时间增量(秒)" showPerf="true" showCondition="true" conditionName="J2C使用时间增量阈值(秒)" type="4" defaultCondValue="500"/>
+  </ui-group>
+  
+  <!-- EJBS -->
+  <ui-group goupId="WAS-EJB-PMI" name="EJB" desc="监测EJB的性能,超出阈值告警." hasMonitorCol="true">
+    <perf-item itemCode="WAS-EJB-PMI-1" name="bean方法平均响应时间(毫秒)" showPerf="true" showCondition="true" conditionName="bean方法平均响应时间阈值(毫秒)" type="4" defaultCondValue="100"/>
+    <perf-item itemCode="WAS-EJB-PMI-2" name="beanActivate调用平均时间(毫秒)" showPerf="true" showCondition="false"/>
+    <perf-item itemCode="WAS-EJB-PMI-5" name="Bean持久化平均时间(毫秒)" showPerf="true" showCondition="false"/>
+  </ui-group>
+  
+  <!-- Cache -->
+  <ui-group goupId="WAS-CACHE-PMI" name="高速缓存" desc="监测高速缓存使用率,超出阈值告警." hasMonitorCol="true">
+    <perf-item itemCode="WAS-CACHE-PMI-3" name="高速缓存使用率(%)" showPerf="true" showCondition="true" conditionName="高速缓存使用率阈值(%)" type="4" defaultCondValue="90"/>
+    <perf-item itemCode="WAS-CACHE-PMI-4" name="高速缓存不命中率(%)" showPerf="true" showCondition="true" conditionName="高速缓存不命中率阈值(%)" type="5" defaultCondValue="10"/>
+  </ui-group>
+</ui-groups>

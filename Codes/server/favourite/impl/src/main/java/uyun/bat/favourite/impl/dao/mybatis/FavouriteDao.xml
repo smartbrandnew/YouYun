@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="uyun.bat.favourite.impl.dao.FavouriteDao">
+	<resultMap type="uyun.bat.favourite.api.entity.Favourite" id="favouriteResultMap">
+		<result property="userId" column="user_id"
+			typeHandler="uyun.whale.common.mybatis.type.UUIDTypeHandler" />
+		<result property="dashId" column="dash_id"
+			typeHandler="uyun.whale.common.mybatis.type.UUIDTypeHandler" />
+	</resultMap>
+
+<!--
+	<select id="getMyFavouriteDashboards" parameterType="java.lang.String"
+		resultMap="favouriteResultMap">
+		select
+		f.user_id,f.dash_id,d.name
+		from favorite_dashboard f
+		join
+		dashboard d
+		on d.id = f.dash_id
+		and f.user_id=#{0,typeHandler=uyun.whale.common.mybatis.type.UUIDTypeHandler}
+		order by convert(name using gbk) asc
+	</select> 
+-->
+	<select id="getMyFavouriteDashboards" parameterType="java.lang.String"
+		resultMap="favouriteResultMap">
+		select
+		user_id,dash_id
+		from favorite_dashboard
+		where user_id=#{0,typeHandler=uyun.whale.common.mybatis.type.UUIDTypeHandler}
+	</select> 
+	
+	<insert id="createFavouriteDashboard">
+		insert into
+		favorite_dashboard
+		values(#{0,typeHandler=uyun.whale.common.mybatis.type.UUIDTypeHandler},#{1,typeHandler=uyun.whale.common.mybatis.type.UUIDTypeHandler})
+	</insert>
+
+	<delete id="deleteFavouriteDashboard">
+		delete from favorite_dashboard where user_id = #{0,typeHandler=uyun.whale.common.mybatis.type.UUIDTypeHandler}
+		and dash_id
+		=#{1,typeHandler=uyun.whale.common.mybatis.type.UUIDTypeHandler}
+	</delete>
+</mapper>

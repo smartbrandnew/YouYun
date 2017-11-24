@@ -1,0 +1,94 @@
+{
+    "files":{
+        "Windows":[
+            {
+                "name":"Monitor-Agent-win32.msi",
+                "url":"downloads/agent/Windows/Monitor-Agent-win32.msi"
+            }
+        ],
+        "CentOS":[
+            {
+                "name":"Monitor-Agent-rpm-i386.tar.gz",
+                "url":"downloads/agent/RedHat/Monitor-Agent-rpm-i386.tar.gz"
+            },
+            {
+                "name":"Monitor-Agent-rpm-x86_64.tar.gz",
+                "url":"downloads/agent/RedHat/Monitor-Agent-rpm-x86_64.tar.gz"
+            }
+        ],
+        "RedHat":[
+            {
+                "name":"Monitor-Agent-rpm-i386.tar.gz",
+                "url":"downloads/agent/RedHat/Monitor-Agent-rpm-i386.tar.gz"
+            },
+            {
+                "name":"Monitor-Agent-rpm-x86_64.tar.gz",
+                "url":"downloads/agent/RedHat/Monitor-Agent-rpm-x86_64.tar.gz"
+            }
+        ],
+        "Fedora":[
+            {
+                "name":"Monitor-Agent-rpm-i386.tar.gz",
+                "url":"downloads/agent/RedHat/Monitor-Agent-rpm-i386.tar.gz"
+            },
+            {
+                "name":"Monitor-Agent-rpm-x86_64.tar.gz",
+                "url":"downloads/agent/RedHat/Monitor-Agent-rpm-x86_64.tar.gz"
+            }
+        ],
+        "Amazon Linux":[
+            {
+                "name":"Monitor-Agent-rpm-i386.tar.gz",
+                "url":"downloads/agent/RedHat/Monitor-Agent-rpm-i386.tar.gz"
+            },
+            {
+                "name":"Monitor-Agent-rpm-x86_64.tar.gz",
+                "url":"downloads/agent/RedHat/Monitor-Agent-rpm-x86_64.tar.gz"
+            }
+        ],
+        "Debian":[
+            {
+                "name":"Monitor-Agent-deb-i386.tar.gz",
+                "url":"downloads/agent/Debian/Monitor-Agent-deb-i386.tar.gz"
+            },
+            {
+                "name":"Monitor-Agent-deb-x86_64.tar.gz",
+                "url":"downloads/agent/Debian/Monitor-Agent-deb-x86_64.tar.gz"
+            }
+        ],
+        "Ubuntu":[
+            {
+                "name":"Monitor-Agent-deb-i386.tar.gz",
+                "url":"downloads/agent/Debian/Monitor-Agent-deb-i386.tar.gz"
+            },
+            {
+                "name":"Monitor-Agent-deb-x86_64.tar.gz",
+                "url":"downloads/agent/Debian/Monitor-Agent-deb-x86_64.tar.gz"
+            }
+        ],
+        "SUSE":[
+            {
+                "name":"Monitor-Agent-suse-x86_64.tar.gz",
+                "url":"downloads/agent/SUSE/Monitor-Agent-suse-x86_64.tar.gz"
+            }
+        ],
+        "Docker":[
+            {
+                "name":"docker-dd-agent.tar.gz",
+                "url":"downloads/agent/Docker/docker-dd-agent.tar.gz"
+            }
+        ]
+
+    },
+    "commands":{
+        "Windows":"msiexec /qb /i \"D:\\Monitor-Agent-win32.msi\" APIKEY=\"%s\" MURL=\"${monitor.server.url}/api/v2/gateway/dd-agent\"",
+        "CentOS":"M_API_KEY=%s REPERTORY_URL=\"${monitor.server.url}\" bash -c \"$(curl -L ${monitor.server.url}/downloads/agent/install_agent.sh)\"",
+        "RedHat":"M_API_KEY=%s REPERTORY_URL=\"${monitor.server.url}\" bash -c \"$(curl -L ${monitor.server.url}/downloads/agent/install_agent.sh)\"",
+        "Fedora":"M_API_KEY=%s REPERTORY_URL=\"${monitor.server.url}\" bash -c \"$(curl -L ${monitor.server.url}/downloads/agent/install_agent.sh)\"",
+        "Amazon Linux":"M_API_KEY=%s REPERTORY_URL=\"${monitor.server.url}\" bash -c \"$(curl -L ${monitor.server.url}/downloads/agent/install_agent.sh)\"",
+        "Debian":"sudo M_API_KEY=%s REPERTORY_URL=\"${monitor.server.url}\" bash -c \"$(wget --quiet ${monitor.server.url}/downloads/agent/install_agent.sh && cat install_agent.sh)\"",
+        "Ubuntu":"sudo M_API_KEY=%s REPERTORY_URL=\"${monitor.server.url}\" bash -c \"$(wget --quiet ${monitor.server.url}/downloads/agent/install_agent.sh && cat install_agent.sh)\"",
+        "SUSE":"M_API_KEY=%s REPERTORY_URL=\"${monitor.server.url}\" bash -c \"$(curl -L ${monitor.server.url}/downloads/agent/install_agent.sh)\"",
+        "Docker":"M_API_KEY=%s REPERTORY_URL=\"${monitor.server.url}\" bash -c \"$(curl -L ${monitor.server.url}/downloads/agent/Docker/install_agent.sh)\""
+    }
+}

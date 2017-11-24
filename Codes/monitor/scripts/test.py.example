@@ -1,0 +1,23 @@
+# !/C:/Python27
+# -*- coding: UTF-8 -*-
+
+import os
+
+# 脚本元信息
+# name=采集指定文件夹下文件数目
+# interval=60
+# version=1.0.1
+
+
+def main(path):
+    output = "metric=%s|value=%d|type=%s|tags=%s"
+    count = 0
+    for fn in os.listdir(path):
+        count += 1
+    print output % ("system.file.number", count, 'gauge', 'folder:'+path+',unit:pass')
+
+if __name__ == '__main__':
+    path1 = r'C:\Users\Administrator\Desktop'
+    path2 = r'D:\Program Files (x86)\DingDing'
+    main(path1)
+    main(path2)

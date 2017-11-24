@@ -1,0 +1,7 @@
+init_config:
+   default_timeout: 5
+
+instances:
+    - url: "https://server:port"
+      user: "username"
+      password: "******"

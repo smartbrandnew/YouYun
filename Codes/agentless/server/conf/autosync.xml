@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<autosync>
+	<!-- 服务端每60秒进行一次文件变更检查。 -->
+	<server versionChangeInterval="60" />
+
+	<!-- 针对probe的升级动作定义 -->
+	<client id="carrier-probe">
+		<!-- 升级文件集合：lib。主要为monitor与probe都一定一致的若干jar文件。 -->
+		<fileset id="lib" server="webapp/WEB-INF/lib" client="webapp/WEB-INF/lib" deleteMode="always">
+			<include name="carrier.monitor.base.jar" />
+			<include name="carrier.monitor.impl.jar" />
+			<include name="carrier.monitor.probe.api.jar" />
+			<include name="carrier.monitor.server.api.jar" />
+			<include name="carrier.monitor.common.patchloader.jar" />
+			<include name="platform.component.utils.jar" />
+			<include name="platform.component.mq.jar" />
+			<include name="platform.module.autosync.server.api.jar" />
+			<include name="platform.module.autosync.client.jar" />
+			<include name="platform.module.autosync.client.startup-2.jar" />
+			<include name="numen.*.jar" />						
+		</fileset>
+		<!-- 升级文件集合：plugins。主要为插件文件，这些文件也是monitor与probe一定一致的文件。 -->
+		<fileset id="plugins" server="plugins" client="plugins" deleteMode="always">
+			<include name="*" />
+		</fileset>
+		<!-- 升级文件集合：patch。主要为补丁文件，这些文件也是monitor与probe一定一致的文件。 -->
+		<fileset id="patch" server="patch" client="patch" deleteMode="always">
+			<include name="*" />
+		</fileset>		
+		<!-- 升级文件集合：upgrade。即monitor/upgrade/probe下的所有文件，除了以下exclude的文件外，都会升级到probe。 -->
+		<fileset id="upgrade" server="upgrade/probe" deleteMode="onlyMarked">			
+			<exclude name="bin/carrier-probe.exe" />
+			<exclude name="bin/carrier-probe-service.exe" />
+			<exclude name="bin/xerces-c_2_7.dll" />
+			<exclude name="bin/NSock.dll" />
+			<exclude name="conf/config.properties" />
+		</fileset>
+		<!-- 升级成功后的动作：升级文件成功后，需要重启 -->
+		<action event="upgradeSuccessful" type="exit" arg="" whenFilesets="lib,plugins,patch,upgrade" />
+	</client>
+
+	<!-- 针对client的升级动作定义 -->
+	<client id="carrier-client">
+		<fileset id="lib" server="webapp/WEB-INF/lib" client="lib" deleteMode="always">
+			<include name="carrier.monitor.base.jar" />
+			<include name="carrier.monitor.impl.jar" />
+			<include name="carrier.monitor.server.api.jar" />
+			<include name="carrier.monitor.common.patchloader.jar" />
+			<include name="platform.component.utils.jar" />
+			<include name="platform.component.mq.jar" />
+			<include name="platform.module.autosync.server.api.jar" />
+			<include name="platform.module.autosync.client.jar" />
+			<include name="platform.module.autosync.client.startup-2.jar" />		
+			<include name="numen.*.jar" />
+		</fileset>
+		<fileset id="plugins" server="plugins" client="plugins" deleteMode="always">
+			<include name="*" />
+		</fileset>		
+		<fileset id="patch" server="patch" client="patch" deleteMode="always">
+			<include name="*" />
+		</fileset>				
+		<fileset id="upgrade" server="upgrade/client" deleteMode="onlyMarked">
+			<exclude name="bin/carrier-client.exe" />
+		</fileset>	
+		<action event="upgradeSuccessful" type="exit" arg="" whenFilesets="lib,plugins,patch,upgrade" />	
+	</client>
+</autosync>

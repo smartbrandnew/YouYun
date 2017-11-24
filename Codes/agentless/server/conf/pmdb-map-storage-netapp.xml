@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<pmdb-map>
+	<monitor type="NETAPP-BATTERYSTATUS">
+		<!-- 
+		NETAPP-BATTERY-STATUS-1	电源状态	
+		 -->	
+		<object local="node" remote="NETAPP">
+			<item local="perf.NETAPP-BATTERY-STATUS-1" remote="state.battery_status" />				
+		</object>
+	</monitor>
+	
+	<monitor type="NETAPP-CPU">
+	<!-- 
+		NETAPP-CPU-1	cpu使用率	
+		NETAPP-CPU-2	cpu中断率
+		NETAPP-CPU-3	cpu空闲	
+		NETAPP-CPU-4	cpu启动时间
+		 -->	
+		<object local="node" remote="NETAPP">
+			<item local="perf.NETAPP-CPU-1" remote="perf.cpu-use.cpu_usage" />		
+			<item local="perf.NETAPP-CPU-4" remote="perf.cpu-use.cpu_uptime" />				
+		</object>
+	</monitor>
+	
+	<monitor type="NETAPP-CPUIDLETIME">
+		<!-- 
+		NETAPP-CPUIDLETIME-1	CPU空闲率
+		 -->	
+		<object local="node" remote="NETAPP">
+			<item local="perf.NETAPP-CPUIDLETIME-1" remote="perf.cpu-use.cpu_idletime" />
+		</object>
+	</monitor>	
+	
+	<monitor type="NETAPP-CPUINTERRUP">
+		<!-- 
+		NETAPP-CPUINTERRUP-1	CPU中断率
+		 -->	
+		<object local="node" remote="NETAPP">
+			<item local="perf.NETAPP-CPUINTERRUP-1" remote="perf.cpu-use.cpu_interrup" />
+		</object>
+	</monitor>	
+	!!!
+	<monitor type="NETAPP-FAILDPOWER">
+		<!-- 
+		NETAPP-FSUSED-1	问题电源数
+		 -->	
+		<object local="node" remote="NETAPP">
+			<item local="perf.NETAPP-FAILDPOWER-1" remote="perf.faild.faild_power" />
+		</object>
+	</monitor>	
+	
+	<monitor type="NETAPP-FSSTATUS">
+		<!-- 
+		NETAPP-FASTATUS-1	进程监测状态
+		 -->	
+		<object local="node" remote="NETAPP">
+			<item local="perf.NETAPP-FSSTATUS-1" remote="state.fs_status" />
+		</object>
+	</monitor>	
+	
+	<monitor type="NETAPP-FSUSED">
+	<!-- 
+		NETAPP-FSUSED-1	文件系统空间使用率
+		 -->	
+		<object local="node" remote="NETAPP">
+			<item local="perf.NETAPP-FSUSED-1" remote="perf.fs-use.fs_used" />
+		</object>
+	</monitor>	
+	
+	<monitor type="NETAPP-BASEINFO">
+			<!-- 
+		SNMP-HOSTINFO-1	操作系统	
+		SNMP-HOSTINFO-2	机器型号	
+		SNMP-HOSTINFO-3	主机名	
+		SNMP-HOSTINFO-4	MAC地址	
+		SNMP-HOSTINFO-5	内存大小	MB
+		SNMP-HOSTINFO-6	CPU核数	个
+		SNMP-HOSTINFO-7	端口列表			
+		 -->	
+		<object local="node" remote="NETAPP">
+			<item local="perf.NETAPP-BASEINFO-1" remote="attr.osName" />
+			<item local="perf.NETAPP-BASEINFO-2" remote="attr.model" />						
+			<item local="perf.NETAPP-BASEINFO-4" remote="attr.macAddr" />
+			<item local="perf.NETAPP-BASEINFO-5" remote="attr.memCapacity" />			
+			<item local="perf.NETAPP-BASEINFO-6" remote="attr.cpuNum" />				
+		</object>
+	</monitor>	
+	
+	<monitor type="NETAPP-RAID">
+				<!-- 
+		SNMP-HOSTINFO-1	raid状态
+		 -->	
+		<object local="node" remote="NETAPP">
+			<item local="perf.NETAPP-RAIDSTATUS-1" remote="state.raid_status" />
+		</object>
+	</monitor>
+</pmdb-map>

@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="uyun.bat.agent.impl.dao.YamlFileDao">
+	<resultMap type="uyun.bat.agent.api.entity.YamlFile" id="yamlResultMap">
+		<id property="agentId" column="agent_id" jdbcType="BINARY"
+			typeHandler="uyun.whale.common.mybatis.type.UUIDTypeHandler" />
+		<id property="tenantId" column="tenant_id" jdbcType="BINARY"
+			typeHandler="uyun.whale.common.mybatis.type.UUIDTypeHandler" />
+		<result property="fileName" column="filename" />
+		<result property="md5" column="md5" />
+		<result property="size" column="size" />
+		<result property="modified" column="modified" />
+		<result property="agent_source" column="source" />
+		<result property="content" column="content"
+			typeHandler="uyun.bat.agent.impl.dao.typehandler.StringBlobTypeHandler" />
+		<result property="enabled" column="enabled" />
+	</resultMap>
+
+
+	<insert id="save" parameterType="uyun.bat.agent.api.entity.YamlFile">
+		insert into
+		agent_yaml(agent_id,tenant_id,filename,md5,size,modified,content,source,enabled)
+		values(#{agentId,typeHandler=uyun.whale.common.mybatis.type.UUIDTypeHandler},
+		#{tenantId,typeHandler=uyun.whale.common.mybatis.type.UUIDTypeHandler},
+		#{fileName},#{md5},#{size},
+		#{modified},
+		#{content,typeHandler=uyun.bat.agent.impl.dao.typehandler.StringBlobTypeHandler},
+		#{agent_source},#{enabled})
+		on DUPLICATE KEY
+		update
+		agent_id=#{agentId,typeHandler=uyun.whale.common.mybatis.type.UUIDTypeHandler},
+		tenant_id=
+		#{tenantId,typeHandler=uyun.whale.common.mybatis.type.UUIDTypeHandler},
+		filename=#{fileName},
+		md5= #{md5},
+		size = #{size},
+		modified=#{modified},
+		source=#{agent_source},
+		content=#{content,typeHandler=uyun.bat.agent.impl.dao.typehandler.StringBlobTypeHandler}
+	</insert>
+
+	<insert id="updateEnabled">
+		insert into
+		agent_yaml(agent_id,tenant_id,filename,md5,size,modified,content,source,enabled)
+		values(#{1,typeHandler=uyun.whale.common.mybatis.type.UUIDTypeHandler},
+		#{0,typeHandler=uyun.whale.common.mybatis.type.UUIDTypeHandler},
+		#{2},"md5",0,#{5},null,#{3},#{4})
+		on DUPLICATE KEY
+		update
+		enabled = #{4},
+		modified = #{5}
+	</insert>
+
+	<select id="getYamlFileByNameAndAgentId" resultMap="yamlResultMap">
+		select * from
+		agent_yaml where
+		agent_id=#{agentId,typeHandler=uyun.whale.common.mybatis.type.UUIDTypeHandler}
+		and
+		tenant_id=#{tenantId,typeHandler=uyun.whale.common.mybatis.type.UUIDTypeHandler}
+		and filename=#{fileName} and source=#{source}
+	</select>
+
+	<select id="getYamlFileListByAgentId" resultMap="yamlResultMap">
+		select * from
+		agent_yaml where
+		tenant_id=#{0,typeHandler=uyun.whale.common.mybatis.type.UUIDTypeHandler}
+		and
+		agent_id=#{1,typeHandler=uyun.whale.common.mybatis.type.UUIDTypeHandler}
+		and source=#{2}
+	</select>
+
+	<delete id="delete" parameterType="String">
+		delete from agent_yaml where
+		agent_id=#{0,typeHandler=uyun.whale.common.mybatis.type.UUIDTypeHandler}
+	</delete>
+
+	<delete id="deleteYaml">
+		delete from agent_yaml where tenant_id =
+		#{0,typeHandler=uyun.whale.common.mybatis.type.UUIDTypeHandler} and
+		agent_id=#{1,typeHandler=uyun.whale.common.mybatis.type.UUIDTypeHandler}
+		and fileName = #{2} and source = #{3};
+	</delete>
+
+	<select id="getYamlNamesByEnabled" resultType="java.lang.String">
+		select filename from
+		agent_yaml where
+		agent_id=#{0,typeHandler=uyun.whale.common.mybatis.type.UUIDTypeHandler}
+		and enabled = #{1};
+	</select>
+</mapper>

@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<autosync>
+	<server versionChangeInterval="5" />	
+	<client id="windows">
+		<fileset id="windows" server="windows">
+			<include name="**" />
+		</fileset>
+
+	</client>
+
+	<client id="linux">
+		<fileset id="linux" server="linux">
+			<include name="**" />
+		</fileset>
+
+	</client>
+</autosync>

@@ -1,0 +1,191 @@
+<?xml version="1.0" encoding="GBK"?>
+
+<collection-define>
+  <cliconfiguration sysname="IRIX64">
+  	<shellInteract>
+  		<shellStart>
+  			<command cliPrompt=">" output="false">
+			  	<![CDATA[
+			  		cat << "EOF" > ${remoteFilePath}
+			  		#!/bin/sh
+					 	if [ "$1" = "check" ];
+						then echo ${sequence}
+						else 
+						${commands}
+						fi
+			  	]]>
+		  	</command>
+	  	</shellStart>
+	  	<shellEnd>
+	  		<command cliPrompt="default" output="false">
+			  	<![CDATA[
+				  		EOF
+				  		chmod +x ${remoteFilePath}
+				  	]]>
+			  </command>
+		  </shellEnd>
+		  <shellExec>
+			   <command cliPrompt="default" output="true">
+			  	<![CDATA[
+			  		 LANG=en_US;${remoteFilePath}
+				  	]]>
+			  </command>
+			</shellExec>
+  	</shellInteract>
+    <category name="disk" sysversion="all" description="IRIX64 disk">
+      <commands>
+        <command>df -Pk</command>
+      </commands>
+      <parserRule start="1" end="0" datatype="table" delimeter="\s">
+        <parserItem name="blocks" token="1">
+          <bsh>"" + Float.parseFloat(blocks)/1024.0</bsh>
+        </parserItem>
+        <parserItem name="used" token="2">
+          <bsh>"" + Float.parseFloat(used)/1024.0</bsh>
+        </parserItem>
+        <parserItem name="available" token="3">
+          <bsh>"" + Float.parseFloat(available)/1024.0</bsh>
+        </parserItem>
+        <parserItem name="capacity" token="4">
+          <bsh>
+            if(capacity.endsWith("%")){ capacity = capacity.substring(0, capacity.length()-1); } return capacity;
+          </bsh>
+        </parserItem>
+        <parserItem name="diskname" token="5" />
+        <bsh>
+          <![CDATA[
+          String[] splitter = collectData.split("\n");
+          StringBuffer buffer = new StringBuffer();
+          for(int index = 0; index < splitter.length; index++){
+            String s = splitter[index];
+            String[] s1 = s.split("\\s");
+            if(s1.length < 6){
+              index++;
+              if(index < splitter.length){
+                buffer.append(s.replaceAll("\\s+"," "));
+                buffer.append(splitter[index]);
+              }
+            }else{
+              buffer.append(s);
+            }
+            buffer.append("\n");
+          }
+          return buffer.toString();
+        ]]>
+        </bsh>
+      </parserRule>
+    </category>
+
+    <category name="totalmemory" sysversion="all" description="IRIX64 totalmemory">
+      <commands>
+        <command output="false" delay="3000">
+          <![CDATA[
+			rm /tmp/broada.totalmemory.out;
+			top -s1 -d1 -n 1>/tmp/broada.totalmemory.out;
+		  ]]>
+        </command>
+        <command>
+		<![CDATA[
+		mem=`cat /tmp/broada.totalmemory.out|grep Memory:`;
+		echo $mem|awk '|{print substr($2,1,length($2)-1)}'
+		]]>
+		</command>
+      </commands>
+      <parserRule start="0" end="0" delimeter="\s" datatype="property">
+        <parserItem name="totalMemory" line="0" token="0" />
+      </parserRule>
+    </category>
+
+    <category name="memory" sysversion="all" description="IRIX64 memory">
+      <commands>
+        <command output="false" delay="3000">
+          <![CDATA[
+			rm /tmp/broada.memory.out;
+			top -s1 -d1 -n 1>/tmp/broada.memory.out;
+		  ]]>
+        </command>
+			
+        <command>
+		<![CDATA[
+		mem=`cat /tmp/broada.memory.out|grep Memory:`;
+		total=`echo $mem|awk '{print substr($2,1,length($2)-1)}'`;
+		real=`echo $mem|awk '{print (substr($2,1,length($2)-1)-substr($4,1,length($4)-1))}'`;
+		realuseutil=`expr $real \* 100 \/ $total`;
+		virtotal=`echo $mem|awk '{print substr($8,1,length($8)-1)}'`;
+		virfree=`echo $mem|awk '{print substr($10,1,length($10)-1)}'`;
+		virused=`$virtotal-$virfree`;
+		virutil=`$virused \* 100 \/ $virtotal`;
+		echo $real $realuseutil $virused $virutil;
+		]]></command>
+      </commands>
+
+      <parserRule start="0" end="0" delimeter="\s" datatype="property">
+
+        <parserItem line="0" token="0" name="real" />
+        <parserItem line="0" token="1" name="realuseutil" />
+        <parserItem line="0" token="2" name="virtualused">
+          <bsh>"" + Float.parseFloat(virtualused)/1024;</bsh>
+        </parserItem>
+        <parserItem line="0" token="3" name="virtualutil" />
+      </parserRule>
+    </category>
+    <category name="cpu" sysversion="all" description="IRIX64 cpu">
+      <command output="false" delay="3000">
+          <![CDATA[
+			rm /tmp/broada.cpu.out;
+			top -s1 -d1 -n 1>/tmp/broada.cpu.out;
+		  ]]>
+        </command>
+		<command>
+		<![CDATA[
+			cpu=`cat /tmp/broada.cpu.out|grep CPUs`
+			user=`echo cpu|awk '{print substr($5,1,length($5)-1)}'`;
+			sys=`echo cpu|awk '{print substr($6,1,length($6)-1)}'`;
+			echo $user $sys
+		]]></command>
+      <parserRule start="0" end="0" delimeter="\s" datatype="property">
+        <parserItem line="0" token="0" name="user" />
+        <parserItem line="0" token="1" name="sys" />
+      </parserRule>
+    </category>
+    <category name="process" sysversion="all" description="IRIX64 process">
+      <commands>
+        <command>
+          <![CDATA[
+			ps -e -o "comm,pcpu,vsz,state"
+		   ]]>
+        </command>
+      </commands>
+
+      <parserRule start="1" end="0" delimeter="\s" datatype="table">
+        <parserItem token="0" name="command" />
+        <parserItem token="1" name="cpu">
+          <bsh>
+            <![CDATA[
+				import java.text.DecimalFormat;
+				DecimalFormat format = new DecimalFormat("#0.00");
+				format.format(Float.parseFloat(cpu));
+			]]>
+          </bsh>
+        </parserItem>
+        <parserItem token="2" name="memory">
+          <bsh>
+            import java.text.DecimalFormat;
+            DecimalFormat format = new DecimalFormat("#0.00");
+            format.format(Float.parseFloat(memory)/1048576.0);
+          </bsh>
+        </parserItem>
+        <parserItem token="3" name="status" />
+      </parserRule>
+    </category>
+    <category name="sysversion" sysversion="all" description="IRIX64 version">
+      <commands>
+        <command>uname -a</command>
+      </commands>
+      <parserRule start="0" end="0" delimeter="\s" datatype="property">
+        <parserItem line="0" token="0" name="os" />
+        <parserItem line="0" token="2" name="sysversion" />
+      </parserRule>
+    </category>
+  </cliconfiguration>
+</collection-define>

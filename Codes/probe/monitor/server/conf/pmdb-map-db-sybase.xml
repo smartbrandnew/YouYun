@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<pmdb-map>
+	<monitor type="SYBASE-BASIC" >
+		<!-- 
+		SYBASE-BASIC-1	DBMS名称	
+		SYBASE-BASIC-2	DBMS版本	
+		SYBASE-BASIC-3	产品名称	
+		SYBASE-BASIC-4	产品版本	
+		SYBASE-BASIC-5	主版本号	
+		SYBASE-BASIC-6	次版本号	
+		SYBASE-BASIC-7	系统信息	
+		 -->
+		<object local="resource" remote="Sybase" states="SUCCESSED,FAILED,OVERSTEP">
+			<item local="monitor.state" remote="state.available_status" function="monitorState2availableStatus"/>	
+			<item local="perf.SYBASE-BASIC-4" remote="attr.edition" />
+		</object>
+	</monitor>
+
+	<monitor type="SYBASE-DATABASE" >
+		<!-- 
+		SYBASE-DATABASE-1	空间大小	MB
+		SYBASE-DATABASE-2	数据大小	MB
+		SYBASE-DATABASE-3	索引大小	MB
+		SYBASE-DATABASE-4	已使用大小	MB
+		SYBASE-DATABASE-5	使用百分比	%
+		 -->
+
+		<object local="instance" remote="SybaseInstance">
+		<![CDATA[
+			output.setValue(input, "rs.ComponentOf", input.resource.id);
+			output.setValue(input, "attr.code", input.instance.instCode);
+			output.setValue(input, "attr.name", input.instance.instName);
+			
+			output.setValue(input, "perf.db-instance.dbspace_size", input.instance.getIndicator("SYBASE-DATABASE-1"));
+			output.setValue(input, "perf.db-instance.dbspace_used_pct", input.instance.getIndicator("SYBASE-DATABASE-5"));
+
+			double ts_size = input.instance.getIndicator("SYBASE-DATABASE-1");
+			double dbspace_used_size = input.instance.getIndicator("SYBASE-DATABASE-4");		
+			output.setValue(input, "perf.sybase-instance.ts_size", ts_size);
+			output.setValue(input, "perf.sybase-instance.data_size", input.instance.getIndicator("SYBASE-DATABASE-2"));
+			output.setValue(input, "perf.sybase-instance.idx_size", input.instance.getIndicator("SYBASE-DATABASE-3"));
+			output.setValue(input, "perf.sybase-instance.dbspace_used_size", dbspace_used_size);
+			if (ts_size != null && dbspace_used_size != null)
+				output.setValue(input, "perf.sybase-instance.free_ts_size", ts_size - dbspace_used_size);			
+		]]>						
+		</object>
+	</monitor>
+	
+	<monitor type="SYBASE-SEGMENT" >
+		<!-- 
+		SYBASE-SEGMENT-1	段总大小	MB
+		SYBASE-SEGMENT-2	数据段大小	MB
+		SYBASE-SEGMENT-3	索引段大小	MB
+		SYBASE-SEGMENT-4	未使用段大小	MB
+		 -->
+		<object local="resource" remote="Sybase">
+		<![CDATA[
+			util.setOutputValue("SYBASE-SEGMENT-1", "sum", "perf.sybase.segment_size");
+			util.setOutputValue("SYBASE-SEGMENT-2", "sum", "perf.sybase.segment_data_size");
+			util.setOutputValue("SYBASE-SEGMENT-3", "sum", "perf.sybase.segment_idx_size");
+			util.setOutputValue("SYBASE-SEGMENT-4", "sum", "perf.sybase.segment_free_size");
+		]]>
+		</object>
+	</monitor>
+
+	<monitor type="SYBASE-TRANSACTION" >
+		<!-- 
+		SYBASE-TRANSACTION-1	系统事务交易总数	个
+		SYBASE-TRANSACTION-2	每秒事务数	个/秒
+		SYBASE-TRANSACTION-3	每秒回滚事务数	个/秒
+		 -->
+		<object local="resource" remote="Sybase">
+			<item local="perf.SYBASE-TRANSACTION-1" remote="perf.sybase-transaction.trans_committed" />
+			<item local="perf.SYBASE-TRANSACTION-2" remote="perf.sybase-transaction.trans_per_second" />
+			<item local="perf.SYBASE-TRANSACTION-3" remote="perf.sybase-transaction.trans_rollback_per_second" />
+		</object>
+	</monitor>
+	
+	<monitor type="SYBASE-SESSION" >
+		<!-- 
+		SYBASE-SESSION-2 	用户
+		SYBASE-SESSION-3	主机
+	 	SYBASE-SESSION-4	程序
+		SYBASE-SESSION-5	数据库
+		SYBASE-SESSION-6	命令
+		SYBASE-SESSION-7	已用内存	 MB
+		SYBASE-SESSION-8	CPU时间	  秒
+		SYBASE-SESSION-9	IO读写次数	次
+		 -->
+		<object local="instance" remote="DBSession">
+		    output.setValue(input, "attr.dbUser", input.instance.getIndicator("SYBASE-SESSION-2"));
+			output.setValue(input, "attr.host", input.instance.getIndicator("SYBASE-SESSION-3"));
+			output.setValue(input, "attr.clientProgram",  input.instance.getIndicator("SYBASE-SESSION-4"));
+			output.setValue(input, "attr.dbName",  input.instance.getIndicator("SYBASE-SESSION-5"));
+			output.setValue(input, "attr.command",  input.instance.getIndicator("SYBASE-SESSION-6"));
+			
+			double cpu_time=input.instance.getIndicator("SYBASE-SESSION-8");
+			if(cpu_time!=null)
+			output.setValue(input, "perf.db_session.cpu_time", cpu_time/1000);
+			output.setValue(input, "perf.db_session.io_read_write_times", input.instance.getIndicator("SYBASE-SESSION-9"));
+			double mem_used=input.instance.getIndicator("SYBASE-SESSION-7");
+			if(mem_used!=null)
+			output.setValue(input, "perf.db_session.mem_used", mem_used/1024);
+		</object>
+	</monitor>
+	
+</pmdb-map>

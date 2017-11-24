@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="GBK"?>
+<Oracle>
+	<Rman>
+		<BakStatus>
+			<![CDATA[
+				select bs_key,status from rc_backup_set 
+				where start_time between (sysdate-2) and sysdate 
+				and COMPLETION_TIME between (sysdate-1) and sysdate
+				and STATUS<>'A'
+			]]>
+		</BakStatus>
+		<FullBak>
+			<![CDATA[
+				select sum(blocks*block_size)/1024/1024 full_bk_size_M,to_char(sysdate,'yyyymmdd:hh24:mi:ss') today from rc_backup_datafile
+				where bs_key in (select bs_key from rc_backup_set 
+				 where backup_type='D'  
+				 and start_time between (sysdate-2) and sysdate 
+				 and COMPLETION_TIME between (sysdate-1) and sysdate
+				)
+			]]>
+		</FullBak>
+		<IncBak>
+			<![CDATA[
+				select sum(blocks*block_size)/1024/1024 arch_bk_size_M,to_char(sysdate,'yyyymmdd:hh24:mi:ss') today 
+				from RC_BACKUP_REDOLOG
+				where bs_key in 
+				(select bs_key from rc_backup_set 
+				where backup_type='L'  
+				and COMPLETION_TIME between (sysdate-1) and sysdate)
+			]]>
+		</IncBak>
+	</Rman>
+</Oracle>

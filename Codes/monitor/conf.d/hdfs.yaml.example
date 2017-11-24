@@ -1,0 +1,10 @@
+init_config:
+
+instances:
+  - namenodes:
+    - url: localhost
+      port: 8020
+    - url: namenode2.example.com 
+      port: 8020
+    tags:
+      - optional_tag

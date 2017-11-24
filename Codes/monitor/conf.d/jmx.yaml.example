@@ -1,0 +1,64 @@
+init_config:
+
+instances:
+  - host:
+    tags:
+       - myapp1
+    sites:
+       - Default Web Site
+    init_config:
+    custom_jar_paths:
+       - /path/to/custom/jarfile.jar
+       - /path/to/another/custom/jarfile2.jar
+
+instances:
+   - host: localhost
+     port: 7199
+     user: username
+     password: "******"
+     jmx_url: "service:jmx:rmi:///jndi/rmi://myhost.host:9999/custompath"
+     process_name_regex: .*process_name.*
+     tools_jar_path: /usr/lib/jvm/java-7-openjdk-amd64/lib/tools.jar
+
+     name: jmx_instance
+     java_bin_path: /path/to/java
+     java_options: "-Xmx200m -Xms50m"
+     trust_store_path: /path/to/trustStore.jks
+     trust_store_password: password
+     tags:
+       env: stage
+       newTag: test
+
+     conf:
+       - include:
+           domain: my_domain
+           bean:
+             - my_bean
+             - my_second_bean
+           attribute:
+             attribute1:
+               metric_type: counter
+               alias: jmx.my_metric_name
+             attribute2:
+               metric_type: gauge
+               alias: jmx.my2ndattribute
+       - include:
+           domain: 2nd_domain
+         exclude:
+           bean:
+             - excluded_bean
+       - include:
+           domain_regex: regex_on_domain
+         exclude:
+           bean_regex:
+             - regex_on_excluded_bean
+
+   - host: MYREMOTESERVER
+     username: MYREMOTESERVER\fred
+     password: "******"
+     is_2008: false
+     tags:
+       - myapp2
+       - east
+     sites:
+       - Default Web Site

@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<pmdb-map>
+	<monitor type="POSTGRESQL-BASE" >
+		<!-- 
+		POSTGRESQL-BASE-1	主机名	
+		POSTGRESQL-BASE-2	数据库名称	
+		POSTGRESQL-BASE-3	端口号	
+		POSTGRESQL-BASE-4	数据版本号	
+		POSTGRESQL-BASE-5	版本字符串	
+		POSTGRESQL-BASE-6	系统最后使用的oid	
+		POSTGRESQL-BASE-7	最近启动时间	
+		POSTGRESQL-BASE-8	autovacuum是否启动	
+		 -->
+		<object local="resource" remote="PostgreSQL" states="SUCCESSED,FAILED,OVERSTEP">
+			<item local="monitor.state" remote="state.available_status" function="monitorState2availableStatus"/>
+			<item local="perf.POSTGRESQL-BASE-3" remote="attr.usePort" />
+			<item local="perf.POSTGRESQL-BASE-4" remote="attr.edition" />
+			<item local="perf.POSTGRESQL-BASE-9" remote="perf.postgreSQL.current_session_count" />
+		</object>
+	</monitor>
+	
+	<monitor type="POSTGRE-TABLESPACE" >
+		<!-- 
+		POSTGRE-TABLESPACE-1	名称	
+		POSTGRE-TABLESPACE-2	大小	MB
+		 -->
+		<object local="instance" remote="PostgreSQLTls">
+			<item local="resource.id" remote="rs.ComponentOf" />
+			<item local="instance.code" remote="attr.code" />
+			<item local="instance.name" remote="attr.name" />							
+			<item local="perf.POSTGRE-TABLESPACE-2" remote="perf.tablespace.obj_size" />
+		</object>
+	</monitor>	
+	
+</pmdb-map>

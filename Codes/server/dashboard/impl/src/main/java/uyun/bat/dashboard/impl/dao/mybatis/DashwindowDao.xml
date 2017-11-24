@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="uyun.bat.dashboard.impl.dao.DashwindowDao">
+	<resultMap type="uyun.bat.dashboard.api.entity.Dashwindow"
+		id="dashwindowResultMap">
+		<result property="id" column="id"
+			typeHandler="uyun.whale.common.mybatis.type.UUIDTypeHandler" />
+		<result property="dashId" column="dash_id"
+			typeHandler="uyun.whale.common.mybatis.type.UUIDTypeHandler" />
+		<result property="name" column="name" jdbcType="VARCHAR" />
+		<result property="requests" column="requests" jdbcType="BLOB"
+			typeHandler="uyun.bat.dashboard.impl.dao.mybatis.ListStringTypeHandler" />
+		<result property="viz" column="viz" jdbcType="VARCHAR" />
+		<result property="lineDatas" column="line_datas" jdbcType="VARCHAR"
+			typeHandler="uyun.bat.dashboard.impl.dao.mybatis.ListLineDatasTypeHandler" />
+	</resultMap>
+
+	<sql id="dashwindow_column">
+		id, dash_id, name, requests, viz,line_datas
+	</sql>
+
+	<insert id="createDashwindow" parameterType="uyun.bat.dashboard.api.entity.Dashwindow">
+		insert into
+		dashwindow
+		values(#{id,typeHandler=uyun.whale.common.mybatis.type.UUIDTypeHandler},
+		#{dashId,typeHandler=uyun.whale.common.mybatis.type.UUIDTypeHandler},
+		#{name},
+		#{viz},#{requests,typeHandler=uyun.bat.dashboard.impl.dao.mybatis.ListStringTypeHandler},
+		#{lineDatas,typeHandler=uyun.bat.dashboard.impl.dao.mybatis.ListLineDatasTypeHandler})
+	</insert>
+
+	<delete id="deleteDashwindow" parameterType="java.lang.Long">
+		delete from
+		dashwindow where id =
+		#{id,typeHandler=uyun.whale.common.mybatis.type.UUIDTypeHandler}
+	</delete>
+
+	<update id="updateDashwindow" parameterType="uyun.bat.dashboard.api.entity.Dashwindow">
+		update dashwindow
+		<set>
+			<if test="name != null">
+				name = #{name},
+			</if>
+			<if test="viz != null">
+				viz = #{viz},
+			</if>
+			<if test="requests != null">
+				requests =
+				#{requests,typeHandler=uyun.bat.dashboard.impl.dao.mybatis.ListStringTypeHandler},
+			</if>
+			<if test="lineDatas != null">
+				line_datas =
+				#{lineDatas,typeHandler=uyun.bat.dashboard.impl.dao.mybatis.ListLineDatasTypeHandler},
+			</if>
+		</set>
+		where id =
+		#{id,typeHandler=uyun.whale.common.mybatis.type.UUIDTypeHandler}
+	</update>
+
+	<select id="getDashwindowsByDashId" resultMap="dashwindowResultMap">
+		select
+		<include refid="dashwindow_column" />
+		from dashwindow
+		where dash_id =
+		#{id,typeHandler=uyun.whale.common.mybatis.type.UUIDTypeHandler}
+	</select>
+</mapper>

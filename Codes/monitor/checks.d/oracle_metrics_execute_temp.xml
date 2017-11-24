@@ -1,0 +1,362 @@
+<?xml version="0.1" encoding="UTF-8"?>
+<metrics>
+    <metric name="oracle.sga.librarycache" descr="SGA高速缓冲区大小" unit="MB">
+		<method type="sql">
+		<![CDATA[
+			select bytes/1024/1024 "size" from v$sgastat where name ='buffer_cache' or name ='db_block_buffers' and rownum = 1
+		]]>
+		</method>
+	</metric>
+    <metric name="oracle.sga.redolog" descr="SGA重做日志缓冲区大小" unit="MB">
+		<method type="sql">
+		<![CDATA[
+			select bytes/1024/1024 "size" from v$sgastat where name = 'log_buffer'
+		]]>
+		</method>
+	</metric>
+    <metric name="oracle.sga.sharepool" descr="SGA共享池大小" unit="MB">
+		<method type="sql">
+		<![CDATA[
+			select sum(bytes)/1024/1024 "size" from v$sgastat where pool= 'shared pool'
+		]]>
+		</method>
+	</metric>
+    <metric name="oracle.sga.dictioncache" descr="SGA数据字典缓存大小" unit="MB">
+		<method type="sql">
+		<![CDATA[
+			select bytes/1024/1024 "size" from v$sgastat where name ='dictionary cache' or name = 'row cache'
+		]]>
+		</method>
+	</metric>
+    <metric name="oracle.sga.sharedcache" descr="SGA 共享缓存大小" unit="MB">
+		<method type="sql">
+		<![CDATA[
+			select bytes/1024/1024 "size" from v$sgastat where name ='library cache'
+		]]>
+		</method>
+	</metric>
+    <metric name="oracle.sga.sqlcahce" descr="SGA SQL缓存大小" unit="MB">
+		<method type="sql">
+		<![CDATA[
+			select bytes/1024/1024 "size" from v$sgastat where name ='sql area'
+		]]>
+		</method>
+	</metric>
+
+    <metric name="oracle.session.name_id" descr="Oracle数据库会话唯一标识 所属用户名" unit="">
+		<method type="sql">
+		<![CDATA[
+        select sid,username value from v$session where user# > 0 order by sid
+		]]>
+        </method>
+    </metric>
+    <metric name="oracle.session.cpu.used" descr="Oracle数据库会话占用CPU时间" unit="秒">
+		<method type="sql">
+		<![CDATA[
+        select ss.sid,ss.value from v$sesstat ss,v$session se,v$statname st where st.statistic# = ss.statistic# and  se.sid=ss.sid and se.user# > 0 and st.name = 'CPU used by this session'
+		]]>
+        </method>
+    </metric>
+    <metric name="oracle.session.sort.memory" descr="Oracle数据库会话内存排序次数" unit="次">
+		<method type="sql">
+		<![CDATA[
+        select ss.sid,ss.value from v$sesstat ss,v$session se,v$statname st where st.statistic# = ss.statistic# and  se.sid=ss.sid and se.user# > 0 and st.name = 'sorts (memory)'
+		]]>
+        </method>
+    </metric>
+    <metric name="oracle.session.ratio" descr="Oracle数据库会话的缓冲区命中率" unit="%">
+		<method type="sql">
+		<![CDATA[
+        select v$session.SID, ((CONSISTENT_GETS+BLOCK_GETS-PHYSICAL_READS) / (CONSISTENT_GETS+BLOCK_GETS))*100 value from  v$session, v$sess_io where   v$session.SID = v$sess_io.SID and v$session.user# > 0 and   (CONSISTENT_GETS+BLOCK_GETS) > 0 and   USERNAME is not null
+		]]>
+        </method>
+    </metric>
+    <metric name="oracle.session.physical.reads" descr="Oracle数据库会话读次数" unit="次">
+		<method type="sql">
+		<![CDATA[
+        select ss.sid,ss.value from v$sesstat ss,v$session se,v$statname st where st.statistic# = ss.statistic# and  se.sid=ss.sid and se.user# > 0 and st.name = 'physical writes'
+		]]>
+        </method>
+    </metric>
+    <metric name="oracle.session.physical.writes" descr="Oracle数据库会话写次数" unit="次">
+		<method type="sql">
+		<![CDATA[
+        select ss.sid,ss.value from v$sesstat ss,v$session se,v$statname st where st.statistic# = ss.statistic# and  se.sid=ss.sid and se.user# > 0 and st.name = 'physical reads'
+		]]>
+        </method>
+    </metric>
+    <metric name="oracle.session.user.commits" descr="Oracle数据库会话提交次数" unit="次">
+		<method type="sql">
+		<![CDATA[
+        select ss.sid,ss.value from v$sesstat ss,v$session se,v$statname st where st.statistic# = ss.statistic# and  se.sid=ss.sid and se.user# > 0 and st.name = 'user commits'
+		]]>
+        </method>
+    </metric>
+    <metric name="oracle.session.cursors.cumulative" descr="会话所占用的游标数" unit="个">
+		<method type="sql">
+		<![CDATA[
+        select ss.sid,ss.value from v$sesstat ss,v$session se,v$statname st where st.statistic# = ss.statistic# and  se.sid=ss.sid and se.user# > 0 and st.name = 'opened cursors cumulative'
+		]]>
+        </method>
+    </metric>
+    <metric name="oracle.session.short_table.scans" descr="Oracle数据库会话短表扫描次数" unit="次">
+		<method type="sql">
+		<![CDATA[
+        select ss.sid,ss.value from v$sesstat ss,v$session se,v$statname st where st.statistic# = ss.statistic# and  se.sid=ss.sid and se.user# > 0 and st.name in ('table scans (short tables)')
+		]]>
+        </method>
+    </metric>
+    <metric name="oracle.session.long_table.scans" descr="Oracle数据库会话长表扫描次数" unit="次">
+		<method type="sql">
+		<![CDATA[
+        select ss.sid,ss.value from v$sesstat ss,v$session se,v$statname st where st.statistic# = ss.statistic# and  se.sid=ss.sid and se.user# > 0 and st.name in ('table scans (long tables)')
+		]]>
+        </method>
+    </metric>
+    <metric name="oracle.session.rowind_table.scans" descr="Oracle数据库会话rowind表扫描次数" unit="次">
+		<method type="sql">
+		<![CDATA[
+        select ss.sid,ss.value from v$sesstat ss,v$session se,v$statname st where st.statistic# = ss.statistic# and  se.sid=ss.sid and se.user# > 0 and st.name in ('table scans (rowid ranges)')
+		]]>
+        </method>
+    </metric>
+    <metric name="oracle.session.cache_partitions.scans" descr="Oracle数据库会话cache partitions表扫描次数" unit="次">
+		<method type="sql">
+		<![CDATA[
+        select ss.sid,ss.value from v$sesstat ss,v$session se,v$statname st where st.statistic# = ss.statistic# and  se.sid=ss.sid and se.user# > 0 and st.name in ('table scans (cache partitions)')
+		]]>
+        </method>
+    </metric>
+    <metric name="oracle.session.direct_read.scans" descr="Oracle数据库会话direct read表扫描次数" unit="次">
+		<method type="sql">
+		<![CDATA[
+        select ss.sid,ss.value from v$sesstat ss,v$session se,v$statname st where st.statistic# = ss.statistic# and  se.sid=ss.sid and se.user# > 0 and st.name in ('table scans (direct read)')
+		]]>
+        </method>
+    </metric>
+
+    <metric name="oracle.redo.archlog.count,oracle.redo.archlog.avgsize" descr="归档的重做日志文件的数目,重做条目的平均大小" unit="次,MB">
+		<method type="sql">
+		<![CDATA[
+        select counts, decode(counts,0,0,total_size/counts) ave from (select count(*) counts, NVL(sum(BLOCKS * BLOCK_SIZE / 1024 / 1024), 0) total_size from v$archived_log where creator = 'ARCH')
+		]]>
+		</method>
+	</metric>
+    <metric name="oracle.redo.unloac" descr="重做日志缓冲中用户进程不能分配空间的次数" unit="次">
+		<method type="sql">
+		<![CDATA[
+        select name,value from v$sysstat where name='redo buffer allocation retries'
+		]]>
+		</method>
+	</metric>
+    <metric name="oracle.redo.immediate.misses,oracle.redo.immediate.gets,oracle.redo.immediate.percent" descr="Immediate请求latch失败数,Immediate请求latch成功数,Immediate请求类型的丢失量占其获得数的百分比" unit="%">
+        <method type="sql">
+        <![CDATA[
+        select sum(immediate_misses) imm_mis, sum(immediate_gets) imm_gets, round(sum(immediate_misses)/sum(immediate_gets),3) immidiate_ratio from v$latch where name in ('redo allocation','redo copy')
+        ]]>
+        </method>
+    </metric>
+    <metric name="oracle.redo.willing.misses,oracle.redo.willing.gets,oracle.redo.willing.percent" descr="Willing-to-wait请求latch失败数,Willing-to-wait请求latch成功数,Willing-to-wait请求类型的丢失量占其获得数的百分比" unit="%">
+        <method type="sql">
+        <![CDATA[
+        select sum(misses) mis,sum(gets) gets, round(sum(misses)/sum(gets),3) willing_to_wait_ratio from v$latch where name in ('redo allocation','redo copy')
+        ]]>
+        </method>
+    </metric>
+
+    <metric name="oracle.tablespace.max_extents,oracle.tablespace.contents,oracle.tablespace.segment_space_management,oracle.tablespace.free_extents,oracle.tablespace.space,oracle.tablespace.free_rate,oracle.tablespace.max.extents_count,oracle.tablespace.next_extent,oracle.tablespace.max_sapce,oracle.tablespace.max_autoextensible" descr="最大extents数 表空间类型 segment管理类型 未使用extents 当前空间大小 未使用空间比率	当前extents总计	下一个extent大小	最大可以到达的空间大小 是否是可以自动扩展" unit="个, 无, 无, 个, MB, %, 个, KB, MB, 无,">
+		<method type="sql">
+		<![CDATA[
+        SELECT C.TABLESPACE_NAME,C.MAX_EXTENTS,C.CONTENTS,G.SEGMENT_SPACE_MANAGEMENT, (C.MAX_EXTENTS - E.CURRENT_EXTENTS) FREE_EXTENTS, SPACE, ROUND((NVL(FREE_SPACE,0)/SPACE)*100,2) FREE_RATE, E.CURRENT_EXTENTS EXTENTS_COUNT, C.NEXT_EXTENT, MAX_SPACE, MAX_AUTOEXTENSIBLE FROM     (SELECT TABLESPACE_NAME,MAX_EXTENTS,CONTENTS,NEXT_EXTENT FROM DBA_TABLESPACES) C,    (SELECT TABLESPACE_NAME,SUM(EXTENTS) CURRENT_EXTENTS FROM DBA_SEGMENTS GROUP BY TABLESPACE_NAME) E,    (SELECT TABLESPACE_NAME,ROUND(SUM(BYTES)/(1024*1024),2) SPACE,SUM(BLOCKS) BLOCKS,       ROUND(sum(MAXBYTES) / 1024 / 1024, 2) MAX_SPACE, MAX(AUTOEXTENSIBLE) MAX_AUTOEXTENSIBLE            FROM DBA_DATA_FILES  GROUP BY TABLESPACE_NAME      UNION      SELECT TABLESPACE_NAME,ROUND(SUM(BYTES)/(1024*1024),2) SPACE,SUM(BLOCKS) BLOCKS,      ROUND(sum(MAXBYTES) / 1024 / 1024, 2) MAX_SPACE, MAX(AUTOEXTENSIBLE) MAX_AUTOEXTENSIBLE          FROM dba_temp_files  GROUP BY TABLESPACE_NAME) D,    (SELECT TABLESPACE_NAME,ROUND(SUM(BYTES)/(1024*1024),2) FREE_SPACE FROM DBA_FREE_SPACE GROUP BY TABLESPACE_NAME			UNION 		  SELECT D.TABLESPACE_NAME,ROUND(((F.BYTES_FREE + F.BYTES_USED) - NVL(P.BYTES_USED, 0)) / 1024 /1024,2) FREE_SPACE 		  FROM V$TEMP_SPACE_HEADER F, DBA_TEMP_FILES D, V$TEMP_EXTENT_POOL P 		  WHERE F.TABLESPACE_NAME(+) = D.TABLESPACE_NAME AND F.FILE_ID(+) = D.FILE_ID AND P.FILE_ID(+) = D.FILE_ID     ) F, (SELECT NAME, DECODE(BITAND(TS.FLAGS,32), 32,'AUTO', 'MANUAL') SEGMENT_SPACE_MANAGEMENT FROM SYS.TS$ TS) G WHERE C.TABLESPACE_NAME = E.TABLESPACE_NAME(+) AND C.TABLESPACE_NAME = D.TABLESPACE_NAME(+) AND C.TABLESPACE_NAME = F.TABLESPACE_NAME(+) AND C.TABLESPACE_NAME = G.NAME(+) Order by C.TABLESPACE_NAME
+		]]>
+        </method>
+    </metric>
+
+    <metric name="oracle.tablespace.io.read.avg,oracle.tablespace.io.write.avg" descr="表空间IO平均值" unit="%, %">
+		<method type="sql">
+		<![CDATA[
+        select ts.NAME, ROUND(decode(sum(fs.PHYRDS),0,0,(sum(fs.readtim)/sum(fs.PHYRDS)/100)),4) as AVGREADTIM, ROUND(decode(sum(fs.PHYWRTS),0,0,sum(fs.writetim)/sum(fs.PHYWRTS)/100),4) as AVGWRITTIM     from v$datafile df,v$filestat fs , v$tablespace ts     where  df.file# = fs.file# and df.TS# = ts.TS#     group by ts.TS#,ts.name
+		]]>
+        </method>
+    </metric>
+
+    <metric name="oracle.ratio.cacheratio" descr="Oracle高速缓存区命中率" unit="%">
+		<method type="sql">
+		<![CDATA[
+        SELECT (1 - (phy.value / (cur.value + con.value)))*100 "ratio" FROM v$sysstat cur, v$sysstat con, v$sysstat phy WHERE cur.name = 'db block gets' AND con.name = 'consistent gets' AND phy.name = 'physical reads'
+		]]>
+        </method>
+    </metric>
+    <metric name="oracle.ratio.reloadstopingratio" descr="多次解析(重装)的条目比率" unit="%">
+		<method type="sql">
+		<![CDATA[
+        SELECT (1 - (phy.value / (cur.value + con.value)))*100 "ratio" FROM v$sysstat cur, v$sysstat con, v$sysstat phy WHERE cur.name = 'db block gets' AND con.name = 'consistent gets' AND phy.name = 'physical reads'
+		]]>
+        </method>
+    </metric>
+    <metric name="oracle.ratio.dictionarycacheratio" descr="共享区字典缓存区命中率" unit="%">
+		<method type="sql">
+		<![CDATA[
+        select (sum(gets-getmisses-usage-fixed)/sum(gets))*100 "ratio" from v$rowcache
+		]]>
+        </method>
+    </metric>
+    <metric name="oracle.ratio.rollbacksegmentheader" descr="回退段等待次数与获取次数比率" unit="%">
+		<method type="sql">
+		<![CDATA[
+        select sum(waits)*100 /sum(gets) "ratio" from v$rollstat
+		]]>
+        </method>
+    </metric>
+    <metric name="oracle.ratio.diskmemorysortratio" descr="磁盘排序与内存排序比率" unit="%">
+		<method type="sql">
+		<![CDATA[
+        select (disk.value/mem.value)*100 "ratio" from v$sysstat mem, v$sysstat disk where mem.name = 'sorts (memory)' and disk.name = 'sorts (disk)'
+		]]>
+        </method>
+    </metric>
+
+    <metric name="oracle.datafile.size,oracle.datafile.phyrds,oracle.datafile.phyblkrd,oracle.datafile.phyblkwrt,oracle.datafile.totalblock,oracle.datafile.phywrts,oracle.datafile.resdtim,oracle.datafile.writetim" descr="文件大小,读次数,读文件块数,写文件块数,读写文件块数,写次数,读时间,写时间" unit="%MB,次,,,,次,秒,秒%">
+		<method type="sql">
+		<![CDATA[
+        select df.name "dfName",df.bytes/1024/1024 "dfSize",    df.status "dfStatus",fs.PHYRDS "dfRTS", fs.PHYBLKRD PHYBLKRD,fs.PHYBLKWRT PHYBLKWRT,fs.PHYBLKRD+fs.PHYBLKWRT TOTALBLOCK,fs.PHYWRTS "dfWRTS",    fs.readtim "dfRTim",fs.writetim "dfWRTim"  from     V$DATAFILE df,V$FILESTAT fs  WHERE df.FILE# = fs.FILE#
+		]]>
+        </method>
+    </metric>
+
+    <metric name="oracle.rollback.rssize,oracle.rollback.hitrate,oracle.rollback.shrinks,oracle.rollback.warps,oracle.rollback.gets,oracle.rollback.extends,oracle.rollback.xacts,oracle.rollback.waits,oracle.rollback.aveshrink," descr="大小,命中率,收缩次数,反转次数,?,扩展次数,活动事务数,等待次数,用户回滚率" unit="MB,%,次,次,,次,次,次,%">
+		<method type="sql">
+		<![CDATA[
+        select a.name, b.rssize, round(100-nvl(b.waits*100/b.gets,0), 2) hitRate,  b.shrinks, b.wraps, b.gets, b.extends, b.xacts, b.waits, b.status, b.aveshrink from v$rollname a, v$rollstat b where a.usn = b.usn
+		]]>
+        </method>
+    </metric>
+
+    <metric name="oracle.base.ins.status,oracle.base.ins.host,oracle.base.db.name,oracle.base.db.version,oracle.base.ins.instance_name,oracle.base.ins.startup_time,oracle.base.db.log_mode" descr="Oracle数据库实例状态,所在服务器的主机名,名称,版本,实例名称,实例启动时间,归档日志模式" unit="无">
+		<method type="sql">
+		<![CDATA[
+        select ins.status,ins.host_name hostname,db.name dbname,ins.version version,ins.instance_name instancename,  ins.startup_time startupTime , db.log_mode logmode  from v$instance ins,v$database db
+		]]>
+        </method>
+    </metric>
+    <metric name="oracle.base.open_mode" descr="获取数据库的读取模式" unit="无">
+		<method type="sql">
+		<![CDATA[
+        SELECT enabled from v$datafile where status='SYSTEM'
+		]]>
+        </method>
+    </metric>
+    <metric name="oracle.base.bit" descr="获取数据库字符位长度" unit="位">
+		<method type="sql">
+		<![CDATA[
+        select distinct address from v$sql where rownum<2
+		]]>
+        </method>
+    </metric>
+    <metric name="oracle.base.parallel" descr="获取数据库并行状态" unit="无">
+		<method type="sql">
+		<![CDATA[
+        select value parallel from v$parameter where name = 'parallel_server'
+		]]>
+        </method>
+    </metric>
+    <metric name="oracle.base.archive" descr="获取数据库归档路径" unit="无">
+		<method type="sql">
+		<![CDATA[
+        select value archive from v$parameter where name like '%og_archive_dest%' and name not like '%log_archive_dest_state%'
+		]]>
+        </method>
+    </metric>
+    <metric name="oracle.base.open_mode_spfile" descr="获取数据库读取模式和数据库spfile文件路径" unit="无">
+		<method type="sql">
+		<![CDATA[
+        SELECT db.open_mode openmode,para.value spfile FROM v$database db,v$parameter para  where para.name = 'spfile'
+		]]>
+        </method>
+    </metric>
+
+    <metric name="oracle.sqlinfo.user,oracle.sqlinfo.execution,oracle.sqlinfo.exec_time,oracle.sqlinfo.mem_used" descr="Oracle用户,执行时间,使用内存,sql语句" unit="无,无,ms,KB,,">
+		<method type="sql">
+		<![CDATA[
+        SELECT c.SID sid,b.username userName,a.SQL_TEXT sqlText,a.CPU_TIME/a.EXECUTIONS/1000 execTime,a.RUNTIME_MEM/1024 runtimeMem FROM v$sqlarea a, dba_users b, v$session c WHERE a.parsing_user_id = b.user_id and c.SQL_ADDRESS=a.ADDRESS and a.EXECUTIONS>0
+		]]>
+        </method>
+    </metric>
+    <metric name="oracle.sqlinfo.user,oracle.sqlinfo.execution,oracle.sqlinfo.exec_time,oracle.sqlinfo.mem_used" descr="Oracle 8 版本, 上一组语句失败则执行这组. 用户,执行时间,使用内存,sql语句" unit="无,无,ms,KB,,">
+		<method type="sql">
+		<![CDATA[
+        SELECT c.SID sid,b.username userName,a.SQL_TEXT sqlText,0 execTime,a.RUNTIME_MEM/1024 runtimeMem FROM v$sqlarea a, dba_users b, v$session c WHERE a.parsing_user_id = b.user_id and c.SQL_ADDRESS=a.ADDRESS and a.EXECUTIONS>0
+		]]>
+        </method>
+    </metric>
+
+    <metric name="oracle.pga" descr="" unit="MB,MB,MB,MB,MB,MB,%,MB,MB,MB,MB,MB,MB,MB,次,MB">
+		<method type="sql">
+		<![CDATA[
+        SELECT NAME ,VALUE,UNIT FROM V$PGASTAT
+		]]>
+        </method>
+    </metric>
+
+    <metric name="oracle.patchrate" descr="Oracle自由空间碎片索引比值" unit="%">
+		<method type="sql">
+		<![CDATA[
+        SELECT TABLESPACE_NAME, round(sqrt(max(blocks)/sum(blocks))*(100/sqrt(sqrt(count(blocks)))),2) FSFI FROM DBA_FREE_SPACE GROUP BY TABLESPACE_NAME
+		]]>
+        </method>
+    </metric>
+
+    <metric name="oracle.recursion.user_calls,oracle.resursion.recursive_calls" descr="Oracle递归调用信息 用户调用数,递归调用数" unit="个,个">
+		<method type="sql">
+		<![CDATA[
+        select name,value from v$sysstat where name in ('recursive calls','user calls')
+		]]>
+        </method>
+    </metric>
+
+    <metric name="oracle.workque.num.broken" descr="破损作业数量" unit="个">
+		<method type="sql">
+		<![CDATA[
+        select count(*) as broken_num from dba_jobs where broken = 'Y'
+		]]>
+        </method>
+    </metric>
+    <metric name="oracle.workque.num.failure" descr="失败作业数量" unit="个">
+		<method type="sql">
+		<![CDATA[
+        select count(*) as failure_num from dba_jobs where failures != 0
+		]]>
+        </method>
+    </metric>
+    <metric name="oracle.workque.num.overdue" descr="过期作业数量" unit="个">
+		<method type="sql">
+		<![CDATA[
+        select count(*) as overdue_num from dba_jobs t where (select sysdate from dual) > t.NEXT_DATE
+		]]>
+        </method>
+    </metric>
+
+    <metric name="oracle.archive" descr="获取归档目的地信息" unit="%">
+		<method type="sql">
+		<![CDATA[
+        select dest_id,dest_name, status,binding,target,destination,error from v$archive_dest order by dest_id
+		]]>
+        </method>
+    </metric>
+
+    <metric name="oracle.undostat.nospaceerrcnt,oracle.undostat.ssolderrcnt" descr="撤销空间监测状态，查询无空间错误计数和快照太旧计数" unit="次,次">
+		<method type="sql">
+		<![CDATA[
+        Select sum(nospaceerrcnt) as sumNospaceerrcnt, sum(ssolderrcnt) as sumSsolderrcnt from V$undostat t where t.END_TIME >
+		]]>
+        </method>
+    </metric>
+
+    <metric name="system.process.count" descr="系统进程数" unit="">
+		<method type="command" os="linux">
+		<![CDATA[
+			ps -ef | wc -l
+		]]>
+		</method>
+	</metric>
+</metrics>

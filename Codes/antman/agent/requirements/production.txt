@@ -1,0 +1,15 @@
+boto3==1.4.4
+configparser
+docopt
+futures==3.1.1
+nfs
+paramiko
+peewee==2.10.1
+pf
+psutil==5.3.0.3
+python-libnmap==0.7.0
+PyYAML==3.12
+requests==2.18.1
+sysutil
+tornado==4.5.1
+typing==3.6.1

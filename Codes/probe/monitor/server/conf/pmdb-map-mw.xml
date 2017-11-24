@@ -1,0 +1,564 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<pmdb-map>
+	<monitor type="APACHE" >
+		<!-- 
+		APACHE-1	累计访问数	个
+		APACHE-2	累计数据处理量	KB
+		APACHE-3	CPU负载	%
+		APACHE-4	正常运行时间	秒
+		APACHE-5	每秒请求	个
+		APACHE-6	每秒处理字节	Byte
+		APACHE-7	每请求处理字节	Byte
+		APACHE-8	忙作业	个
+		APACHE-9	空闲作业	个
+		APACHE-10	响应时间	秒
+		 -->	
+		<object local="resource" remote="Apache" states="SUCCESSED,FAILED,OVERSTEP">
+			<item local="monitor.state" remote="state.available_status" function="monitorState2availableStatus"/>
+			<item local="perf.SNMP-HOSTINFO-1" remote="attr.osName" />		
+		</object>
+	</monitor>
+	
+	<monitor type="TOMCAT-BASIC" >
+		<!-- 
+		TOMCAT-BASIC-1	Tomcat版本	
+		TOMCAT-BASIC-2	JVM版本	
+		TOMCAT-BASIC-3	JVM厂商	
+		TOMCAT-BASIC-4	操作系统	
+		TOMCAT-BASIC-5	操作系统版本	
+		TOMCAT-BASIC-6	系统结构	
+		TOMCAT-BASIC-7	响应时间	毫秒
+		 -->
+		<object local="resource" remote="Tomcat" states="SUCCESSED,FAILED,OVERSTEP">
+			<item local="monitor.state" remote="state.available_status" function="monitorState2availableStatus"/>
+			<item local="perf.TOMCAT-BASIC-1" remote="attr.edition" />
+			<item local="perf.TOMCAT-BASIC-2" remote="attr.jdkVersion" />
+			<item local="perf.TOMCAT-BASIC-3" remote="attr.jdkVendor" />
+			<item local="perf.TOMCAT-BASIC-7" remote="perf.tomcat.response_time" />
+		</object>
+	</monitor>
+	
+	
+	<monitor type="TOMCAT-JVM" >
+		<!-- 
+		TOMCAT-JVM-1	JVM可用内存	MB
+		TOMCAT-JVM-2	JVM内存总数	MB
+		TOMCAT-JVM-3	JVM已用内存	MB
+		 -->
+		<object local="resource" remote="Tomcat">
+			<item local="perf.TOMCAT-JVM-1" remote="perf.tomcat.jvm_mem_free" />
+			<item local="perf.TOMCAT-JVM-2" remote="perf.tomcat.jvm_mem_size" />
+			<item local="perf.TOMCAT-JVM-3" remote="perf.tomcat.jvm_mem_uesd" />
+		</object>			
+	</monitor>		
+	
+	<monitor type="TONGWEB-CONN" >
+		<!-- 
+		TONGWEB-CONN-1	等待线程数
+		TONGWEB-CONN-2	活动线程数
+		TONGWEB-CONN-3	最大处理线程数
+		TONGWEB-CONN-4	请求等待队列大小
+		TONGWEB-CONN-5	客户端超时
+		TONGWEB-CONN-6	处理线程等待请求超时
+		TONGWEB-CONN-7	等待处理请求数
+		TONGWEB-CONN-8	吞吐率
+		TONGWEB-CONN-9	每秒发送字节数
+		TONGWEB-CONN-10	每秒接收字节数
+		 -->
+		<object local="resource" remote="TongWeb">
+			<item local="perf.TONGWEB-CONN-1" remote="perf.tongweb.idle_threads" />
+			<item local="perf.TONGWEB-CONN-2" remote="perf.tongweb.active_threads" />
+			<item local="perf.TONGWEB-CONN-3" remote="perf.tongweb.max_threads" />
+			<item local="perf.TONGWEB-CONN-4" remote="perf.tongweb.req_wait_queue_len" />
+			<item local="perf.TONGWEB-CONN-5" remote="perf.tongweb.client_timeout" />
+			<item local="perf.TONGWEB-CONN-6" remote="perf.tongweb.thread_wait_timeout" />
+			<item local="perf.TONGWEB-CONN-7" remote="perf.tongweb.waiting_reqs" />
+			<item local="perf.TONGWEB-CONN-8" remote="perf.tongweb.reqs_process_rate" />
+			<item local="perf.TONGWEB-CONN-9" remote="perf.tongweb.send_rate" />
+			<item local="perf.TONGWEB-CONN-10" remote="perf.tongweb.receive_rate" />
+		</object>			
+	</monitor>		
+	
+	<monitor type="TONGWEB-DBPOOL" >
+		<!--		
+		TONGWEB-DBPOOL-1	最大连接数
+		TONGWEB-DBPOOL-2	最小连接数
+		TONGWEB-DBPOOL-3	当前连接数
+		TONGWEB-DBPOOL-4	当前活动连接数
+		TONGWEB-DBPOOL-5	创建的连接数
+		TONGWEB-DBPOOL-6	关闭的连接数
+		TONGWEB-DBPOOL-7	可用连接数
+		TONGWEB-DBPOOL-8	最大使用连接数
+		TONGWEB-DBPOOL-9	连接阻塞超时时间
+		TONGWEB-DBPOOL-10	连接闲置时间
+		TONGWEB-DBPOOL-11	连接超时时间
+		 -->
+		<object local="resource" remote="TongWeb">
+			<item local="perf.TONGWEB-DBPOOL-1" remote="perf.tongweb.max_conns" />
+			<item local="perf.TONGWEB-DBPOOL-2" remote="perf.tongweb.min_conns" />
+			<item local="perf.TONGWEB-DBPOOL-3" remote="perf.tongweb.current_conns" />
+			<item local="perf.TONGWEB-DBPOOL-4" remote="perf.tongweb.active_conns" />
+			<item local="perf.TONGWEB-DBPOOL-5" remote="perf.tongweb.conns_created" />
+			<item local="perf.TONGWEB-DBPOOL-6" remote="perf.tongweb.conns_closed" />\
+			<item local="perf.TONGWEB-DBPOOL-7" remote="perf.tongweb.available_conns" />
+			<item local="perf.TONGWEB-DBPOOL-8" remote="perf.tongweb.max_conns_used" />
+			<item local="perf.TONGWEB-DBPOOL-9" remote="perf.tongweb.conn_block_timeout" />
+			<item local="perf.TONGWEB-DBPOOL-10" remote="perf.tongweb.conn_idle_time" />
+			<item local="perf.TONGWEB-DBPOOL-11" remote="perf.tongweb.conn_timeout" />
+		</object>			
+	</monitor>		
+	
+	<monitor type="TONGWEB4-DBPOOL" >
+		<!--		
+		TONGWEB4-DBPOOL-1	连接池容量
+		TONGWEB4-DBPOOL-2	当前活动连接数
+		TONGWEB4-DBPOOL-3	最小连接池容量
+		TONGWEB4-DBPOOL-4	最大连接池容量
+		TONGWEB4-DBPOOL-5	连接超时时间
+		 -->
+		 	<object local="instance" remote="TongWebConnPool">
+		<![CDATA[
+			def poolSize = input.getValue("perf.TONGWEB4-DBPOOL-1");
+			def currentSize = input.getValue("perf.TONGWEB4-DBPOOL-2");
+			if (currentSize != null && poolSize != null){
+			output.setValue(input, "perf.connpool.connpool_used_pct", poolSize == 0 ? 0 : currentSize / poolSize * 100);
+			}
+			output.setValue(input, "attr.minPoolSize", input.getValue("perf.TONGWEB4-DBPOOL-3"));
+			output.setValue(input, "attr.maxCapacity", input.getValue("perf.TONGWEB4-DBPOOL-4"));
+			output.setValue(input, "attr.code", input.getValue("instance.code"));
+			output.setValue(input, "attr.name", input.getValue("instance.name"));
+			output.setValue(input, "perf.connpool.current_size", input.getValue("perf.TONGWEB4-DBPOOL-1"));
+			output.setValue(input, "perf.tongweb4_jdbc.current_conn_size", input.getValue("perf.TONGWEB4-DBPOOL-2"));
+			output.setValue(input, "perf.tongweb4_jdbc.conn_timeout", input.getValue("perf.TONGWEB4-DBPOOL-5"));
+		]]>				
+		</object>	
+	</monitor>		
+	
+	<monitor type="IIS-BASEINFO" >
+		<!-- 
+		IIS-BASEINFO-1	服务运行时间	秒
+		 -->
+		<object local="resource" remote="IIS" states="SUCCESSED,FAILED,OVERSTEP">
+			<item local="monitor.state" remote="state.available_status" function="monitorState2availableStatus"/>
+		</object>
+		<object local="instance" remote="WebApp">
+			<item local="resource.id" remote="rs.ComponentOf" />
+			<item local="instance.code" remote="attr.code" />
+			<item local="instance.name" remote="attr.name" />		
+		</object>
+	</monitor>	
+	
+	<monitor type="IIS-CONNS" >
+		<!-- 
+		IIS-CONNS-1	当前连接数	个
+		IIS-CONNS-2	最大连接数	个
+		IIS-CONNS-3	尝试连接/秒	次/秒
+		IIS-CONNS-4	尝试登陆/秒	次/秒
+		IIS-CONNS-5	服务运行时间	秒
+		 -->
+		<object local="resource" remote="IIS">
+		<![CDATA[			
+			util.setOutputValue("IIS-CONNS-1", "sum", "perf.mw.current_conns");
+			util.setOutputValue("IIS-CONNS-2", "sum", "perf.iis.max_conns");
+			util.setOutputValue("IIS-CONNS-3", "sum", "perf.iis.conn_attempts_rate");
+			util.setOutputValue("IIS-CONNS-4", "sum", "perf.iis.login_attempts_rate");
+			util.setOutputValue("IIS-CONNS-5", "max", "perf.iis.proc_running_time");
+		]]>
+		</object>
+	</monitor>	
+	
+	<monitor type="IIS-TRANSFERBYTES" >
+		<!-- 
+		IIS-TRANSFERBYTES-1	发送字节/秒	byte/s
+		IIS-TRANSFERBYTES-2	接收字节/秒	byte/s
+		IIS-TRANSFERBYTES-3	传输字节/秒	byte/s
+		IIS-TRANSFERBYTES-4	服务运行时间	秒
+		-->
+		<object local="resource" remote="IIS">
+		<![CDATA[
+			util.setOutputValue("IIS-TRANSFERBYTES-1", "sum", "perf.iis-process.send_rate");
+			util.setOutputValue("IIS-TRANSFERBYTES-2", "sum", "perf.iis-process.receive_rate");
+			util.setOutputValue("IIS-TRANSFERBYTES-3", "sum", "perf.iis-process.transfer_rate");			
+		]]>
+		</object>
+	</monitor>	
+	
+	<monitor type="IIS-TRANSFERFILES" >
+		<!-- 
+		IIS-TRANSFERFILES-1	发送文件/秒	个/秒
+		IIS-TRANSFERFILES-2	接收文件/秒	个/秒
+		IIS-TRANSFERFILES-3	传输文件/秒	个/秒
+		IIS-TRANSFERFILES-4	服务运行时间	秒
+		IIS-TRANSFERFILES-5	找不到文件的错误数	个
+		 -->
+		<object local="resource" remote="IIS">
+		<![CDATA[
+			util.setOutputValue("IIS-TRANSFERFILES-1", "sum", "perf.iis-process.files_send_rate");
+			util.setOutputValue("IIS-TRANSFERFILES-2", "sum", "perf.iis-process.files_receive_rate");
+			util.setOutputValue("IIS-TRANSFERFILES-3", "sum", "perf.iis-process.files_transfer_rate");
+			util.setOutputValue("IIS-TRANSFERFILES-5", "sum", "perf.iis-process.total_notfound_errs");
+		]]>
+		</object>
+	</monitor>
+	
+	<monitor type="IIS-USERS" >
+		<!-- 
+		IIS-USERS-1	当前匿名用户数	个
+		IIS-USERS-2	当前非匿名用户数	个
+		IIS-USERS-3	匿名用户/秒	个/秒
+		IIS-USERS-4	非匿名用户/秒	个/秒
+		IIS-USERS-5	最大匿名用户数	个
+		IIS-USERS-6	最大非匿名用户数	个
+		IIS-USERS-7	服务运行时间	秒
+		 -->
+		<object local="resource" remote="IIS">
+		<![CDATA[
+			util.setOutputValue("IIS-USERS-1", "sum", "perf.iis-user.current_anony_users");
+			util.setOutputValue("IIS-USERS-2", "sum", "perf.iis-user.current_nonanony_users");
+			util.setOutputValue("IIS-USERS-3", "sum", "perf.iis-user.anony_reqs_rate");
+			util.setOutputValue("IIS-USERS-4", "sum", "perf.iis-user.nonanony_reqs_rate");
+			util.setOutputValue("IIS-USERS-5", "max", "perf.iis-user.max_anony_users");
+			util.setOutputValue("IIS-USERS-6", "max", "perf.iis-user.max_nonanony_users");						
+		]]>
+		</object>
+	</monitor>
+	
+	<monitor type="IIS-WEBREQUEST" >
+		<!-- 
+		IIS-WEBREQUEST-1	get请求/秒	次/秒
+		IIS-WEBREQUEST-2	post请求/秒	次/秒
+		IIS-WEBREQUEST-3	head请求/秒	次/秒
+		IIS-WEBREQUEST-4	其他请求/秒	次/秒
+		IIS-WEBREQUEST-5	服务运行时间	秒
+		 -->
+		<object local="resource" remote="IIS">
+		<![CDATA[
+			util.setOutputValue("IIS-WEBREQUEST-1", "sum", "perf.iis-user.get_reqs_rate");
+			util.setOutputValue("IIS-WEBREQUEST-2", "sum", "perf.iis-user.post_reqs_rate");
+			util.setOutputValue("IIS-WEBREQUEST-3", "sum", "perf.iis-user.head_reqs_rate");
+			util.setOutputValue("IIS-WEBREQUEST-4", "sum", "perf.iis-user.other_reqs_rate");
+		]]>
+		</object>
+	</monitor>		
+	
+	<monitor type="RESIN-BASEINFO" >
+		<!-- 
+		RESIN-BASEINFO-1	服务序列号	
+		RESIN-BASEINFO-2	服务版本	
+		RESIN-BASEINFO-3	服务配置文件路径	
+		RESIN-BASEINFO-4	ResinHome	
+		RESIN-BASEINFO-5	RootDirectory	
+		RESIN-BASEINFO-6	主机名称	
+		RESIN-BASEINFO-7	当前状态	
+		RESIN-BASEINFO-8	运行时间	
+		RESIN-BASEINFO-9	总内存	
+		RESIN-BASEINFO-10	剩余内存	
+		RESIN-BASEINFO-11	当前CPU负载	%
+		 -->
+		<object local="resource" remote="RESIN">
+			<item local="monitor.state" remote="state.available_status" function="monitorState2availableStatus"/>
+			<item local="method.port" remote="attr.usePort" />
+			<item local="perf.RESIN-BASEINFO-2" remote="attr.edition" />
+			<item local="perf.RESIN-BASEINFO-4" remote="attr.installPath" />
+			<item local="perf.RESIN-BASEINFO-9" remote="perf.resin.proc_mem_size" function="byteString2MB" />
+			<item local="perf.RESIN-BASEINFO-10" remote="perf.resin.proc_mem_free" function="byteString2MB" />
+			<item local="perf.RESIN-BASEINFO-11" remote="perf.mw.proc_cpu_used_pct" />
+		</object>
+	</monitor>	
+	
+	<monitor type="RESIN-CONNPOOL" >
+		<!-- 
+		RESIN-CONNPOOL-1	活跃连接数	个
+		RESIN-CONNPOOL-2	空闲连接数	个
+		RESIN-CONNPOOL-3	连接命中率	%
+		RESIN-CONNPOOL-4	已连接总数	个
+		RESIN-CONNPOOL-5	初始连接总数	个
+		RESIN-CONNPOOL-6	失败连接数	个
+		RESIN-CONNPOOL-7	最后一次失败时间	
+		RESIN-CONNPOOL-8	最大连接数	个
+		RESIN-CONNPOOL-9	最长空闲时间	秒
+		 -->
+		<object local="resource" remote="RESIN">
+		<![CDATA[
+			util.setOutputValue("RESIN-CONNPOOL-2", "sum", "perf.resin-conn.idle_conns");
+			util.setOutputValue("RESIN-CONNPOOL-3", "avg", "perf.resin-conn.conn_hit_ratio");
+			util.setOutputValue("RESIN-CONNPOOL-5", "sum", "perf.resin-conn.initialized_conns");
+			util.setOutputValue("RESIN-CONNPOOL-6", "sum", "perf.resin-conn.failed_conns");
+			util.setOutputValue("RESIN-CONNPOOL-8", "sum", "perf.resin-conn.max_conns");
+			util.setOutputValue("RESIN-CONNPOOL-9", "max", "perf.resin-conn.max_conn_idle_time");
+		]]>
+		</object>		 
+		<object local="instance" remote="RESINConnPool">
+		<![CDATA[
+			output.setValue(input, "rs.ComponentOf", input.getValue("resource.id"));
+			output.setValue(input, "attr.code", input.getValue("instance.code"));
+			output.setValue(input, "attr.name", input.getValue("instance.name"));
+			def maxCapacity = input.getValue("perf.RESIN-CONNPOOL-8");
+			output.setValue(input, "attr.maxCapacity", maxCapacity);	
+			
+			def used = input.getValue("perf.RESIN-CONNPOOL-1");
+			if (used != null && maxCapacity != null) {
+				output.setValue(input, "perf.connpool.connpool_used_pct", maxCapacity == 0 ? 0 : used / maxCapacity * 100);
+				output.setValue(input, "perf.connpool.current_size", maxCapacity);
+			}
+			
+			output.setValue(input, "perf.resin-connpool.jdbc_active_conns", used);
+			output.setValue(input, "perf.resin-connpool.idle_conns", input.getValue("perf.RESIN-CONNPOOL-2"));
+			output.setValue(input, "perf.resin-connpool.conn_hit_ratio", input.getValue("perf.RESIN-CONNPOOL-3"));
+			output.setValue(input, "perf.resin-connpool.total_conn_count", input.getValue("perf.RESIN-CONNPOOL-4"));
+			output.setValue(input, "perf.resin-connpool.initialized_conns", input.getValue("perf.RESIN-CONNPOOL-5"));
+			output.setValue(input, "perf.resin-connpool.failed_conns", input.getValue("perf.RESIN-CONNPOOL-6"));
+			output.setValue(input, "perf.resin-connpool.max_jdbc_active_connns", maxCapacity);
+			output.setValue(input, "perf.resin-connpool.max_conn_idle_time", input.getValue("perf.RESIN-CONNPOOL-9"));
+		]]>				
+		</object>
+	</monitor>	
+	
+	<monitor type="RESIN-RATIO" >
+		<!-- 
+		RESIN-RATIO-1	命中率	%
+		RESIN-RATIO-2	命中次数	个
+		RESIN-RATIO-3	总次数	个
+		 -->
+		<object local="resource" remote="RESIN">
+		<![CDATA[
+			util.setOutputValue("RESIN-RATIO-1", "avg", "perf.resin-service.resin_service_hit_ratio");
+			util.setOutputValue("RESIN-RATIO-2", "sum", "perf.resin-service.resin_service_hits");
+			util.setOutputValue("RESIN-RATIO-3", "sum", "perf.resin-service.resin_services");
+		]]>
+		</object>
+	</monitor>
+	
+	<monitor type="RESIN-WEBAPP" >
+		<!-- 
+		RESIN-WEBAPP-1	状态	
+		RESIN-WEBAPP-2	请求数	个
+		RESIN-WEBAPP-3	会话数	个
+		RESIN-WEBAPP-4	开始时间	
+		RESIN-WEBAPP-5	状态500的总数	个
+		RESIN-WEBAPP-6	状态500的最后一次时间	
+		 -->
+		 
+		<object local="resource" remote="RESIN">
+		<![CDATA[
+			util.setOutputValue("RESIN-WEBAPP-3", "sum", "perf.resin-web.session_count");
+			util.setOutputValue("RESIN-WEBAPP-2", "sum", "perf.resin-web.request_count");
+			util.setOutputValue("RESIN-WEBAPP-5", "sum", "perf.resin-web.status_500_count");
+		]]>
+		</object>
+	</monitor>
+	
+	<monitor type="TUX-MACHINE" >
+		<!-- 
+		TUX-MACHINE-1	每秒处理队列服务数
+		TUX-MACHINE-2	每秒入队队列服务数
+		TUX-MACHINE-3	客户端数
+		TUX-MACHINE-4	WS客户端数
+		 -->
+		<object local="resource" remote="Tuxedo" states="SUCCESSED,FAILED,OVERSTEP">
+			<item local="monitor.state" remote="state.available_status" function="monitorState2availableStatus"/>
+			<item local="TUX-MACHINE-1" remote="perf.tux.queue_proc_rate" />
+			<item local="TUX-MACHINE-2" remote="perf.tux.enqueue_rate" />
+			<item local="TUX-MACHINE-3" remote="perf.tux.clients" />
+			<item local="TUX-MACHINE-4" remote="perf.tux.workstation_clients" />
+		</object>
+	</monitor>
+	<monitor type="JBOSS-BASIC" >
+		<!-- 
+		JBOSS-BASIC-1  jdk供应商
+		JBOSS-BASIC-2  jdk版本
+		JBOSS-BASIC-4  Jboss版本
+		JBOSS-BASIC-5     运行状态
+		 -->
+		<object local="resource" remote="JBoss" states="SUCCESSED,FAILED,OVERSTEP">
+			<item local="monitor.state" remote="state.available_status" function="monitorState2availableStatus"/>
+			<item local="JBOSS-BASIC-4" remote="attr.edition" />
+			<item local="instance.name" remote="attr.name" />			
+			<item local="JBOSS-BASIC-1" remote="attr.jdkVendor" />
+			<item local="JBOSS-BASIC-2" remote="attr.jdkVersion" />
+		</object>
+		
+	</monitor>
+	
+	<monitor type="JBOSS-JDBC" >
+		<!-- 
+		JBOSS-JDBC-1  可用连接数
+		JBOSS-JDBC-2  在使用的连接数
+		JBOSS-JDBC-3  创建的连接数
+	    JBOSS-JDBC-4  销毁的连接数
+		JBOSS-JDBC-5  最大使用的连接数
+		JBOSS-JDBC-6  总连接数
+		JBOSS-JDBC-7  连接阻塞超时时间
+		JBOSS-JDBC-8  连接池最大容量
+		JBOSS-JDBC-9  连接池最小容量
+		JBOSS-JDBC-10  连接闲置时间	
+		JBOSS-JDBC-11 连接使用百分比
+		 -->
+		<object local="instance" remote="JBossConnPool">
+		<![CDATA[
+			output.setValue(input, "rs.ComponentOf", input.resource.id); 
+			output.setValue(input, "attr.code", input.getValue("instance.code"));
+			output.setValue(input, "attr.name", input.getValue("instance.name"));
+			output.setValue(input, "attr.maxCapacity", input.instance.getIndicator("JBOSS-JDBC-8"));
+			output.setValue(input, "attr.minConnPoolSize", input.instance.getIndicator("JBOSS-JDBC-9"));
+			output.setValue(input, "perf.jboss_jdbc.available_conns", input.instance.getIndicator("JBOSS-JDBC-1"));
+			output.setValue(input, "perf.jboss_jdbc.conns_used", input.instance.getIndicator("JBOSS-JDBC-2"));
+			output.setValue(input, "perf.jboss_jdbc.connpool_conns_created", input.instance.getIndicator("JBOSS-JDBC-3"));
+			output.setValue(input, "perf.jboss_jdbc.destroy_conns", input.instance.getIndicator("JBOSS-JDBC-4"));
+			output.setValue(input, "perf.jboss_jdbc.max_conns_used", input.instance.getIndicator("JBOSS-JDBC-5"));
+			output.setValue(input, "perf.jboss_jdbc.conns_total", input.instance.getIndicator("JBOSS-JDBC-6"));
+			output.setValue(input, "perf.jboss_jdbc.conn_block_timeout", input.instance.getIndicator("JBOSS-JDBC-7"));
+			output.setValue(input, "perf.jboss_jdbc.conn_idle_time", input.instance.getIndicator("JBOSS-JDBC-10"));
+			output.setValue(input, "perf.connpool.connpool_used_pct", input.instance.getIndicator("JBOSS-JDBC-11"));
+			output.setValue(input, "perf.connpool.current_size", input.instance.getIndicator("JBOSS-JDBC-8"));
+		]]>
+		</object>
+	</monitor>
+	
+	<monitor type="JBOSS7-JDBC" >
+      	<!--  
+      	JBOSS7-JDBC-1 获取连接最大等待时间
+      	JBOSS7-JDBC-2 连接池最大容量
+      	JBOSS7-JDBC-3 连接池最小容量
+      	JBOSS7-JDBC-4 当前连接的最大空闲时间
+      	JBOSS7-JDBC-5 新创建的SQL数
+	    -->
+		<object local="instance" remote="JBossConnPool">
+		<![CDATA[
+		    output.setValue(input, "rs.ComponentOf", input.resource.id); 
+			output.setValue(input, "attr.code", input.getValue("instance.code"));
+			output.setValue(input, "attr.name", input.getValue("instance.name"));
+			output.setValue(input, "attr.maxCapacity", input.instance.getIndicator("JBOSS7-JDBC-2"));
+			output.setValue(input, "perf.connpool.current_size", input.instance.getIndicator("JBOSS7-JDBC-2"));
+			output.setValue(input, "attr.minConnPoolSize", input.instance.getIndicator("JBOSS7-JDBC-3"));
+			output.setValue(input, "perf.jboss_jdbc.conn_block_timeout", input.instance.getIndicator("JBOSS7-JDBC-1"));
+			output.setValue(input, "perf.jboss_jdbc.conn_idle_time", input.instance.getIndicator("JBOSS7-JDBC-4"));
+			output.setValue(input, "perf.jboss_jdbc.new_sql_conn", input.instance.getIndicator("JBOSS7-JDBC-5"));
+		]]>
+		</object>
+	</monitor>
+	
+	<monitor type="JBOSS-SERVLET" >
+		<!-- 
+		JBOSS-SERVLET-1   最大处理时间
+		JBOSS-SERVLET-2	平均处理时间
+		JBOSS-SERVLET-3	请求总数
+		JBOSS-SERVLET-4	错误的请求数
+		 -->
+		<object local="instance" remote="JBossServlet">
+			<item local="resource.id" remote="rs.ComponentOf" />
+			<item local="instance.code" remote="attr.code" />
+			<item local="instance.name" remote="attr.name" />
+			<item local="JBOSS-SERVLET-1" remote="perf.jboss_servlet.max_execution_time"/>
+			<item local="JBOSS-SERVLET-2" remote="perf.jboss_servlet.avg_execution_time" />
+			<item local="JBOSS-SERVLET-3" remote="perf.jboss_servlet.request_count" />			
+			<item local="JBOSS-SERVLET-4" remote="perf.jboss_servlet.error_request_count" />
+		</object>
+	</monitor>
+	
+	<monitor type="JBOSS7-JVM" >
+		<!-- 
+		JBOSS7-JVM-1  最大堆内存
+		JBOSS7-JVM-2  使用的堆内存
+		JBOSS7-JVM-3  提交的堆内存
+		JBOSS7-JVM-4  初始化的堆内存
+		JBOSS7-JVM-5  最大非堆内存
+		JBOSS7-JVM-6  使用的非堆内存
+		JBOSS7-JVM-7  提交的非堆内存
+		JBOSS7-JVM-8  初始化的非堆内存
+		JBOSS7-JVM-9  总线程数
+		JBOSS7-JVM-10  守护线程数
+		 -->
+		<object local="resource" remote="JBoss">
+			<item local="JBOSS7-JVM-1" remote="perf.jboss7_jvm.max_heap_memory"/>
+			<item local="JBOSS7-JVM-2" remote="perf.jboss7_jvm.used_heap_memory" />
+			<item local="JBOSS7-JVM-3" remote="perf.jboss7_jvm.committed_heap_memory"/>
+			<item local="JBOSS7-JVM-4" remote="perf.jboss7_jvm.init_heap_memory" />
+			<item local="JBOSS7-JVM-5" remote="perf.jboss7_jvm.max_nonheap_memory"/>
+			<item local="JBOSS7-JVM-6" remote="perf.jboss7_jvm.used_nonheap_memory" />
+			<item local="JBOSS7-JVM-7" remote="perf.jboss7_jvm.committed_nonheap_memory"/>
+			<item local="JBOSS7-JVM-8" remote="perf.jboss7_jvm.init_nonheap_memory" />
+			<item local="JBOSS7-JVM-9" remote="perf.jboss7_jvm.total_thread_count"/>
+			<item local="JBOSS7-JVM-10" remote="perf.jboss7_jvm.dameon_threads" />
+		</object>
+	</monitor>
+	
+	<monitor type="JBOSS-PMI" >
+		<!-- 
+		JBOSS-PMI-1	已使用内存,
+		JBOSS-PMI-2	空闲内存,
+		JBOSS-PMI-3	总内存,
+		 -->
+		<object local="resource" remote="JBoss">
+			<item local="JBOSS-PMI-1" remote="perf.jboss_pmi.apply_memory"/>
+			<item local="JBOSS-PMI-2" remote="perf.jboss_pmi.free_memory" />
+			<item local="JBOSS-PMI-3" remote="perf.jboss_pmi.total_memory"/>
+		</object>
+	</monitor>
+	
+	<monitor type="JBOSS6-THREAD" >
+		<!-- 
+		JBOSS6-THREAD-1	核心线程数
+		JBOSS6-THREAD-2	最大线程数
+		JBOSS6-THREAD-3	被拒绝线程数量
+		JBOSS6-THREAD-4	活跃线程数
+		 -->
+		<object local="instance" remote="JBossThreadPool">
+			<item local="resource.id" remote="rs.ComponentOf" />
+			<item local="instance.code" remote="attr.code" />
+			<item local="instance.name" remote="attr.name" />
+			<item local="JBOSS6-THREAD-1" remote="perf.jboss6_thread.core_threads"/>
+			<item local="JBOSS6-THREAD-2" remote="perf.jboss6_thread.max_threads" />
+			<item local="JBOSS6-THREAD-3" remote="perf.jboss6_thread.rejected_threads"/>
+			<item local="JBOSS6-THREAD-4" remote="perf.threadpool.pool_active_threads"/>
+		</object>
+	</monitor>
+	
+	<monitor type="JBOSS-THREAD" >
+		<!-- 
+		JBOSS-THREAD-1	当前等待线程数
+		JBOSS-THREAD-2	最大等待线程数
+		JBOSS-THREAD-3	线程池最小容量
+		JBOSS-THREAD-4	线程池最大容量
+		JBOSS-THREAD-5	线程池大小
+		JBOSS-THREAD-6	活动线程数
+		 -->
+		<object local="instance" remote="JBossThreadPool">
+			<item local="resource.id" remote="rs.ComponentOf" />
+			<item local="instance.code" remote="attr.code" />
+			<item local="instance.name" remote="attr.name" />
+			<item local="JBOSS-THREAD-1" remote="perf.jboss_threadpool.queue_size"/>
+			<item local="JBOSS-THREAD-2" remote="perf.jboss_threadpool.max_queue_size" />
+			<item local="JBOSS-THREAD-3" remote="attr.minPoolsize"/>
+			<item local="JBOSS-THREAD-4" remote="attr.maxPoolsize"/>
+			<item local="JBOSS-THREAD-5" remote="attr.poolSize"/>
+			<item local="JBOSS-THREAD-6" remote="perf.threadpool.pool_active_threads"/>
+		</object>
+	</monitor>
+	
+	<monitor type="JBOSS-WEB" >
+		<!-- 
+		JBOSS-WEB-1	会话最大生存时间
+		JBOSS-WEB-2	当前的会话数
+		JBOSS-WEB-3	会话平均生存时间
+		JBOSS-WEB-4	最大活跃会话数
+		JBOSS-WEB-5	无效的会话数
+		JBOSS-WEB-6	被拒绝会话数,
+		JBOSS-WEB-7	总会话数
+		 -->
+		<object local="instance" remote="JBossWebApp">
+		<item local="monitor.state" remote="state.available_status" function="monitorState2availableStatus"/>
+		<item local="resource.id" remote="rs.ComponentOf" />
+		<item local="instance.code" remote="attr.code" />
+		<item local="instance.name" remote="attr.name" />
+		<item local="JBOSS-WEB-1" remote="perf.jboss_web.session_max_alivetime"/>
+		<item local="JBOSS-WEB-2" remote="perf.web-app.current_session_count"/>
+		<item local="JBOSS-WEB-3" remote="perf.jboss_web.session_avg_alivetime"/>
+		<item local="JBOSS-WEB-4" remote="perf.jboss_web.max_open_sessions"/>
+		<item local="JBOSS-WEB-5" remote="perf.jboss_web.invalid_sessions"/>
+		<item local="JBOSS-WEB-6" remote="perf.jboss_web.rejected_sessions"/>
+		<item local="JBOSS-WEB-7" remote="perf.web-app.session_count"/>
+		</object>
+	</monitor>
+	
+</pmdb-map>

@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+	http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.0.xsd">
+
+	<import resource="classpath:/uyun/bat/common/config/spring-conf.xml" />
+
+	<context:component-scan base-package="uyun.bat.report" />
+
+	<bean class="org.mortbay.jetty.Server" init-method="start"
+		destroy-method="stop" />
+
+	<bean id="reportService" class="uyun.bat.report.impl.service.ReportServiceImpl"/>
+
+	<bean class="uyun.bat.report.impl.facade.FacadeManager"
+		factory-method="getInstance">
+		<property name="reportFacade">
+			<bean class="uyun.bat.report.impl.facade.ReportFacade" />
+		</property>
+		<property name="reportGroupFacade">
+			<bean class="uyun.bat.report.impl.facade.ReportGroupFacade" />
+		</property>
+	</bean>
+
+	<bean class="uyun.bat.report.impl.logic.LogicManager"
+		factory-method="getInstance">
+		<property name="reportLogic">
+			<bean class="uyun.bat.report.impl.logic.ReportLogic" />
+		</property>
+		<property name="reportGroupLogic">
+			<bean class="uyun.bat.report.impl.logic.ReportGroupLogic" />
+		</property>
+	</bean>
+
+	<!--<bean class="uyun.bat.report.impl.schedule.ScheduleTask" init-method="test"/>-->
+
+	<import resource="classpath:/uyun/bat/report/impl/spring-dao.xml" />
+	<import resource="classpath:/uyun/bat/report/impl/spring-redis.xml" />
+	<import resource="classpath:/uyun/bat/report/impl/spring-dubbo.xml" />
+	<import resource="classpath:/uyun/bat/report/impl/spring-schedule.xml" />
+
+</beans>

@@ -1,0 +1,5 @@
+docopt
+requests
+pyyaml
+ng>=1.2.7
+redis

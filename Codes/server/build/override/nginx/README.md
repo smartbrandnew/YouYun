@@ -1,0 +1,1 @@
+# nginx不会自己建logs,temp，得我们创建好

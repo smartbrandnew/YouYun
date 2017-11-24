@@ -1,0 +1,18 @@
+init_config:
+
+instances:
+  - host:
+    tags:
+       - myapp1
+    sites:
+       - Default Web Site
+
+  - host: MYREMOTESERVER
+    username: MYREMOTESERVER\fred
+    password: "******"
+    is_2008: false
+    tags:
+       - myapp2
+       - east
+    sites:
+       - Default Web Site

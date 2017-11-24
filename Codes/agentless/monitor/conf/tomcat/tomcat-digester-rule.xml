@@ -1,0 +1,44 @@
+<?xml version="1.0"?>
+
+<digester-rules>
+	<pattern value="status">
+		<set-properties-rule />
+
+		<pattern value="jvm/memory">
+			<object-create-rule
+				classname="com.broada.carrier.monitor.impl.mw.tomcat.jvm.TomcatJVMInfo" />
+			<set-properties-rule />
+			<set-next-rule methodname="setJVMInfo" />
+		</pattern>
+
+		<pattern value="connector">
+			<object-create-rule
+				classname="com.broada.carrier.monitor.impl.mw.tomcat.TomcatConnector" />
+			<set-properties-rule />
+
+			<pattern value="threadInfo">
+				<object-create-rule
+					classname="com.broada.carrier.monitor.impl.mw.tomcat.TomcatThreadInfo" />
+				<set-properties-rule />
+				<set-next-rule methodname="setThreadInfo" />
+			</pattern>
+
+			<pattern value="requestInfo">
+				<object-create-rule
+					classname="com.broada.carrier.monitor.impl.mw.tomcat.TomcatRequestInfo" />
+				<set-properties-rule />
+				<set-next-rule methodname="setRequestInfo" />
+			</pattern>
+
+			<pattern value="workers/worker">
+				<object-create-rule
+					classname="com.broada.carrier.monitor.impl.mw.tomcat.TomcatWorker" />
+				<set-properties-rule />
+				<set-next-rule methodname="addWorker" />
+			</pattern>
+
+			<set-next-rule methodname="addConnector" />
+		</pattern>
+
+	</pattern>
+</digester-rules>

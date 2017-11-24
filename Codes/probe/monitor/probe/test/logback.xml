@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+	<appender name="stdout" class="ch.qos.logback.core.ConsoleAppender">
+		<encoder>
+			<pattern>
+				%d{yy-MM-dd HH:mm:ss.SSS} %-5level [%logger{36}] %msg%n
+			</pattern>
+		</encoder>
+	</appender>
+
+	<!-- 默认 -->
+	<root>
+		<level value="WARN" />
+		<appender-ref ref="stdout" />		
+	</root>
+	<logger name="com.broada" level="DEBUG" />
+	
+	<!-- 屏蔽 -->
+	<logger name="org.hibernate.cache.ehcache.AbstractEhcacheRegionFactory" level="ERROR" />	 
+</configuration>

@@ -1,0 +1,8 @@
+init_config:
+  check_freq: 15
+
+instances:
+  - nagios_conf: /etc/nagios3/nagios.cfg
+    collect_events: True
+    collect_host_performance_data: False
+    collect_service_performance_data: False

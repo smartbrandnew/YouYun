@@ -1,0 +1,381 @@
+"windows":
+  name: monitor
+  steps:
+    - makedirs {t}
+    - makedirs {t}/run/
+    - makedirs {t}/logs/
+    - download http://10.1.100.100/interpreter/python/monitor-python-windows32.zip {s}/python-windows64.zip
+    - uncompress {s}/python-windows64.zip {t}
+    - copy {s}/build/win_build/nssm.exe {t}/nssm.exe
+    - copy {s}/build/win_build/start.bat {t}/start.bat
+    - copy {s}/build/win_build/install.py {t}/install.py
+    - copy {s}/build/win_build/manifest.yaml {t}/manifest.yaml
+    - copy {s}/conf.d {t}
+    - copy {s}/checks.d {t}
+    - copy {s}/checks {t}
+    - copy {s}/scripts {t}
+    - copy {s}/utils {t}
+    - copy {s}/win32 {t}
+    - copy {s}/datamonitor.conf {t}/datamonitor.conf
+    - copy {s}/datamonitor_template {t}/datamonitor_template
+    - copy {s}/datamonitor-cert.pem {t}/datamonitor-cert.pem
+    - copy {s}/script_monitor_process.py {t}/script_monitor_process.py
+    - copy {s}/updater_process.py {t}/updater_process.py
+    - copy {s}/monitorstatsd.py {t}/monitorstatsd.py
+    - copy {s}/monitoragent.py {t}/monitoragent.py
+    - copy {s}/transaction.py {t}/transaction.py
+    - copy {s}/aggregator.py {t}/aggregator.py
+    - copy {s}/jmxfetch.py {t}/jmxfetch.py
+    - copy {s}/graphite.py {t}/graphite.py
+    - copy {s}/modules.py {t}/modules.py
+    - copy {s}/emitter.py {t}/emitter.py
+    - copy {s}/config.py {t}/config.py
+    - copy {s}/daemon.py {t}/daemon.py
+    - copy {s}/gohai.py {t}/gohai.py
+    - copy {s}/util.py {t}/util.py
+    - compress {t} {project_name} -windows.tar.gz
+    - remove {t}
+
+
+"debian64":
+  name: monitor
+  steps:
+    - makedirs {t}
+    - makedirs {t}/agent
+    - makedirs {t}/conf
+    - makedirs {t}/logs
+    - makedirs {t}/run
+    - download http://10.1.100.100/interpreter/python/monitor-python-debian-64.tgz {s}/monitor-python-debian-64.tgz
+    - uncompress {s}/monitor-python-debian-64.tgz {t}
+    - uncompress /home/uyun/buildscripts/ant/debian64-bin.tgz {t}
+    - chmod 750 -R {t}/embedded/bin
+    - copy {s}/build/linux_build/install.py {t}/install.py
+    - copy {s}/build/linux_build/install.sh {t}/install.sh
+    - copy {s}/build/linux_build/debian64/manifest.yaml {t}/manifest.yaml
+    - copy {s}/conf.d {t}
+    - copy {s}/checks.d {t}/agent
+    - copy {s}/checks {t}/agent
+    - copy {s}/scripts {t}/agent
+    - copy {s}/utils {t}/agent
+    - copy {s}/datamonitor.conf {t}/conf/datamonitor.conf
+    - copy {s}/datamonitor_template {t}/conf/datamonitor_template
+    - copy {s}/datamonitor-cert.pem {t}/agent/datamonitor-cert.pem
+    - copy {s}/script_monitor_process.py {t}/agent/script_monitor_process.py
+    - copy {s}/updater_process.py {t}/agent/updater_process.py
+    - copy {s}/monitorstatsd.py {t}/agent/monitorstatsd.py
+    - copy {s}/monitoragent.py {t}/agent/monitoragent.py
+    - copy {s}/transaction.py {t}/agent/transaction.py
+    - copy {s}/aggregator.py {t}/agent/aggregator.py
+    - copy {s}/jmxfetch.py {t}/agent/jmxfetch.py
+    - copy {s}/graphite.py {t}/agent/graphite.py
+    - copy {s}/modules.py {t}/agent/modules.py
+    - copy {s}/emitter.py {t}/agent/emitter.py
+    - copy {s}/config.py {t}/agent/config.py
+    - copy {s}/daemon.py {t}/agent/daemon.py
+    - copy {s}/gohai.py {t}/agent/gohai.py
+    - copy {s}/agent.py {t}/agent/agent.py
+    - copy {s}/util.py {t}/agent/util.py
+    - copy {s}/custom_script.py {t}/agent/custom_script.py
+    - compress {t} {project_name} -debian64.tar.gz
+    - remove {t}
+
+
+"debian32":
+  name: monitor
+  steps:
+    - makedirs {t}
+    - makedirs {t}/agent
+    - makedirs {t}/conf
+    - makedirs {t}/logs
+    - makedirs {t}/run
+    - download http://10.1.100.100/interpreter/python/monitor-python-debian-32.tgz {s}/monitor-python-debian-32.tgz
+    - uncompress {s}/monitor-python-debian-32.tgz {t}
+    - uncompress /home/uyun/buildscripts/ant/debian32-bin.tgz {t}
+    - chmod 750 -R {t}/embedded/bin
+    - copy {s}/build/linux_build/install.py {t}/install.py
+    - copy {s}/build/linux_build/install.sh {t}/install.sh
+    - copy {s}/build/linux_build/debian32/manifest.yaml {t}/manifest.yaml
+    - copy {s}/conf.d {t}
+    - copy {s}/checks.d {t}/agent
+    - copy {s}/checks {t}/agent
+    - copy {s}/scripts {t}/agent
+    - copy {s}/utils {t}/agent
+    - copy {s}/datamonitor.conf {t}/conf/datamonitor.conf
+    - copy {s}/datamonitor_template {t}/conf/datamonitor_template
+    - copy {s}/datamonitor-cert.pem {t}/agent/datamonitor-cert.pem
+    - copy {s}/script_monitor_process.py {t}/agent/script_monitor_process.py
+    - copy {s}/updater_process.py {t}/agent/updater_process.py
+    - copy {s}/monitorstatsd.py {t}/agent/monitorstatsd.py
+    - copy {s}/monitoragent.py {t}/agent/monitoragent.py
+    - copy {s}/transaction.py {t}/agent/transaction.py
+    - copy {s}/aggregator.py {t}/agent/aggregator.py
+    - copy {s}/jmxfetch.py {t}/agent/jmxfetch.py
+    - copy {s}/graphite.py {t}/agent/graphite.py
+    - copy {s}/modules.py {t}/agent/modules.py
+    - copy {s}/emitter.py {t}/agent/emitter.py
+    - copy {s}/config.py {t}/agent/config.py
+    - copy {s}/daemon.py {t}/agent/daemon.py
+    - copy {s}/gohai.py {t}/agent/gohai.py
+    - copy {s}/agent.py {t}/agent/agent.py
+    - copy {s}/util.py {t}/agent/util.py
+    - copy {s}/custom_script.py {t}/agent/custom_script.py
+    - compress {t} {project_name} -debian32.tar.gz
+    - remove {t}
+
+
+"centos64":
+  name: monitor
+  steps:
+    - makedirs {t}
+    - makedirs {t}/agent
+    - makedirs {t}/conf
+    - makedirs {t}/logs
+    - makedirs {t}/run
+    - download http://10.1.100.100/interpreter/python/monitor-python-centos-64.tgz {s}/monitor-python-centos-64.tgz
+    - uncompress {s}/monitor-python-centos-64.tgz {t}
+    - uncompress /home/uyun/buildscripts/ant/centos64-bin.tgz {t}
+    - chmod 750 -R {t}/embedded/bin
+    - copy {s}/build/linux_build/install.py {t}/install.py
+    - copy {s}/build/linux_build/install.sh {t}/install.sh
+    - copy {s}/build/linux_build/centos64/manifest.yaml {t}/manifest.yaml
+    - copy {s}/conf.d {t}
+    - copy {s}/checks.d {t}/agent
+    - copy {s}/checks {t}/agent
+    - copy {s}/scripts {t}/agent
+    - copy {s}/utils {t}/agent
+    - copy {s}/datamonitor.conf {t}/conf/datamonitor.conf
+    - copy {s}/datamonitor_template {t}/conf/datamonitor_template
+    - copy {s}/datamonitor-cert.pem {t}/agent/datamonitor-cert.pem
+    - copy {s}/script_monitor_process.py {t}/agent/script_monitor_process.py
+    - copy {s}/updater_process.py {t}/agent/updater_process.py
+    - copy {s}/monitorstatsd.py {t}/agent/monitorstatsd.py
+    - copy {s}/monitoragent.py {t}/agent/monitoragent.py
+    - copy {s}/transaction.py {t}/agent/transaction.py
+    - copy {s}/aggregator.py {t}/agent/aggregator.py
+    - copy {s}/jmxfetch.py {t}/agent/jmxfetch.py
+    - copy {s}/graphite.py {t}/agent/graphite.py
+    - copy {s}/modules.py {t}/agent/modules.py
+    - copy {s}/emitter.py {t}/agent/emitter.py
+    - copy {s}/config.py {t}/agent/config.py
+    - copy {s}/daemon.py {t}/agent/daemon.py
+    - copy {s}/gohai.py {t}/agent/gohai.py
+    - copy {s}/agent.py {t}/agent/agent.py
+    - copy {s}/util.py {t}/agent/util.py
+    - copy {s}/custom_script.py {t}/agent/custom_script.py
+    - compress {t} {project_name} -centos64.tar.gz
+    - remove {t}
+
+"centos32":
+  name: monitor
+  steps:
+    - makedirs {t}
+    - makedirs {t}/agent
+    - makedirs {t}/conf
+    - makedirs {t}/logs
+    - makedirs {t}/run
+    - download http://10.1.100.100/interpreter/python/monitor-python-centos-32.tgz {s}/monitor-python-centos-32.tgz
+    - uncompress {s}/monitor-python-centos-32.tgz {t}
+    - uncompress /home/uyun/buildscripts/ant/centos32-bin.tgz {t}
+    - chmod 750 -R {t}/embedded/bin
+    - copy {s}/build/linux_build/install.py {t}/install.py
+    - copy {s}/build/linux_build/install.sh {t}/install.sh
+    - copy {s}/build/linux_build/centos32/manifest.yaml {t}/manifest.yaml
+    - copy {s}/conf.d {t}
+    - copy {s}/checks.d {t}/agent
+    - copy {s}/checks {t}/agent
+    - copy {s}/scripts {t}/agent
+    - copy {s}/utils {t}/agent
+    - copy {s}/datamonitor.conf {t}/conf/datamonitor.conf
+    - copy {s}/datamonitor_template {t}/conf/datamonitor_template
+    - copy {s}/datamonitor-cert.pem {t}/agent/datamonitor-cert.pem
+    - copy {s}/script_monitor_process.py {t}/agent/script_monitor_process.py
+    - copy {s}/updater_process.py {t}/agent/updater_process.py
+    - copy {s}/monitorstatsd.py {t}/agent/monitorstatsd.py
+    - copy {s}/monitoragent.py {t}/agent/monitoragent.py
+    - copy {s}/transaction.py {t}/agent/transaction.py
+    - copy {s}/aggregator.py {t}/agent/aggregator.py
+    - copy {s}/jmxfetch.py {t}/agent/jmxfetch.py
+    - copy {s}/graphite.py {t}/agent/graphite.py
+    - copy {s}/modules.py {t}/agent/modules.py
+    - copy {s}/emitter.py {t}/agent/emitter.py
+    - copy {s}/config.py {t}/agent/config.py
+    - copy {s}/daemon.py {t}/agent/daemon.py
+    - copy {s}/gohai.py {t}/agent/gohai.py
+    - copy {s}/agent.py {t}/agent/agent.py
+    - copy {s}/util.py {t}/agent/util.py
+    - copy {s}/custom_script.py {t}/agent/custom_script.py
+    - compress {t} {project_name} -centos32.tar.gz
+    - remove {t}
+
+
+"centos5_64":
+  name: monitor
+  steps:
+    - makedirs {t}
+    - makedirs {t}/agent
+    - makedirs {t}/conf
+    - makedirs {t}/logs
+    - makedirs {t}/run
+    - download http://10.1.100.100/interpreter/python/monitor-python-centos5-64.tgz {s}/monitor-python-centos5-64.tgz
+    - uncompress {s}/monitor-python-centos5-64.tgz {t}
+    - uncompress /home/uyun/buildscripts/ant/centos5_64-bin.tgz {t}
+    - chmod 750 -R {t}/embedded/bin
+    - copy {s}/build/linux_build/install.py {t}/install.py
+    - copy {s}/build/linux_build/install.sh {t}/install.sh
+    - copy {s}/build/linux_build/centos5_64/manifest.yaml {t}/manifest.yaml
+    - copy {s}/conf.d {t}
+    - copy {s}/checks.d {t}/agent
+    - copy {s}/checks {t}/agent
+    - copy {s}/scripts {t}/agent
+    - copy {s}/utils {t}/agent
+    - copy {s}/datamonitor.conf {t}/conf/datamonitor.conf
+    - copy {s}/datamonitor_template {t}/conf/datamonitor_template
+    - copy {s}/datamonitor-cert.pem {t}/agent/datamonitor-cert.pem
+    - copy {s}/script_monitor_process.py {t}/agent/script_monitor_process.py
+    - copy {s}/updater_process.py {t}/agent/updater_process.py
+    - copy {s}/monitorstatsd.py {t}/agent/monitorstatsd.py
+    - copy {s}/monitoragent.py {t}/agent/monitoragent.py
+    - copy {s}/transaction.py {t}/agent/transaction.py
+    - copy {s}/aggregator.py {t}/agent/aggregator.py
+    - copy {s}/jmxfetch.py {t}/agent/jmxfetch.py
+    - copy {s}/graphite.py {t}/agent/graphite.py
+    - copy {s}/modules.py {t}/agent/modules.py
+    - copy {s}/emitter.py {t}/agent/emitter.py
+    - copy {s}/config.py {t}/agent/config.py
+    - copy {s}/daemon.py {t}/agent/daemon.py
+    - copy {s}/gohai.py {t}/agent/gohai.py
+    - copy {s}/agent.py {t}/agent/agent.py
+    - copy {s}/util.py {t}/agent/util.py
+    - copy {s}/custom_script.py {t}/agent/custom_script.py
+    - compress {t} {project_name} -centos5_64.tar.gz
+    - remove {t}
+
+
+"turbo64":
+  name: monitor
+  steps:
+    - makedirs {t}
+    - makedirs {t}/agent
+    - makedirs {t}/conf
+    - makedirs {t}/logs
+    - makedirs {t}/run
+    - download http://10.1.100.100/interpreter/python/monitor-python-turbo-64.tgz {s}/monitor-python-turbo-64.tgz
+    - uncompress {s}/monitor-python-turbo-64.tgz {t}
+    - uncompress /home/uyun/buildscripts/ant/centos64-bin.tgz {t}
+    - chmod 750 -R {t}/embedded/bin
+    - copy {s}/build/linux_build/install.py {t}/install.py
+    - copy {s}/build/linux_build/install.sh {t}/install.sh
+    - copy {s}/build/linux_build/turbo64/manifest.yaml {t}/manifest.yaml
+    - copy {s}/conf.d {t}
+    - copy {s}/checks.d {t}/agent
+    - copy {s}/checks {t}/agent
+    - copy {s}/scripts {t}/agent
+    - copy {s}/utils {t}/agent
+    - copy {s}/datamonitor.conf {t}/conf/datamonitor.conf
+    - copy {s}/datamonitor_template {t}/conf/datamonitor_template
+    - copy {s}/datamonitor-cert.pem {t}/agent/datamonitor-cert.pem
+    - copy {s}/script_monitor_process.py {t}/agent/script_monitor_process.py
+    - copy {s}/updater_process.py {t}/agent/updater_process.py
+    - copy {s}/monitorstatsd.py {t}/agent/monitorstatsd.py
+    - copy {s}/monitoragent.py {t}/agent/monitoragent.py
+    - copy {s}/transaction.py {t}/agent/transaction.py
+    - copy {s}/aggregator.py {t}/agent/aggregator.py
+    - copy {s}/jmxfetch.py {t}/agent/jmxfetch.py
+    - copy {s}/graphite.py {t}/agent/graphite.py
+    - copy {s}/modules.py {t}/agent/modules.py
+    - copy {s}/emitter.py {t}/agent/emitter.py
+    - copy {s}/config.py {t}/agent/config.py
+    - copy {s}/daemon.py {t}/agent/daemon.py
+    - copy {s}/gohai.py {t}/agent/gohai.py
+    - copy {s}/agent.py {t}/agent/agent.py
+    - copy {s}/util.py {t}/agent/util.py
+    - copy {s}/custom_script.py {t}/agent/custom_script.py
+    - compress {t} {project_name} -turbo64.tar.gz
+    - remove {t}
+
+
+"suse":
+  name: monitor
+  steps:
+    - makedirs {t}
+    - makedirs {t}/agent
+    - makedirs {t}/conf
+    - makedirs {t}/logs
+    - makedirs {t}/run
+    - download http://10.1.100.100/interpreter/python/monitor-python-suse.tgz {s}/monitor-python-suse.tgz
+    - uncompress {s}/monitor-python-suse.tgz {t}
+    - uncompress /home/uyun/buildscripts/ant/suse64-bin.tgz {t}
+    - chmod 750 -R {t}/embedded/bin
+    - copy {s}/build/linux_build/install.py {t}/install.py
+    - copy {s}/build/linux_build/install.sh {t}/install.sh
+    - copy {s}/build/linux_build/suse/manifest.yaml {t}/manifest.yaml
+    - copy {s}/conf.d {t}
+    - copy {s}/checks.d {t}/agent
+    - copy {s}/checks {t}/agent
+    - copy {s}/scripts {t}/agent
+    - copy {s}/utils {t}/agent
+    - copy {s}/datamonitor.conf {t}/conf/datamonitor.conf
+    - copy {s}/datamonitor_template {t}/conf/datamonitor_template
+    - copy {s}/datamonitor-cert.pem {t}/agent/datamonitor-cert.pem
+    - copy {s}/script_monitor_process.py {t}/agent/script_monitor_process.py
+    - copy {s}/updater_process.py {t}/agent/updater_process.py
+    - copy {s}/monitorstatsd.py {t}/agent/monitorstatsd.py
+    - copy {s}/monitoragent.py {t}/agent/monitoragent.py
+    - copy {s}/transaction.py {t}/agent/transaction.py
+    - copy {s}/aggregator.py {t}/agent/aggregator.py
+    - copy {s}/jmxfetch.py {t}/agent/jmxfetch.py
+    - copy {s}/graphite.py {t}/agent/graphite.py
+    - copy {s}/modules.py {t}/agent/modules.py
+    - copy {s}/emitter.py {t}/agent/emitter.py
+    - copy {s}/config.py {t}/agent/config.py
+    - copy {s}/daemon.py {t}/agent/daemon.py
+    - copy {s}/gohai.py {t}/agent/gohai.py
+    - copy {s}/agent.py {t}/agent/agent.py
+    - copy {s}/util.py {t}/agent/util.py
+    - copy {s}/custom_script.py {t}/agent/custom_script.py
+    - compress {t} {project_name} -suse.tar.gz
+    - remove {t}
+
+
+"aix64":
+  name: monitor
+  steps:
+    - makedirs {t}
+    - makedirs {t}/agent
+    - makedirs {t}/conf
+    - makedirs {t}/logs
+    - makedirs {t}/run
+    - download http://10.1.100.100/interpreter/python/monitor-python-aix-64.tgz {s}/monitor-python-aix-64.tgz
+    - uncompress {s}/monitor-python-aix-64.tgz {t}
+    - uncompress /home/uyun/buildscripts/ant/aix64-bin.tgz {t}
+    - chmod 750 -R {t}/embedded/bin
+    - copy {s}/build/linux_build/install.py {t}/install.py
+    - copy {s}/build/linux_build/install.sh {t}/install.sh
+    - copy {s}/build/linux_build/aix64/manifest.yaml {t}/manifest.yaml
+    - copy {s}/conf.d {t}
+    - copy {s}/checks.d {t}/agent
+    - copy {s}/checks {t}/agent
+    - copy {s}/scripts {t}/agent
+    - copy {s}/utils {t}/agent
+    - copy {s}/datamonitor.conf {t}/conf/datamonitor.conf
+    - copy {s}/datamonitor_template {t}/conf/datamonitor_template
+    - copy {s}/datamonitor-cert.pem {t}/agent/datamonitor-cert.pem
+    - copy {s}/script_monitor_process.py {t}/agent/script_monitor_process.py
+    - copy {s}/updater_process.py {t}/agent/updater_process.py
+    - copy {s}/monitorstatsd.py {t}/agent/monitorstatsd.py
+    - copy {s}/monitoragent.py {t}/agent/monitoragent.py
+    - copy {s}/transaction.py {t}/agent/transaction.py
+    - copy {s}/aggregator.py {t}/agent/aggregator.py
+    - copy {s}/jmxfetch.py {t}/agent/jmxfetch.py
+    - copy {s}/graphite.py {t}/agent/graphite.py
+    - copy {s}/modules.py {t}/agent/modules.py
+    - copy {s}/emitter.py {t}/agent/emitter.py
+    - copy {s}/config.py {t}/agent/config.py
+    - copy {s}/daemon.py {t}/agent/daemon.py
+    - copy {s}/gohai.py {t}/agent/gohai.py
+    - copy {s}/agent.py {t}/agent/agent.py
+    - copy {s}/util.py {t}/agent/util.py
+    - copy {s}/custom_script.py {t}/agent/custom_script.py
+    - compress {t} {project_name} -aix64.tar.gz
+    - remove {t}
+

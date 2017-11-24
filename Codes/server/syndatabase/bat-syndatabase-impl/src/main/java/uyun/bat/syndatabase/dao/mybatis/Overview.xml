@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="uyun.bat.syndatabase.dao.OverviewDao">
+	
+	<resultMap type="uyun.bat.syndatabase.entity.Tag" id="entityMap">
+		<result property="id" column="id" jdbcType="BINARY" />
+		<result property="key" column="key" />
+		<result property="value" column="value" />
+	</resultMap>
+	
+	<select id="getAllOverTagByKey" resultMap="entityMap" parameterType="java.lang.String">
+		select * from overview_tag where `key` = #{key}
+	</select>
+	
+	<update id="updateOverviewTag" parameterType="java.util.List">
+		<foreach collection="list" item="item" index="index" open="" close="" separator=";">
+			update overview_tag set `value` = #{item.value} where `id` = #{item.id, typeHandler=uyun.whale.common.mybatis.type.UUIDTypeHandler}
+		</foreach>
+	</update>
+	
+	<select id="getAllResId" resultType="java.lang.String">
+		select hex(resource_id) from overview_tag_resource
+	</select>
+	
+	<update id="updateResId" parameterType="java.util.List">
+		<foreach collection="list" item="item" index="index" open="" close="" separator=";">
+			update overview_tag_resource set resource_id = #{item.newResId, typeHandler=uyun.whale.common.mybatis.type.UUIDTypeHandler} 
+			where resource_id = #{item.oldResId, typeHandler=uyun.whale.common.mybatis.type.UUIDTypeHandler}
+		</foreach>
+	</update>
+
+</mapper>

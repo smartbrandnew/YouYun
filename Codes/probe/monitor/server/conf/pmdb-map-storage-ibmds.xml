@@ -1,0 +1,693 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<pmdb-map>
+	<monitor type="IBMDS-STORAGEVOLUME-INFO">
+	<script name="dynamic">
+	<![CDATA[
+			objectType = null;
+			for (instance in input.result.rows) {				
+				for (kv in instance) {	
+					if (kv.key.startsWith("rs.")) {
+						objectType = "instance";
+						break;
+					}					
+				}
+				if (instance != null)
+					break;
+			}
+			if (objectType == null) {
+				if (input.resource != null)
+					objectType = "resource";
+				else
+					objectType = "node"
+			}			
+			if (!objectType.equals("instance"))
+				return;
+				
+			ownerId = input.node.id;
+			if (input.resource != null)
+				ownerId = input.resource.id;				
+		
+			for (instance in input.result.rows) {				
+				cls = instance.getIndicator("class");
+				if (cls == null)
+					continue;
+									
+				code = instance.getInstCode();
+				name = instance.getInstName(); 
+				
+				output = context.createOutput("dyna." + ownerId + "." + code, cls);			
+				output.setValue(input, "attr.name", name);				
+								
+				for (kv in instance) {										
+					if (kv.value == null)
+						continue;
+						
+					key = kv.key;
+					if (key.equals("class")
+						|| key.equals("instCode")
+						|| key.equals("instName")
+						|| key.equals("instExtra")
+						|| key.equals("instMonitor"))
+						continue;
+					else if (key.startsWith("rs.")) {						
+						rsId = input.node.id;
+						if (input.resource != null && "resource".equals(kv.value))
+							rsId = input.resource.id;
+						output.setValue(input, key, rsId);
+					} else if (key.startsWith("perf.")) {
+						output.setValue(input, key, kv.value);
+					} else if (key.startsWith("state.")) {
+						output.setValue(input, key, kv.value);
+					} else if (key.startsWith("attr.")) {
+						output.setValue(input, key, kv.value);
+					} else {
+						output.setValue(input, "attr." + key, kv.value);
+					}
+				}
+			}
+		]]>
+		</script>	
+	</monitor>
+	
+	<monitor type="IBMDS-STORAGESYSTEM-INFO">
+	<script name="dynamic">
+	<![CDATA[
+			objectType = null;
+			for (instance in input.result.rows) {				
+				for (kv in instance) {	
+					if (kv.key.startsWith("rs.")) {
+						objectType = "instance";
+						break;
+					}					
+				}
+				if (instance != null)
+					break;
+			}
+			if (objectType == null) {
+				if (input.resource != null)
+					objectType = "resource";
+				else
+					objectType = "node"
+			}			
+			if (!objectType.equals("instance"))
+				return;
+				
+			ownerId = input.node.id;
+			if (input.resource != null)
+				ownerId = input.resource.id;				
+		
+			for (instance in input.result.rows) {				
+				cls = instance.getIndicator("class");
+				if (cls == null)
+					continue;
+									
+				code = instance.getInstCode();
+				name = instance.getInstName(); 
+				
+				output = context.createOutput("dyna." + ownerId + "." + code, cls);			
+				output.setValue(input, "attr.name", name);				
+								
+				for (kv in instance) {										
+					if (kv.value == null)
+						continue;
+						
+					key = kv.key;
+					if (key.equals("class")
+						|| key.equals("instCode")
+						|| key.equals("instName")
+						|| key.equals("instExtra")
+						|| key.equals("instMonitor"))
+						continue;
+					else if (key.startsWith("rs.")) {						
+						rsId = input.node.id;
+						if (input.resource != null && "resource".equals(kv.value))
+							rsId = input.resource.id;
+						output.setValue(input, key, rsId);
+					} else if (key.startsWith("perf.")) {
+						output.setValue(input, key, kv.value);
+					} else if (key.startsWith("state.")) {
+						output.setValue(input, key, kv.value);
+					} else if (key.startsWith("attr.")) {
+						output.setValue(input, key, kv.value);
+					} else {
+						output.setValue(input, "attr." + key, kv.value);
+					}
+				}
+			}
+		]]>
+		</script>	
+	</monitor>
+	
+	<monitor type="IBMDS-STORAGEPOOL-INFO">
+	<script name="dynamic">
+	<![CDATA[
+			objectType = null;
+			for (instance in input.result.rows) {				
+				for (kv in instance) {	
+					if (kv.key.startsWith("rs.")) {
+						objectType = "instance";
+						break;
+					}					
+				}
+				if (instance != null)
+					break;
+			}
+			if (objectType == null) {
+				if (input.resource != null)
+					objectType = "resource";
+				else
+					objectType = "node"
+			}			
+			if (!objectType.equals("instance"))
+				return;
+				
+			ownerId = input.node.id;
+			if (input.resource != null)
+				ownerId = input.resource.id;				
+		
+			for (instance in input.result.rows) {				
+				cls = instance.getIndicator("class");
+				if (cls == null)
+					continue;
+									
+				code = instance.getInstCode();
+				name = instance.getInstName(); 
+				
+				output = context.createOutput("dyna." + ownerId + "." + code, cls);			
+				output.setValue(input, "attr.name", name);				
+								
+				for (kv in instance) {										
+					if (kv.value == null)
+						continue;
+						
+					key = kv.key;
+					if (key.equals("class")
+						|| key.equals("instCode")
+						|| key.equals("instName")
+						|| key.equals("instExtra")
+						|| key.equals("instMonitor"))
+						continue;
+					else if (key.startsWith("rs.")) {						
+						rsId = input.node.id;
+						if (input.resource != null && "resource".equals(kv.value))
+							rsId = input.resource.id;
+						output.setValue(input, key, rsId);
+					} else if (key.startsWith("perf.")) {
+						output.setValue(input, key, kv.value);
+					} else if (key.startsWith("state.")) {
+						output.setValue(input, key, kv.value);
+					} else if (key.startsWith("attr.")) {
+						output.setValue(input, key, kv.value);
+					} else {
+						output.setValue(input, "attr." + key, kv.value);
+					}
+				}
+			}
+		]]>
+		</script>	
+	</monitor>
+	
+	<monitor type="IBMDS-BATTERY-INFO">
+	<script name="dynamic">
+	<![CDATA[
+			objectType = null;
+			for (instance in input.result.rows) {				
+				for (kv in instance) {	
+					if (kv.key.startsWith("rs.")) {
+						objectType = "instance";
+						break;
+					}					
+				}
+				if (instance != null)
+					break;
+			}
+			if (objectType == null) {
+				if (input.resource != null)
+					objectType = "resource";
+				else
+					objectType = "node"
+			}			
+			if (!objectType.equals("instance"))
+				return;
+				
+			ownerId = input.node.id;
+			if (input.resource != null)
+				ownerId = input.resource.id;				
+		
+			for (instance in input.result.rows) {				
+				cls = instance.getIndicator("class");
+				if (cls == null)
+					continue;
+									
+				code = instance.getInstCode();
+				name = instance.getInstName(); 
+				
+				output = context.createOutput("dyna." + ownerId + "." + code, cls);			
+				output.setValue(input, "attr.name", name);				
+								
+				for (kv in instance) {										
+					if (kv.value == null)
+						continue;
+						
+					key = kv.key;
+					if (key.equals("class")
+						|| key.equals("instCode")
+						|| key.equals("instName")
+						|| key.equals("instExtra")
+						|| key.equals("instMonitor"))
+						continue;
+					else if (key.startsWith("rs.")) {						
+						rsId = input.node.id;
+						if (input.resource != null && "resource".equals(kv.value))
+							rsId = input.resource.id;
+						output.setValue(input, key, rsId);
+					} else if (key.startsWith("perf.")) {
+						output.setValue(input, key, kv.value);
+					} else if (key.startsWith("state.")) {
+						output.setValue(input, key, kv.value);
+					} else if (key.startsWith("attr.")) {
+						output.setValue(input, key, kv.value);
+					} else {
+						output.setValue(input, "attr." + key, kv.value);
+					}
+				}
+			}
+		]]>
+		</script>	
+	</monitor>
+	
+	<monitor type="IBMDS-DISKDRIVER-INFO">
+	<script name="dynamic">
+	<![CDATA[
+			objectType = null;
+			for (instance in input.result.rows) {				
+				for (kv in instance) {	
+					if (kv.key.startsWith("rs.")) {
+						objectType = "instance";
+						break;
+					}					
+				}
+				if (instance != null)
+					break;
+			}
+			if (objectType == null) {
+				if (input.resource != null)
+					objectType = "resource";
+				else
+					objectType = "node"
+			}			
+			if (!objectType.equals("instance"))
+				return;
+				
+			ownerId = input.node.id;
+			if (input.resource != null)
+				ownerId = input.resource.id;				
+		
+			for (instance in input.result.rows) {				
+				cls = instance.getIndicator("class");
+				if (cls == null)
+					continue;
+									
+				code = instance.getInstCode();
+				name = instance.getInstName(); 
+				
+				output = context.createOutput("dyna." + ownerId + "." + code, cls);			
+				output.setValue(input, "attr.name", name);				
+								
+				for (kv in instance) {										
+					if (kv.value == null)
+						continue;
+						
+					key = kv.key;
+					if (key.equals("class")
+						|| key.equals("instCode")
+						|| key.equals("instName")
+						|| key.equals("instExtra")
+						|| key.equals("instMonitor"))
+						continue;
+					else if (key.startsWith("rs.")) {						
+						rsId = input.node.id;
+						if (input.resource != null && "resource".equals(kv.value))
+							rsId = input.resource.id;
+						output.setValue(input, key, rsId);
+					} else if (key.startsWith("perf.")) {
+						output.setValue(input, key, kv.value);
+					} else if (key.startsWith("state.")) {
+						output.setValue(input, key, kv.value);
+					} else if (key.startsWith("attr.")) {
+						output.setValue(input, key, kv.value);
+					} else {
+						output.setValue(input, "attr." + key, kv.value);
+					}
+				}
+			}
+		]]>
+		</script>	
+	</monitor>
+	
+	<monitor type="IBMDS-CONTROLLER-INFO">
+	<script name="dynamic">
+	<![CDATA[
+			objectType = null;
+			for (instance in input.result.rows) {				
+				for (kv in instance) {	
+					if (kv.key.startsWith("rs.")) {
+						objectType = "instance";
+						break;
+					}					
+				}
+				if (instance != null)
+					break;
+			}
+			if (objectType == null) {
+				if (input.resource != null)
+					objectType = "resource";
+				else
+					objectType = "node"
+			}			
+			if (!objectType.equals("instance"))
+				return;
+				
+			ownerId = input.node.id;
+			if (input.resource != null)
+				ownerId = input.resource.id;				
+		
+			for (instance in input.result.rows) {				
+				cls = instance.getIndicator("class");
+				if (cls == null)
+					continue;
+									
+				code = instance.getInstCode();
+				name = instance.getInstName(); 
+				
+				output = context.createOutput("dyna." + ownerId + "." + code, cls);			
+				output.setValue(input, "attr.name", name);				
+								
+				for (kv in instance) {										
+					if (kv.value == null)
+						continue;
+						
+					key = kv.key;
+					if (key.equals("class")
+						|| key.equals("instCode")
+						|| key.equals("instName")
+						|| key.equals("instExtra")
+						|| key.equals("instMonitor"))
+						continue;
+					else if (key.startsWith("rs.")) {						
+						rsId = input.node.id;
+						if (input.resource != null && "resource".equals(kv.value))
+							rsId = input.resource.id;
+						output.setValue(input, key, rsId);
+					} else if (key.startsWith("perf.")) {
+						output.setValue(input, key, kv.value);
+					} else if (key.startsWith("state.")) {
+						output.setValue(input, key, kv.value);
+					} else if (key.startsWith("attr.")) {
+						output.setValue(input, key, kv.value);
+					} else {
+						output.setValue(input, "attr." + key, kv.value);
+					}
+				}
+			}
+		]]>
+		</script>	
+	</monitor>
+	
+	<monitor type="IBMDS-FAN-INFO">
+	<script name="dynamic">
+	<![CDATA[
+			objectType = null;
+			for (instance in input.result.rows) {				
+				for (kv in instance) {	
+					if (kv.key.startsWith("rs.")) {
+						objectType = "instance";
+						break;
+					}					
+				}
+				if (instance != null)
+					break;
+			}
+			if (objectType == null) {
+				if (input.resource != null)
+					objectType = "resource";
+				else
+					objectType = "node"
+			}			
+			if (!objectType.equals("instance"))
+				return;
+				
+			ownerId = input.node.id;
+			if (input.resource != null)
+				ownerId = input.resource.id;				
+		
+			for (instance in input.result.rows) {				
+				cls = instance.getIndicator("class");
+				if (cls == null)
+					continue;
+									
+				code = instance.getInstCode();
+				name = instance.getInstName(); 
+				
+				output = context.createOutput("dyna." + ownerId + "." + code, cls);			
+				output.setValue(input, "attr.name", name);				
+								
+				for (kv in instance) {										
+					if (kv.value == null)
+						continue;
+						
+					key = kv.key;
+					if (key.equals("class")
+						|| key.equals("instCode")
+						|| key.equals("instName")
+						|| key.equals("instExtra")
+						|| key.equals("instMonitor"))
+						continue;
+					else if (key.startsWith("rs.")) {						
+						rsId = input.node.id;
+						if (input.resource != null && "resource".equals(kv.value))
+							rsId = input.resource.id;
+						output.setValue(input, key, rsId);
+					} else if (key.startsWith("perf.")) {
+						output.setValue(input, key, kv.value);
+					} else if (key.startsWith("state.")) {
+						output.setValue(input, key, kv.value);
+					} else if (key.startsWith("attr.")) {
+						output.setValue(input, key, kv.value);
+					} else {
+						output.setValue(input, "attr." + key, kv.value);
+					}
+				}
+			}
+		]]>
+		</script>	
+	</monitor>
+	
+	<monitor type="IBMDS-POWERSUPPLY-INFO">
+	<script name="dynamic">
+	<![CDATA[
+			objectType = null;
+			for (instance in input.result.rows) {				
+				for (kv in instance) {	
+					if (kv.key.startsWith("rs.")) {
+						objectType = "instance";
+						break;
+					}					
+				}
+				if (instance != null)
+					break;
+			}
+			if (objectType == null) {
+				if (input.resource != null)
+					objectType = "resource";
+				else
+					objectType = "node"
+			}			
+			if (!objectType.equals("instance"))
+				return;
+				
+			ownerId = input.node.id;
+			if (input.resource != null)
+				ownerId = input.resource.id;				
+		
+			for (instance in input.result.rows) {				
+				cls = instance.getIndicator("class");
+				if (cls == null)
+					continue;
+									
+				code = instance.getInstCode();
+				name = instance.getInstName(); 
+				
+				output = context.createOutput("dyna." + ownerId + "." + code, cls);			
+				output.setValue(input, "attr.name", name);				
+								
+				for (kv in instance) {										
+					if (kv.value == null)
+						continue;
+						
+					key = kv.key;
+					if (key.equals("class")
+						|| key.equals("instCode")
+						|| key.equals("instName")
+						|| key.equals("instExtra")
+						|| key.equals("instMonitor"))
+						continue;
+					else if (key.startsWith("rs.")) {						
+						rsId = input.node.id;
+						if (input.resource != null && "resource".equals(kv.value))
+							rsId = input.resource.id;
+						output.setValue(input, key, rsId);
+					} else if (key.startsWith("perf.")) {
+						output.setValue(input, key, kv.value);
+					} else if (key.startsWith("state.")) {
+						output.setValue(input, key, kv.value);
+					} else if (key.startsWith("attr.")) {
+						output.setValue(input, key, kv.value);
+					} else {
+						output.setValue(input, "attr." + key, kv.value);
+					}
+				}
+			}
+		]]>
+		</script>	
+	</monitor>
+	
+	<monitor type="IBMDS-FCPORT-INFO">
+	<script name="dynamic">
+	<![CDATA[
+			objectType = null;
+			for (instance in input.result.rows) {				
+				for (kv in instance) {	
+					if (kv.key.startsWith("rs.")) {
+						objectType = "instance";
+						break;
+					}					
+				}
+				if (instance != null)
+					break;
+			}
+			if (objectType == null) {
+				if (input.resource != null)
+					objectType = "resource";
+				else
+					objectType = "node"
+			}			
+			if (!objectType.equals("instance"))
+				return;
+				
+			ownerId = input.node.id;
+			if (input.resource != null)
+				ownerId = input.resource.id;				
+		
+			for (instance in input.result.rows) {				
+				cls = instance.getIndicator("class");
+				if (cls == null)
+					continue;
+									
+				code = instance.getInstCode();
+				name = instance.getInstName(); 
+				
+				output = context.createOutput("dyna." + ownerId + "." + code, cls);			
+				output.setValue(input, "attr.name", name);				
+								
+				for (kv in instance) {										
+					if (kv.value == null)
+						continue;
+						
+					key = kv.key;
+					if (key.equals("class")
+						|| key.equals("instCode")
+						|| key.equals("instName")
+						|| key.equals("instExtra")
+						|| key.equals("instMonitor"))
+						continue;
+					else if (key.startsWith("rs.")) {						
+						rsId = input.node.id;
+						if (input.resource != null && "resource".equals(kv.value))
+							rsId = input.resource.id;
+						output.setValue(input, key, rsId);
+					} else if (key.startsWith("perf.")) {
+						output.setValue(input, key, kv.value);
+					} else if (key.startsWith("state.")) {
+						output.setValue(input, key, kv.value);
+					} else if (key.startsWith("attr.")) {
+						output.setValue(input, key, kv.value);
+					} else {
+						output.setValue(input, "attr." + key, kv.value);
+					}
+				}
+			}
+		]]>
+		</script>	
+	</monitor>
+	
+	<monitor type="IBMDS-DISKDRIVER-IO">
+	<script name="dynamic">
+	<![CDATA[
+			objectType = null;
+			for (instance in input.result.rows) {				
+				for (kv in instance) {	
+					if (kv.key.startsWith("rs.")) {
+						objectType = "instance";
+						break;
+					}					
+				}
+				if (instance != null)
+					break;
+			}
+			if (objectType == null) {
+				if (input.resource != null)
+					objectType = "resource";
+				else
+					objectType = "node"
+			}			
+			if (!objectType.equals("instance"))
+				return;
+				
+			ownerId = input.node.id;
+			if (input.resource != null)
+				ownerId = input.resource.id;				
+		
+			for (instance in input.result.rows) {				
+				cls = instance.getIndicator("class");
+				if (cls == null)
+					continue;
+									
+				code = instance.getInstCode();
+				name = instance.getInstName(); 
+				
+				output = context.createOutput("dyna." + ownerId + "." + code, cls);			
+				output.setValue(input, "attr.name", name);				
+								
+				for (kv in instance) {										
+					if (kv.value == null)
+						continue;
+						
+					key = kv.key;
+					if (key.equals("class")
+						|| key.equals("instCode")
+						|| key.equals("instName")
+						|| key.equals("instExtra")
+						|| key.equals("instMonitor"))
+						continue;
+					else if (key.startsWith("rs.")) {						
+						rsId = input.node.id;
+						if (input.resource != null && "resource".equals(kv.value))
+							rsId = input.resource.id;
+						output.setValue(input, key, rsId);
+					} else if (key.startsWith("perf.")) {
+						output.setValue(input, key, kv.value);
+					} else if (key.startsWith("state.")) {
+						output.setValue(input, key, kv.value);
+					} else if (key.startsWith("attr.")) {
+						output.setValue(input, key, kv.value);
+					} else {
+						output.setValue(input, "attr." + key, kv.value);
+					}
+				}
+			}
+		]]>
+		</script>	
+	</monitor>
+</pmdb-map>

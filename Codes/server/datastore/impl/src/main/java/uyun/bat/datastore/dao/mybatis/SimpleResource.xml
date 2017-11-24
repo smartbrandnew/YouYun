@@ -1,0 +1,175 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="uyun.bat.datastore.dao.SimpleResourceDao">
+
+	<resultMap type="uyun.bat.datastore.api.entity.SimpleResource"
+		id="simpleResourceMap">
+		<result property="resourceId" column="id" jdbcType="BINARY"
+			typeHandler="uyun.whale.common.mybatis.type.UUIDTypeHandler" />
+		<result property="resourceName" column="hostname" />
+		<result property="tenantId" column="tenant_id" jdbcType="BINARY"
+			typeHandler="uyun.whale.common.mybatis.type.UUIDTypeHandler" />
+		<result property="ipaddr" column="ipaddr" />
+		<result property="lastCollectTime" column="last_collect_time" />
+		<result property="createTime" column="create_time" />
+		<result property="tags" column="tags" jdbcType="BLOB"
+			typeHandler="uyun.bat.datastore.entity.ListStringTypeHandler" />
+		<result property="onlineStatus" column="online_status" />
+	</resultMap>
+
+	<insert id="save" parameterType="uyun.bat.datastore.api.entity.SimpleResource">
+		insert into simple_resource
+		(id,tenant_id,hostname,ipaddr,create_time,last_collect_time,online_status,tags)
+		values(#{resourceId,typeHandler=uyun.whale.common.mybatis.type.UUIDTypeHandler},
+		#{tenantId,typeHandler=uyun.whale.common.mybatis.type.UUIDTypeHandler},
+		#{resourceName},#{ipaddr},#{createTime},#{lastCollectTime},#{online_status},#{tags,typeHandler=uyun.bat.datastore.entity.ListStringTypeHandler
+		})
+		on duplicate key
+		update
+		id=#{resourceId,typeHandler=uyun.whale.common.mybatis.type.UUIDTypeHandler},
+		tenant_id=#{tenantId,typeHandler=uyun.whale.common.mybatis.type.UUIDTypeHandler},
+		hostname=#{resourceName},
+		ipaddr=#{ipaddr},
+		last_collect_time=#{lastCollectTime},
+		create_time=#{createTime},
+		tags=#{tags,typeHandler=uyun.bat.datastore.entity.ListStringTypeHandler},
+		online_status=#{onlineStatus}
+	</insert>
+
+	<insert id="batchInsert" parameterType="list">
+		insert into
+		simple_resource(id,tenant_id,hostname,ipaddr,create_time,last_collect_time,online_status,tags)
+		values
+		<foreach collection="list" item="item" index="index"
+			separator=",">
+			(#{item.resourceId,typeHandler=uyun.whale.common.mybatis.type.UUIDTypeHandler},
+			#{item.tenantId,typeHandler=uyun.whale.common.mybatis.type.UUIDTypeHandler},
+			#{item.hostname},#{item.ipaddr},
+			#{item.createTime},
+			#{item.lastCollectTime},
+			#{item.onlineStatus},
+			#{item.createTime},
+			#{item.tags,typeHandler=uyun.bat.datastore.entity.ListStringTypeHandler})
+		</foreach>
+	</insert>
+
+
+	<update id="batchUpdate" parameterType="list">
+		<foreach collection="list" item="item" index="index" open=""
+			close="" separator=";">
+			update simple_resource set
+			id=#{item.resourceId,typeHandler=uyun.whale.common.mybatis.type.UUIDTypeHandler},
+			tenant_id=#{item.tenantId,typeHandler=uyun.whale.common.mybatis.type.UUIDTypeHandler},
+			hostname=#{item.resourceName},
+			ipaddr=#{item.ipaddr},
+			last_collect_time=#{item.lastCollectTime},
+			create_time=#{item.createTime},
+			tags=#{item.tags,typeHandler=uyun.bat.datastore.entity.ListStringTypeHandler},
+			online_status=#{item.onlineStatus}
+			where
+			id=#{item.resourceId,typeHandler=uyun.whale.common.mybatis.type.UUIDTypeHandler}
+			and
+			tenant_id=#{item.tenantId,typeHandler=uyun.whale.common.mybatis.type.UUIDTypeHandler}
+		</foreach>
+	</update>
+
+	<delete id="delete">
+		delete from simple_resource where
+		tenant_id=#{0,typeHandler=uyun.whale.common.mybatis.type.UUIDTypeHandler}
+		and id=#{1,typeHandler=uyun.whale.common.mybatis.type.UUIDTypeHandler}
+	</delete>
+
+	<delete id="batchDelete" parameterType="list">
+		DELETE FROM simple_resource
+		WHERE
+		tenant_id=#{tenantId,typeHandler=uyun.whale.common.mybatis.type.UUIDTypeHandler}
+		and id IN
+		<foreach collection="resourceIds" index="index" item="item"
+			open="(" separator="," close=")">
+			#{item,typeHandler=uyun.whale.common.mybatis.type.UUIDTypeHandler}
+		</foreach>
+	</delete>
+
+	<select id="getResCountByDate" resultType="uyun.bat.datastore.api.entity.ResourceCount">
+		select
+		count(id) as count,
+		lower(hex(tenant_id)) as tenantId
+		from
+		simple_resource where
+		<![CDATA[create_time>=#{startTime} and create_time<=#{endTime}]]>
+		GROUP BY tenant_id
+	</select>
+
+	<select id="getResCount" resultType="uyun.bat.datastore.api.entity.ResourceCount">
+		select
+		count(id) as count,
+		lower(hex(tenant_id)) as tenantId
+		from simple_resource
+		GROUP BY
+		tenant_id
+	</select>
+
+	<select id="getResStatusCount" resultType="uyun.bat.datastore.api.entity.ResourceStatusCount">
+		select
+		count(id) as
+		count,
+		online_status as label
+		from simple_resource
+		where
+		tenant_id=#{0,typeHandler=uyun.whale.common.mybatis.type.UUIDTypeHandler}
+		GROUP BY online_status
+	</select>
+
+	<select id="getResIdInId" resultType="string" parameterType="list">
+		SELECT DISTINCT(LOWER(HEX(id))) FROM simple_resource
+		WHERE
+		id in
+		<foreach collection="list" item="item" index="index" open="("
+			close=")" separator=",">
+			#{item,typeHandler=uyun.whale.common.mybatis.type.UUIDTypeHandler}
+		</foreach>
+	</select>
+
+	<select id="getAllTenantId" resultType="string">
+		SELECT
+		DISTINCT(LOWER(HEX(tenant_id))) FROM simple_resource
+	</select>
+
+	<select id="getResCountByTenantId" resultType="int"
+		parameterType="string">
+		SELECT
+		count(id) FROM simple_resource
+		WHERE
+		tenant_id=#{value,typeHandler=uyun.whale.common.mybatis.type.UUIDTypeHandler}
+	</select>
+
+
+	<select id="getMetricSpanTime" resultType="uyun.bat.datastore.entity.MetricSpanTime">
+		SELECT MIN(UNIX_TIMESTAMP(create_time)) AS startTime,LOWER(HEX(tenant_id))
+		AS tenantId,MAX(UNIX_TIMESTAMP(last_collect_time)) AS endTime,
+		(MAX(UNIX_TIMESTAMP(last_collect_time))-MIN(UNIX_TIMESTAMP(create_time)))
+		AS spanTime FROM simple_resource GROUP BY tenant_id
+	</select>
+
+	<select id="getAllResId" resultType="string" parameterType="string">
+		SELECT distinct(lower(HEX(id))) from simple_resource where
+		tenant_id=#{value,typeHandler=uyun.whale.common.mybatis.type.UUIDTypeHandler}
+	</select>
+
+	<select id="getSimpleResource" resultMap="simpleResourceMap"
+		parameterType="uyun.bat.datastore.entity.SimpleResourceQuery">
+		<![CDATA[ 
+		SELECT * from simple_resource where online_status=#{onlineStatus} and last_collect_time < #{lastCollectTime}
+			]]>
+		<if test="tags.size()>0">
+			and
+			<foreach collection="tags" item="item" index="index"
+				separator="and">
+				tags LIKE
+				CONCAT(CONCAT('%', #{item}), '%')
+			</foreach>
+		</if>
+	</select>
+
+
+</mapper>

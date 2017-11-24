@@ -1,0 +1,38 @@
+---
+collect_methods: 
+  # name of monitoring method
+  - name: test
+    # monitoring type(never change)
+    type: ProtocolCcli
+    # monitoring cycle:60s
+    interval: 60
+    # monitoring potocol type: wmi,ssh,telnet,agent
+    sessionName: wmi
+    # agentName
+    agentName: uniagent
+    # remotePort
+    remotePort: 23
+    # loginTimeout
+    loginTimeout: 10000
+    # root user use #; unroot user use $
+    prompt: "#"
+    # password
+    password: test
+    # loginName
+    loginName: root
+    # system name, supported OS: AIX,FreeBSD,HP-UX,IRIX64,Linux,SCOUNIX,Solaris,TRU64 OSF1,Windows
+    sysname: Windows
+hosts: 
+  # name of monitoring method, same as the collect_methods name above
+  - collect_method: test
+    # ip of monitored host,must not be 127.0.0.1
+    ip: 127.0.0.1
+    # name of the monitored host
+    host:
+    # os of the monitored host(linux/windows/netdev[network device])
+    os: windows
+    # use semicolons to separate different tags(ip:127.0.0.1;host:myPC)
+    tags: 
+    # when deployed agent and agentless on the monitored host,id must be same,otherwise id is unnecessary
+    id: 
+

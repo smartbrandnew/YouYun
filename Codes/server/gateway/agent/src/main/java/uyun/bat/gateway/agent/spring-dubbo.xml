@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:dubbo="http://code.alibabatech.com/schema/dubbo"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans  
+        http://www.springframework.org/schema/beans/spring-beans.xsd  
+        http://code.alibabatech.com/schema/dubbo  
+        http://code.alibabatech.com/schema/dubbo/dubbo.xsd">
+
+	<!-- 用dubbo协议暴露服务 -->
+	<dubbo:protocol id="rest-agent" name="rest"
+		port="${bat.gateway.openapi.port}" contextpath="openapi"
+		extension="uyun.bat.common.rest.ext.RPCExceptionMapper,uyun.bat.common.rest.ext.RestExceptionMapper,uyun.bat.common.rest.ext.AuthFilter" />
+	
+	<dubbo:annotation package="uyun.bat.gateway.agent.service.openapi" />
+	
+	<dubbo:protocol id="rest-service" name="rest"
+		port="${bat.service.api.port}" contextpath="serviceapi"
+		extension="uyun.bat.common.rest.ext.RPCExceptionMapper,uyun.bat.common.rest.ext.RestExceptionMapper" />
+
+	<dubbo:annotation package="uyun.bat.gateway.agent.service.serviceapi" />
+
+</beans>  

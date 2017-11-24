@@ -1,0 +1,12 @@
+name: remote-monitor
+version: 2.0.12
+author: uyun
+description: monitor-agent
+platforms:
+    Linux: [x64, x32, x86]
+run:
+
+priority: 999
+scripts:
+    post_install: sh install.sh
+env:

@@ -1,0 +1,1 @@
+powershell -File .\packaging/datamonitor-agent/win32/build.ps1

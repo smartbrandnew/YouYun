@@ -1,0 +1,20 @@
+# Pull base image
+FROM dockerhub.uyuntest.cn:5000/centos7-jdk:v1.1.0
+MAINTAINER ant@uyunsoft.cn
+
+ARG VERSION
+ADD platform-ant-dispatcher-V2.0.$VERSION.tar.gz   /opt/uyun/platform
+ADD platform-ant-python-2.7.13.tar.gz   /opt/uyun/platform
+ADD platform-ant-node-7.8.0.tar.gz   /opt/uyun/platform
+ADD platform-ant-nginx-1.8.1.tar.gz /opt/uyun/platform
+ADD init.sh /opt/uyun
+
+RUN cp -rf  /opt/uyun/platform/platform-ant-dispatcher /opt/uyun/platform/dispatcher && \
+    cp -rf  /opt/uyun/platform/platform-ant-python/embedded  /opt/uyun/platform/dispatcher/embedded && \
+    cp -rf /opt/uyun/platform/platform-ant-node/node /opt/uyun/platform/dispatcher/node && \
+    cp -rf /opt/uyun/platform/platform-ant-nginx/nginx /opt/uyun/platform/nginx && \
+    rm -rf /opt/uyun/platform/platform*
+
+EXPOSE 7599
+EXPOSE 7597
+ENV LANG zh_CN.UTF-8

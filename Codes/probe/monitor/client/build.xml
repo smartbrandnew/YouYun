@@ -1,0 +1,167 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<project default="release" xmlns:ivy="antlib:org.apache.ivy.ant" basedir=".">
+	<tstamp>
+		<format property="build.time" pattern="yyyy-MM-dd HH:mm:ss" />
+	</tstamp>
+	<tstamp>
+		<format property="yyyymmdd" pattern="yyyyMMdd" />
+	</tstamp>
+	<property environment="env" />
+	<property file="build.properties" />
+
+	<path id="module.lib">
+		<fileset dir="${ivy.retrieve.lib.dir}" />
+	</path>
+
+	<target name="resolve">
+		<ivy:retrieve pattern="${ivy.retrieve.lib.dir}/[conf]/[artifact].[ext]" sync="true" />
+	</target>
+
+	<target name="publish" depends="_release-jar">
+		<delete file="${module.dist.dir}/ivy.xml" />
+		<ivy:publish artifactspattern="${module.dist.dir}/lib/[artifact].[ext]" pubrevision="${module.version}" resolver="${ivy.publish.dest}" status="release" overwrite="${ivy.publish.overwrite}" update="true" />
+	</target>
+
+	<target name="clean">
+		<delete dir="${module.target.dir}" />
+		<delete dir="${module.dist.dir}" />
+		<delete dir="${module.temp.dir}" />
+		<delete dir="${ivy.retrieve.lib.dir}" />
+	</target>
+
+	<target name="compile" depends="resolve">
+		<mkdir dir="${module.target.dir}" />
+
+		<javac srcdir="${module.src.dir}" destdir="${module.target.dir}" includeantruntime="no" encoding="UTF-8" debug="on">
+			<classpath refid="module.lib" />
+		</javac>
+
+		<copy todir="${module.target.dir}" preservelastmodified="true">
+			<fileset dir="${module.src.dir}">
+				<exclude name="**/*.java" />
+				<exclude name="**/.svn" />
+			</fileset>
+		</copy>
+	</target>
+
+	<target name="_release-dev">
+		<copy todir="${module.dist.dir}">
+			<fileset dir="${module.dir}">
+				<include name="conf/**" />
+				<include name="resources/**" />
+				<exclude name="**/.svn" />
+			</fileset>
+		</copy>
+	</target>
+
+	<target name="release" depends="_release-jar">
+		<mkdir dir="${module.temp.dir}" />
+		<unzip src="${ivy.retrieve.lib.dir}/full/platform.research.classprotect-janel.zip" dest="${module.temp.dir}/janel" overwrite="false" />
+		<copy file="${module.temp.dir}/janel/janel windows.exe" tofile="${module.dist.dir}/bin/carrier-client.exe" />
+		<copy file="${module.temp.dir}/janel/janel console.exe" tofile="${module.dist.dir}/bin/carrier-client debug.exe" />
+		<copy file="${module.temp.dir}/janel/janel console.exe" tofile="${module.dist.dir}/bin/impexp.exe" />
+
+		<mkdir dir="${module.temp.dir}/jre" />
+		<unzip src="${ivy.retrieve.lib.dir}/full/jdk.zip" dest="${module.dist.dir}/jre" overwrite="false" />
+
+		<copy todir="${module.dist.dir}">
+			<fileset dir="${module.dir}">
+				<include name="bin/**" />
+				<include name="conf/**" />
+				<include name="resources/**" />
+				<exclude name="**/.svn" />
+			</fileset>
+		</copy>
+
+		<copy todir="${module.dist.dir}/lib">
+			<fileset dir="${ivy.retrieve.lib.dir}/default">
+				<include name="*.jar" />
+			</fileset>
+		</copy>
+
+		<mkdir dir="${basedir}/../../../build/dist/monitor/upgrade/client" />
+		<copy todir="${basedir}/../../../build/dist/monitor/upgrade/client">
+			<fileset dir="${basedir}">
+				<include name="bin/carrier-client.lap" />
+			</fileset>
+		</copy>
+	</target>
+
+	<target name="release-linux" depends="_release-jar-linux">
+		<mkdir dir="${module.temp.dir}" />
+		<unzip src="${ivy.retrieve.lib.dir}/full/platform.research.classprotect-janel.zip" dest="${module.temp.dir}/janel" overwrite="false" />
+
+		<mkdir dir="${module.temp.dir}/jre" />
+		<unzip src="${ivy.retrieve.lib.dir}/full/jdk.redhat6.x64.zip" dest="${module.dist.linux.dir}/jre" overwrite="false" />
+
+		<copy todir="${module.dist.linux.dir}">
+			<fileset dir="${module.dir}">
+				<include name="bin/**" />
+				<include name="conf/**" />
+				<include name="resources/**" />
+				<exclude name="**/.svn" />
+				<exclude name="**/*.exe" />
+				<exclude name="**/*.dll" />
+				<exclude name="**/*.bat" />
+				<exclude name="**/*.lap" />
+			</fileset>
+		</copy>
+
+		<copy todir="${module.dist.linux.dir}/lib">
+			<fileset dir="${ivy.retrieve.lib.dir}/default">
+				<include name="*.jar" />
+			</fileset>
+		</copy>
+
+		<mkdir dir="${basedir}/../../../build/dist/monitor/upgrade/client" />
+		<copy todir="${basedir}/../../../build/dist/monitor/upgrade/client">
+			<fileset dir="${basedir}">
+				<include name="bin/carrier-client.lap" />
+			</fileset>
+		</copy>
+	</target>
+
+	<target name="zip-linux" depends="release-linux">
+		<zip destfile="build/Broadview_COSS_client_linux_V6.0.R4.6.${yyyymmdd}.zip" update="true">
+			<zipfileset dir="${module.dist.linux.dir}" prefix="client">
+			</zipfileset>
+			<zipfileset dir="${module.dir}/doc">
+			</zipfileset>
+		</zip>
+	</target>
+
+
+	<target name="zip" depends="release">
+		<zip destfile="build/Broadview_COSS_client_V6.0.R4.6.${yyyymmdd}.zip" update="true">
+			<zipfileset dir="${module.dist.dir}" prefix="client">
+			</zipfileset>
+		</zip>
+	</target>
+
+
+	<target name="_release-jar" depends="compile">
+		<mkdir dir="${module.dist.dir}/lib" />
+		<jar destfile="${module.dist.dir}/lib/${module.name}.jar">
+			<manifest>
+				<attribute name="Implementation-Version" value="${module.version}" />
+				<attribute name="Build-Time" value="${build.time}" />
+				<attribute name="Build-Machine" value="${env.COMPUTERNAME}" />
+			</manifest>
+			<fileset dir="${module.target.dir}" />
+		</jar>
+	</target>
+
+
+	<target name="_release-jar-linux" depends="compile">
+		<mkdir dir="${module.dist.linux.dir}/lib" />
+		<jar destfile="${module.dist.linux.dir}/lib/${module.name}.jar">
+			<manifest>
+				<attribute name="Implementation-Version" value="${module.version}" />
+				<attribute name="Build-Time" value="${build.time}" />
+				<attribute name="Build-Machine" value="${env.COMPUTERNAME}" />
+			</manifest>
+			<fileset dir="${module.target.dir}" />
+		</jar>
+	</target>
+</project>

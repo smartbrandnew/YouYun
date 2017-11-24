@@ -1,0 +1,17 @@
+- repo: https://github.com/pre-commit/pre-commit-hooks.git
+  sha: cf550fcab3f12015f8676b8278b30e1a5bc10e70
+  hooks:
+  - id: trailing-whitespace
+  - id: end-of-file-fixer
+  - id: autopep8-wrapper
+  - id: check-docstring-first
+  - id: check-json
+  - id: check-yaml
+  - id: debug-statements
+  - id: requirements-txt-fixer
+  - id: flake8
+
+- repo: git://github.com/mailto1587/pre-commit-hooks
+  sha: c22aada826ca4689a163ac9b8504d494d26931f4
+  hooks:
+  -   id: remove-tabs

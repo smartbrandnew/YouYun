@@ -1,0 +1,135 @@
+<?xml version="1.0"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+	<groupId>uyun.bat</groupId>
+	<version>2.0.0-SNAPSHOT</version>
+	<artifactId>bat-nginx</artifactId>
+	<packaging>pom</packaging>
+
+	<properties>
+		<maven.compiler.source>1.8</maven.compiler.source>
+		<maven.compiler.target>1.8</maven.compiler.target>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+	</properties>
+
+	<distributionManagement>
+		<repository>
+			<id>uyun-release</id>
+			<url>http://www.uyunsoft.cn/nexus/content/repositories/releases/</url>
+		</repository>
+		<snapshotRepository>
+			<id>uyun-snapshot</id>
+			<url>http://www.uyunsoft.cn/nexus/content/repositories/snapshot/</url>
+		</snapshotRepository>
+	</distributionManagement>
+	<dependencies>
+		<dependency>
+			<!-- TODO 修改为uyun.3rd -->
+			<groupId>nginx</groupId>
+			<artifactId>nginx-linux</artifactId>
+			<version>1.8.1</version>
+			<classifier>bin</classifier>
+			<type>tar.gz</type>
+			<scope>runtime</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>uyun.bat</groupId>
+			<artifactId>bat-front</artifactId>
+			<version>${project.version}</version>
+			<type>tar.gz</type>
+		</dependency>
+
+		<!-- 添加agent依赖 start -->
+		<!-- windows -->
+		<dependency>
+			<groupId>uyun.bat.agent</groupId>
+			<artifactId>bat-agent-win</artifactId>
+			<version>${project.version}</version>
+			<type>msi</type>
+		</dependency>
+		<!-- redhat -->
+		<dependency>
+			<groupId>uyun.bat.agent</groupId>
+			<artifactId>bat-agent-redhat64</artifactId>
+			<version>${project.version}</version>
+			<type>tar.gz</type>
+		</dependency>
+		<dependency>
+			<groupId>uyun.bat.agent</groupId>
+			<artifactId>bat-agent-redhat32</artifactId>
+			<version>${project.version}</version>
+			<type>tar.gz</type>
+		</dependency>
+		<dependency>
+			<groupId>uyun.bat.agent</groupId>
+			<artifactId>bat-agent-redhat5_64</artifactId>
+			<version>${project.version}</version>
+			<type>tar.gz</type>
+		</dependency>
+		<!-- debian -->
+		<dependency>
+			<groupId>uyun.bat.agent</groupId>
+			<artifactId>bat-agent-debian64</artifactId>
+			<version>${project.version}</version>
+			<type>tar.gz</type>
+		</dependency>
+		<dependency>
+			<groupId>uyun.bat.agent</groupId>
+			<artifactId>bat-agent-debian32</artifactId>
+			<version>${project.version}</version>
+			<type>tar.gz</type>
+		</dependency>
+		<!-- docker -->
+		<dependency>
+			<groupId>uyun.bat.agent</groupId>
+			<artifactId>bat-agent-docker</artifactId>
+			<version>2.0.0</version>
+			<type>tar.gz</type>
+		</dependency>
+
+		<!-- suse -->
+		<dependency>
+			<groupId>uyun.bat.agent</groupId>
+			<artifactId>bat-agent-suse64</artifactId>
+			<version>${project.version}</version>
+			<type>tar.gz</type>
+		</dependency>
+		<dependency>
+			<groupId>uyun.bat.agent</groupId>
+			<artifactId>bat-agent-suse10_64</artifactId>
+			<version>${project.version}</version>
+			<type>tar.gz</type>
+		</dependency>
+		<!-- 添加agent依赖 end -->
+	</dependencies>
+
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-assembly-plugin</artifactId>
+				<version>2.6</version>
+				<executions>
+					<execution>
+						<id>build-bin</id>
+						<phase>package</phase>
+						<goals>
+							<goal>single</goal>
+						</goals>
+						<configuration>
+							<descriptors>
+								<descriptor>assembly.xml</descriptor>
+							</descriptors>
+							<finalName>monitor-nginx</finalName>
+							<appendAssemblyId>false</appendAssemblyId>
+							<attach>false</attach>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+		</plugins>
+	</build>
+</project>

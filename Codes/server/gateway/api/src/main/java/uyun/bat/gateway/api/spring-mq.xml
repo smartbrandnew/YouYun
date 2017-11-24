@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:jms="http://www.springframework.org/schema/jms" xmlns:aop="http://www.springframework.org/schema/aop"
+	xsi:schemaLocation="
+            http://www.springframework.org/schema/beans 
+            http://www.springframework.org/schema/beans/spring-beans.xsd   
+            http://www.springframework.org/schema/context
+            http://www.springframework.org/schema/context/spring-context.xsd         
+            http://www.springframework.org/schema/jms 
+            http://www.springframework.org/schema/jms/spring-jms.xsd
+            http://www.springframework.org/schema/aop 
+            http://www.springframework.org/schema/aop/spring-aop-4.0.xsd">
+
+	<bean id="amqCachingConnectionFactory"
+		class="org.springframework.jms.connection.CachingConnectionFactory">
+		<property name="targetConnectionFactory">
+			<bean class="org.apache.activemq.ActiveMQConnectionFactory">
+				<property name="brokerURL" value="${mq.brokerURL}" />
+				<property name="useAsyncSend" value="true" />
+				<property name="clientIDPrefix" value="${jms.clientIDPrefix}-gateway-dd-agent" />
+			</bean>
+		</property>
+	</bean>
+
+	<bean id="datastoreMetricBufferQueue" class="org.apache.activemq.command.ActiveMQQueue">
+		<constructor-arg index="0" value="${jms.datastore.metric.buffer.queue}" />
+	</bean>
+
+	<bean id="datastoreMetricBufferQueueJmsTemplate" class="org.springframework.jms.core.JmsTemplate">
+		<property name="connectionFactory" ref="amqCachingConnectionFactory" />
+		<property name="defaultDestination" ref="datastoreMetricBufferQueue" />
+		<property name="messageConverter">
+			<bean
+				class="org.springframework.jms.support.converter.SimpleMessageConverter" />
+		</property>
+	</bean>
+
+	<bean id="datastoreStateMetricBufferQueue" class="org.apache.activemq.command.ActiveMQQueue">
+		<constructor-arg index="0" value="${jms.datastore.state.metric.buffer.queue}" />
+	</bean>
+
+	<bean id="datastoreStateMetricBufferQueueJmsTemplate" class="org.springframework.jms.core.JmsTemplate">
+		<property name="connectionFactory" ref="amqCachingConnectionFactory" />
+		<property name="defaultDestination" ref="datastoreStateMetricBufferQueue" />
+		<property name="messageConverter">
+			<bean
+					class="org.springframework.jms.support.converter.SimpleMessageConverter" />
+		</property>
+	</bean>
+	
+	<!--发送到monitor资源下线队列 -->
+	<bean id="resourceQueue" class="org.apache.activemq.command.ActiveMQQueue">
+		<constructor-arg index="0" value="${jms.resource.queue}" />
+	</bean>
+	<bean id="resourceQueueJmsTemplate" class="org.springframework.jms.core.JmsTemplate">
+		<property name="connectionFactory" ref="amqCachingConnectionFactory" />
+		<property name="defaultDestination" ref="resourceQueue" />
+		<property name="messageConverter">
+			<bean
+				class="org.springframework.jms.support.converter.SimpleMessageConverter" />
+		</property>
+	</bean>
+	
+	<bean class="uyun.bat.gateway.api.service.ServiceManager" factory-method="getInstance">
+		<property name="customMetricService">
+			<bean class="uyun.bat.gateway.api.service.CustomMetricService">
+				<property name="jmsTemplate" ref="datastoreMetricBufferQueueJmsTemplate" />
+				<property name="stateJmsTemplate" ref="datastoreStateMetricBufferQueueJmsTemplate" />
+			</bean>
+		</property>
+		<property name="customResourceService">
+			<bean class="uyun.bat.gateway.api.service.CustomResourceService">
+				<property name="resourceQueueJmsTemplate" ref="resourceQueueJmsTemplate"/>
+			</bean>
+		</property>
+	</bean>
+</beans>

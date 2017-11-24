@@ -1,0 +1,10 @@
+init_config:
+
+instances:
+  - host: localhost          
+    username: test            
+    password: "******"
+    port: 22
+    sftp_check: True
+    private_key_file:
+    add_missing_keys: True

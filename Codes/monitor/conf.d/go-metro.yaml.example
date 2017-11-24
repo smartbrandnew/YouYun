@@ -1,0 +1,21 @@
+init_config:
+    snaplen: 512
+    idle_ttl: 300
+    exp_ttl: 60
+    statsd_ip: 127.0.0.1
+    statsd_port: 8125
+    log_to_file: true
+    log_level: info
+
+instances:
+- interface: eth0
+  tags:
+    - foo:bar
+  ips:
+    - 192.168.0.1
+  hosts:
+    - somehost.somedomain.to
+
+- interface: eth2
+  tags:
+    - bla:zap

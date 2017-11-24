@@ -1,0 +1,144 @@
+#!/usr/bin/env sh
+NAME="datamonitor-agent"
+DESC="Monitor Agent"
+AGENTPATH="/opt/datamonitor-agent/agent/agent.py"
+FORWARDERPATH="/opt/datamonitor-agent/agent/monitoragent.py"
+monitorSTATSDPATH="/opt/datamonitor-agent/agent/monitorstatsd.py"
+AGENTCONF="/opt/datamonitor-agent/etc/datamonitor.conf"
+SUPERVISOR_PIDFILE="/opt/datamonitor-agent/run/datamonitor-supervisord.pid"
+SUPERVISOR_CONF_FILE="/opt/datamonitor-agent/etc/supervisor.conf"
+SUPERVISOR_SOCK="/opt/datamonitor-agent/run/datamonitor-supervisor.sock"
+SUPERVISORCTL_PATH="/opt/datamonitor-agent/bin/supervisorctl"
+SUPERVISORD_PATH="/opt/datamonitor-agent/bin/supervisord"
+COLLECTOR_PIDFILE="/opt/datamonitor-agent/run/monitor-agent.pid"
+SYSTEM_PATH=/opt/datamonitor-agent/embedded/bin:/opt/datamonitor-agent/bin:$PATH
+
+# be sure to remove PY2APP parameters
+unset PYTHONHOME
+unset PYTHONPATH
+
+
+check_status() {
+    # If the socket exists, we can use supervisorctl
+    if [ -e "$SUPERVISOR_SOCK" ]; then
+        # If we're using supervisor, check the number of datamonitor processes
+        # supervisor is currently controlling, and make sure that it's the
+        # same as the number of programs specified in the supervisor config
+        # file:
+
+        supervisor_processes=$($SUPERVISORCTL_PATH -c $SUPERVISOR_CONF_FILE status)
+        datamonitor_supervisor_processes=$(echo "$supervisor_processes" |
+                                       grep -Ev 'monitorstatsd|jmxfetch|net_collector_process|script_caller_process' |
+                                       grep $NAME |
+                                       grep -c -E 'RUNNING|STARTING')
+        supervisor_config_programs=$(grep -v -Ev 'monitorstatsd|jmxfetch' "$DIR/$SUPERVISOR_CONF_FILE" |
+                                     grep -c '\[program:')
+
+        if [ "$datamonitor_supervisor_processes" -ne "$supervisor_config_programs" ]; then
+            echo "$supervisor_processes"
+            echo "$DESC (supervisor) is NOT running all child processes"
+            return 1
+        else
+            echo "$DESC (supervisor) is running all child processes"
+            return 0
+        fi
+    else
+        echo "$DESC (supervisor) is not running"
+        return 2
+    fi
+}
+
+case $1 in
+    start)
+        if [ ! -f "$AGENTCONF" ]; then
+            echo "$AGENTCONF not found. Exiting."
+            exit 3
+        fi
+
+        check_status > /dev/null
+        if [ $? -eq 0 ]; then
+            echo "$DESC is already running"
+            exit 0
+        fi
+
+        $AGENTPATH configcheck > /dev/null
+        if [ $? -ne 0 ]; then
+            echo "Invalid check configuration. Please run sudo datamonitor-agent configtest for more details."
+            exit 1
+        fi
+
+        echo "Starting $DESC (using supervisord)" "$NAME"
+        PATH=$SYSTEM_PATH $SUPERVISORD_PATH -c $SUPERVISOR_CONF_FILE
+        exit 0
+        ;;
+
+    stop)
+        check_status > /dev/null
+        if [ $? -ne 2 ]; then
+            $SUPERVISORCTL_PATH -c $SUPERVISOR_CONF_FILE shutdown
+        else
+            echo "$DESC (supervisor) is not running"
+        fi
+        exit $?
+        ;;
+
+    restart)
+        check_status > /dev/null
+        if [ $? -eq 0 ]; then
+            "$0" stop
+        else
+            echo "$DESC was not running"
+        fi
+        "$0" start
+        ;;
+
+    status)
+        check_status
+        exit $?
+        ;;
+
+    reload)
+        kill -HUP `cat $COLLECTOR_PIDFILE`
+        exit $?
+        ;;
+
+    info)
+        shift # shift to pass the remaining arguments to agent/agent.py info.
+              # Currently only agent.py takes additional arguments
+        $AGENTPATH info $@
+        RETURN_VALUE=$?
+        $monitorSTATSDPATH info
+        RETURN_VALUE=$(($RETURN_VALUE || $?))
+        $FORWARDERPATH info
+        RETURN_VALUE=$(($RETURN_VALUE || $?))
+        exit $RETURN_VALUE
+        ;;
+
+    configcheck)
+        $AGENTPATH configcheck
+        exit $?
+        ;;
+
+    check)
+        shift
+        $AGENTPATH check $@
+        exit $?
+        ;;
+
+    flare)
+        shift
+        $AGENTPATH flare $@
+        exit $?
+        ;;
+
+    jmx)
+        shift
+        $AGENTPATH jmx $@
+        exit $?
+        ;;
+
+    *)
+        echo "Usage: $0 {start|stop|restart|info|status|reload|configcheck|check|flare|jmx}"
+        exit 2
+        ;;
+esac

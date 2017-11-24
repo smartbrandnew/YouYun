@@ -1,0 +1,265 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<pmdb-map>
+	<monitor type="DOMINO_BASIC" >
+		<!-- 
+		DOMINO_BASIC-1	内存使用	MB
+		DOMINO_BASIC-2	数据库空间占用率	%
+		DOMINO_BASIC-3	代发送邮件数目	个
+		DOMINO_BASIC-4	僵死邮件数目	个
+		 -->	
+		<object local="resource" remote="Domino" states="SUCCESSED,FAILED,OVERSTEP">
+			<item local="monitor.state" remote="state.available_status" function="monitorState2availableStatus"/>
+			<item local="perf.DOMINO_BASIC-1" remote="perf.domino.proc_mem_uesd" />		
+			<item local="perf.DOMINO_BASIC-2" remote="perf.domino.dbspace_used_pct" />
+			<item local="perf.DOMINO_BASIC-3" remote="perf.domino-mail.proxy_msgs_delivered" />
+			<item local="perf.DOMINO_BASIC-4" remote="perf.domino-mail.dead_msgs" />
+		</object>
+	</monitor>
+	
+	<monitor type="DOMINO46_BASIC" >
+		<!-- 
+		DOMINO46_BASIC-1	内存使用	MB
+		DOMINO46_BASIC-2	数据库空间占用率	%
+		DOMINO46_BASIC-3	代发送邮件数目	个
+		DOMINO46_BASIC-4	僵死邮件数目	个
+		 -->	
+		<object local="resource" remote="Domino" states="SUCCESSED,FAILED,OVERSTEP">
+			<item local="monitor.state" remote="state.available_status" function="monitorState2availableStatus"/>
+			<item local="perf.DOMINO46_BASIC-1" remote="perf.domino.proc_mem_uesd" />		
+			<item local="perf.DOMINO46_BASIC-2" remote="perf.domino.dbspace_used_pct" />
+			<item local="perf.DOMINO46_BASIC-3" remote="perf.domino-mail.proxy_msgs_delivered" />
+			<item local="perf.DOMINO46_BASIC-4" remote="perf.domino-mail.dead_msgs" />
+		</object>
+	</monitor>	
+	
+	<monitor type="DOMINO_PERF" >
+		<!-- 
+		DOMINO_PERF-1	版本	
+		DOMINO_PERF-2	文件路径	
+		DOMINO_PERF-3	服务器CPU个数	个
+		DOMINO_PERF-4	服务器CPU类型	
+		DOMINO_PERF-10	每分钟交易数	起
+		DOMINO_PERF-11	每分钟最大交易数	起
+		DOMINO_PERF-12	交易总数	起
+		DOMINO_PERF-13	当前用户数	个
+		DOMINO_PERF-14	最大用户数	个
+		DOMINO_PERF-15	当前任务数	个
+		DOMINO_PERF-20	成功复制次数	次
+		DOMINO_PERF-21	失败复制次数	次
+		DOMINO_PERF-22	删除文档总数	个
+		DOMINO_PERF-23	增加文档总数	个
+		DOMINO_PERF-24	修改文档总数	个
+		DOMINO_PERF-30	死邮件数	个
+		DOMINO_PERF-31	路由邮件数	个
+		DOMINO_PERF-32	待路由邮件数	个
+		DOMINO_PERF-33	已投递邮件数	个
+		DOMINO_PERF-34	待投递邮件数	个
+		DOMINO_PERF-35	平均邮件大小	KB
+		DOMINO_PERF-36	最大邮件大小	KB
+		DOMINO_PERF-40	缓冲池大小	byte
+		DOMINO_PERF-41	缓冲池使用值	byte
+		DOMINO_PERF-42	缓冲池最大值	byte
+		DOMINO_PERF-43	扩展管理池使用值	byte
+		DOMINO_PERF-44	扩展管理池最大值	byte
+		DOMINO_PERF-45	NSF使用值	byte
+		DOMINO_PERF-46	NSF最大值	byte
+		DOMINO_PERF-50	MAIL传递速率	秒/次
+		DOMINO_PERF-51	MAIL路由速率	次/秒
+		DOMINO_PERF-52	死信率	%
+		DOMINO_PERF-53	总的处理数	个
+		DOMINO_PERF-54	空闲空间	位元組
+		DOMINO_PERF-55	剩余率	%
+		 -->
+		<object local="resource" remote="Domino">
+			<item local="perf.DOMINO_PERF-13" remote="perf.domino.current_users" />
+			<item local="perf.DOMINO_PERF-14" remote="perf.domino.users_peak" />
+			<item local="perf.DOMINO_PERF-15" remote="perf.domino.current_tasks" />
+			<item local="perf.DOMINO_PERF-20" remote="perf.domino.succ_replications" />
+			<item local="perf.DOMINO_PERF-21" remote="perf.domino.failed_replications" />
+			<item local="perf.DOMINO_PERF-22" remote="perf.domino.docs_deleted" />
+			<item local="perf.DOMINO_PERF-23" remote="perf.domino.docs_added" />
+			<item local="perf.DOMINO_PERF-24" remote="perf.domino.docs_updated" />
+			<item local="perf.DOMINO_PERF-53" remote="perf.domino.processs_count" />
+			<item local="perf.DOMINO_PERF-54" remote="perf.domino.disk_free_size" />
+			<item local="perf.DOMINO_PERF-55" remote="perf.domino.disk_free_pct" />
+			
+			<item local="perf.DOMINO_PERF-10" remote="perf.domino-trade.trans_proc_rate"/>
+			<item local="perf.DOMINO_PERF-11" remote="perf.domino-trade.trans_proc_rate_peak"/>
+			<item local="perf.DOMINO_PERF-12" remote="perf.domino-trade.total_trans"/>		
+				
+			<item local="perf.DOMINO_PERF-30" remote="perf.domino-mail.dead_mail_count"/>
+			<item local="perf.DOMINO_PERF-31" remote="perf.domino-mail.total_routed"/>
+			<item local="perf.DOMINO_PERF-32" remote="perf.domino-mail.waiting_for_route"/>
+			<item local="perf.DOMINO_PERF-33" remote="perf.domino-mail.total_delivered"/>
+			<item local="perf.DOMINO_PERF-34" remote="perf.domino-mail.waiting_for_deliver"/>
+			<item local="perf.DOMINO_PERF-35" remote="perf.domino-mail.avg_size_delivered"/>
+			<item local="perf.DOMINO_PERF-36" remote="perf.domino-mail.max_size_delivered"/>
+			<item local="perf.DOMINO_PERF-50" remote="perf.domino-mail.avg_deliver_time"/>
+			<item local="perf.DOMINO_PERF-51" remote="perf.domino-mail.route_rate"/>
+			<item local="perf.DOMINO_PERF-52" remote="perf.domino-mail.dead_msgs_pct"/>		
+				
+			<item local="perf.DOMINO_PERF-40" remote="perf.domino-buff.buff_pool_size"/>
+			<item local="perf.DOMINO_PERF-41" remote="perf.domino-buff.buff_pool_used"/>
+			<item local="perf.DOMINO_PERF-42" remote="perf.domino-buff.max_buff_pool_used"/>
+			<item local="perf.DOMINO_PERF-43" remote="perf.domino-buff.extend_buffpool_used"/>
+			<item local="perf.DOMINO_PERF-44" remote="perf.domino-buff.max_extend_buffpool"/>
+			<item local="perf.DOMINO_PERF-45" remote="perf.domino-buff.nsf_pool_used"/>
+			<item local="perf.DOMINO_PERF-46" remote="perf.domino-buff.nsf_pool_peak"/>							
+		</object>
+	</monitor>	
+		
+	<monitor type="EXCHANGE" >
+		<!-- 
+		ex_basic.act_conn_counts 	活动连接数
+		ex_basic.act_user_counts	活动用户数
+		ex_basic.rpc_suc_ps  	RPC成功请求速率
+		ex_basic.rpc_fail_ps	RPC失败请求速率
+		ex_basic.alloc_memory 	已分配内存
+
+		 -->	
+		<object local="resource" remote="Exchange">
+			<item local="monitor.state" remote="state.available_status" function="monitorState2availableStatus"/>
+			<item local="perf.exc-basic-activeConnectionCount" remote="perf.ex_basic.act_conn_counts" />		
+			<item local="perf.exc-basic-activeUserCount" remote="perf.ex_basic.act_user_counts" />
+			<item local="perf.exc-basic-clientRPCsSucceededPersec" remote="perf.ex_basic.rpc_suc_ps" />
+			<item local="perf.exc-basic-clientRPCsFailedPersec" remote="perf.ex_basic.rpc_fail_ps" />
+			<item local="perf.exc-basic-exchmemCurrentMBAllocated" remote="perf.ex_basic.alloc_memory" />
+		</object>
+	</monitor>	
+	
+	<monitor type="EXCHANGE-MAILBOX" >
+		<!-- 
+		exc-mailbox-messagesDeliveredPersec	 传送速率
+		exc-mailbox-messagesSubmittedPersec 	提交速率
+		exc-mailbox-receiveSize 	接收队列长度
+		 -->	
+		<object local="resource" remote="Exchange">
+			<item local="monitor.state" remote="state.available_status" function="monitorState2availableStatus"/>
+			<item local="perf.exc-mailbox-messagesDeliveredPersec" remote="perf.ex_mailbox.mess_delivery_ps" />		
+			<item local="perf.exc-mailbox-messagesSubmittedPersec" remote="perf.ex_mailbox.submit_ps" />
+			<item local="perf.exc-mailbox-receiveSize" remote="perf.ex_mailbox.rec_size" />
+		</object>
+	</monitor>	
+	
+	<monitor type="EXCHANGE-LDAP" >
+		<!-- 
+		exc-active-rpcThreads		RPC活动线程数
+		exc-ldap-ResultsPersec  	结果产生速率
+		exc-ldap-SearchCallsPersec	查询执行速率
+		 -->	
+		<object local="resource" remote="Exchange">
+			<item local="monitor.state" remote="state.available_status" function="monitorState2availableStatus"/>
+			<item local="perf.exc-active-rpcThreads" remote="perf.ex_ldap.ac_rpc_threads" />		
+			<item local="perf.exc-ldap-ResultsPersec" remote="perf.ex_ldap.result_ps" />
+			<item local="perf.exc-ldap-SearchCallsPersec" remote="perf.ex_ldap.search_calls_ps" />
+		</object>
+	</monitor>	
+	
+	<monitor type="EXCHANGE-DATABASE" >
+		<!-- 
+		exc-database-size	 数据库缓存大小
+		exc-io-database-readsPersec	      数据库IO读取速率
+		exc-io-database-writesPersec	数据库IO写入速率
+		exc-io-bytes-writesPersec	字节数IO写入速率
+		 -->	
+		<object local="resource" remote="Exchange">
+			<item local="monitor.state" remote="state.available_status" function="monitorState2availableStatus"/>
+			<item local="perf.exc-database-size" remote="perf.ex_db.cache_size" />		
+			<item local="perf.exc-io-database-readsPersec" remote="perf.ex_db.reads_ps" />
+			<item local="perf.exc-io-database-writesPersec" remote="perf.ex_db.writes_ps" />
+			<item local="perf.exc-io-bytes-writesPersec" remote="perf.ex_db.byte_read_ps" />
+		</object>
+	</monitor>	
+	
+	<monitor type="EXCHANGE2010-TRANSPORTDATABASE" >
+		<!-- 
+			exc-stream-bytes-readPersec	IO流读取字节速率
+			exc-stream-bytes-readTotal	IO流读取字节总大小
+			exc-stream-bytes-writtenPersec	IO流写入字节速率
+			exc-stream-bytes-writtenTotal	IO流写入字节的总大小
+			exc-stream-readPersec	IO流读取速率
+			exc-stream-readTotal	IO流读取总量
+			exc-stream-writesPersec	IO流写入速率
+			exc-stream-writesTotal	IO流写入总量
+		 -->	
+		<object local="resource" remote="Exchange">
+			<item local="monitor.state" remote="state.available_status" function="monitorState2availableStatus"/>
+			<item local="perf.exc-stream-bytes-readPersec" remote="perf.ex_db.byte_read_ps" />		
+			<item local="perf.exc-stream-bytes-readTotal" remote="perf.ex_db.byte_read_total" />
+			<item local="perf.exc-stream-bytes-writtenPersec" remote="perf.ex_db.byte_written_ps" />
+			<item local="perf.exc-stream-bytes-writtenTotal" remote="perf.ex_db.byte_written_total" />		
+			<item local="perf.exc-stream-readPersec" remote="perf.ex_db.read_ps" />
+			<item local="perf.exc-stream-readTotal" remote="perf.ex_db.read_total" />
+			<item local="perf.exc-stream-writesPersec" remote="perf.ex_db.writes_ps" />
+			<item local="perf.exc-stream-writesTotal" remote="perf.ex_db.writes_total" />
+		</object>
+	</monitor>	
+	
+	<monitor type="EXCHANGE2010-POP3" >
+		<!-- 
+		exc-connections-current		当前连接数
+		exc-connections-failed		失败连接数
+		exc-connections-rejected	被拒绝的连接数
+		Iexc-connections-total		总连接数
+		 -->	
+		<object local="resource" remote="Exchange">
+			<item local="monitor.state" remote="state.available_status" function="monitorState2availableStatus"/>
+			<item local="perf.exc-connections-current" remote="perf.ex_pop3.conns_current" />		
+			<item local="perf.exc-connections-failed" remote="perf.ex_pop3.conns_failed" />
+			<item local="perf.exc-connections-rejected" remote="perf.ex_pop3.conns_rejected" />
+			<item local="perf.exc-connections-total" remote="perf.ex_pop3.conns_total" />		
+		</object>
+	</monitor>	
+	
+	<monitor type="EXCHANGE2010-QUEUE" >
+		<!-- 
+		exc-active-mailbox-delivery-QueueLength 	活动的传送队列中的邮件数
+		exc-messages-queued-forDelivery-PS  	每秒传送队列中的邮件数
+		exc-messages-queued-forDelivery-total	 传送队列中的邮件总数
+		exc-messages-SubmittedPersec		提交邮件速率
+		exc-messages-SubmittedTotal		提交队列中邮件总数
+		exc-submission-QueueLength	提交邮件队列长度
+		 -->	
+		<object local="resource" remote="Exchange">
+			<item local="monitor.state" remote="state.available_status" function="monitorState2availableStatus"/>
+			<item local="perf.exc-active-mailbox-delivery-QueueLength" remote="perf.ex_mailbox.deliver_queue_len" />		
+			<item local="perf.exc-messages-queued-forDelivery-PS" remote="perf.ex_mailbox.mess_queue_delivery_ps" />
+			<item local="perf.exc-messages-queued-forDelivery-total" remote="perf.ex_mailbox.queue_delivery_total" />
+			<item local="perf.exc-messages-SubmittedPersec" remote="perf.ex_mailbox.submit_ps" />	
+			<item local="perf.exc-messages-SubmittedTotal" remote="perf.ex_mailbox.submit_total" />
+			<item local="perf.exc-submission-QueueLength" remote="perf.ex_mailbox.submit_queue_len" />		
+		</object>
+	</monitor>	
+	
+	<monitor type="EXCHANGE2010-SMTPRECEIVED" >
+		<!-- 
+		exc-bytes-ReceivedPersec	接受字节速率
+		exc-bytes-ReceivedTotal 	接受字节总数
+		exc-messageBytes-ReceivedPersec 	接受邮件速率
+		exc-messageBytes-ReceivedTotal  	接受邮件总数	
+		 -->	
+		<object local="resource" remote="Exchange">
+			<item local="monitor.state" remote="state.available_status" function="monitorState2availableStatus"/>
+			<item local="perf.exc-bytes-ReceivedPersec" remote="perf.ex_smtprec.byte_rec_ps" />		
+			<item local="perf.exc-bytes-ReceivedTotal" remote="perf.ex_smtprec.byte_rec_total" />
+			<item local="perf.exc-messages-ReceivedPersec" remote="perf.ex_smtprec.mess_rec_ps" />
+			<item local="perf.exc-messages-ReceivedTotal" remote="perf.ex_smtprec.mess_rec_total" />		
+		</object>
+	</monitor>	
+	
+	<monitor type="EXCHANGE2010-SMTPSENT" >
+		<!-- 
+		exc-bytes-SentPersec	发送字节速率
+		exc-bytes-SentTotal	          发送字节总数
+		exc-messages-SentPersec	 发送邮件速率
+		exc-messages-SentTotal	发送邮件总数
+		 -->	
+		<object local="resource" remote="Exchange">
+			<item local="monitor.state" remote="state.available_status" function="monitorState2availableStatus"/>
+			<item local="perf.exc-bytes-SentPersec" remote="perf.ex_smtpsent.byte_sent_ps" />		
+			<item local="perf.exc-bytes-SentTotal" remote="perf.ex_smtpsent.byte_sent_total" />
+			<item local="perf.exc-messages-SentPersec" remote="perf.ex_smtpsent.mess_sent_ps" />
+			<item local="perf.exc-messages-SentTotal" remote="perf.ex_smtpsent.mess_sent_total" />		
+		</object>
+	</monitor>	
+</pmdb-map>

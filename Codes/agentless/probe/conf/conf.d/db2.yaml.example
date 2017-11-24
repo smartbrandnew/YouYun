@@ -1,0 +1,58 @@
+---
+collect_methods: 
+  # agent method(agent is necessary when using agent to monitor performance)
+  # name of monitoring method
+  - name: test1
+    # monitoring type
+    type: ProtocolDb2
+    # monitoring cycle:60s
+    interval: 60
+    # instance name
+    db: MZ
+    # optType：JDBC/CLI
+    optType: CLI
+    # username
+    username: db2inst1
+    # monitoring protocol type: wmi,ssh,telnet,agent(never change)
+    sessionName: agent
+    # remotePort
+    remotePort: 1850
+    # system name, supported OS: AIX,FreeBSD,HP-UX,IRIX64,Linux,SCOUNIX,Solaris,TRU64 OSF1,Windows
+    sysname: AIX 
+    agentName: uniagent
+  #jdbc method
+  # name of monitoring method
+  - name: test2
+    # monitoring type
+    type: ProtocolDb2
+    # monitorint cycle:60s
+    interval: 60
+    # port
+    port: 50000
+    # instance name
+    db: 
+    # password
+    password: test
+    #optType: JDBC/CLI
+    optType: JDBC
+    #用户名
+    username: test
+    # As400(com.ibm.as400.access.AS400JDBCDriver),Normal(com.ibm.db2.jcc.DB2Driver)
+    driverType: Normal
+    # com.ibm.as400.access.AS400JDBCDriver,com.ibm.db2.jcc.DB2Driver
+    driver: com.ibm.db2.jcc.DB2Driver
+    dbversion: "10"
+hosts: 
+  # name of monitoring method, same as the collect_methods name above
+  - collect_method: test1
+    # ip of monitored host,must not be 127.0.0.1
+    ip: 10.1.11.228
+    # name of the monitored host
+    host:  
+    # os of the monitored host(linux/windows/netdev[network device])
+    os: windows
+    # use semicolons to separate different tags(ip:127.0.0.1;host:myPC)
+    tags: 
+    # when deployed agent and agentless on the monitored host,id must be same,otherwise id is unnecessary
+    id:
+

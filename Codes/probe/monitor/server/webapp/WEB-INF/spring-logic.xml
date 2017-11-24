@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:p="http://www.springframework.org/schema/p" xmlns:tx="http://www.springframework.org/schema/tx" xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:util="http://www.springframework.org/schema/util"
+	xsi:schemaLocation="  
+            http://www.springframework.org/schema/beans   
+            http://www.springframework.org/schema/beans/spring-beans-3.1.xsd  
+            http://www.springframework.org/schema/tx   
+            http://www.springframework.org/schema/tx/spring-tx-3.1.xsd  
+            http://www.springframework.org/schema/context  
+            http://www.springframework.org/schema/context/spring-context-3.1.xsd  
+            http://www.springframework.org/schema/util   
+            http://www.springframework.org/schema/util/spring-util-3.1.xsd">
+	<bean id="config" class="com.broada.carrier.monitor.server.impl.config.Config" factory-method="getDefault" />
+	<bean id="serverFactory" class="com.broada.carrier.monitor.server.impl.SpringServerServiceFactory" factory-method="getDefault" />
+
+	<bean id="pmdbFacade" class="com.broada.carrier.monitor.server.impl.pmdb.PMDBFacade" init-method="startup"/>
+	<bean id="pmdbMapper" class="com.broada.carrier.monitor.server.impl.pmdb.map.PMDBMapper" factory-method="getDefault" />
+	<bean id="fileService" class="com.broada.carrier.monitor.base.logic.BaseFileServiceImpl" />
+	
+	<bean id="taskCleaner" class="com.broada.carrier.monitor.server.impl.logic.ServerTaskCleaner" />
+
+	<bean id="dao" class="com.broada.carrier.monitor.common.db.BaseDao" />
+	<bean id="probeDao" class="com.broada.carrier.monitor.server.impl.dao.ProbeDao" />
+	<bean id="nodeDao" class="com.broada.carrier.monitor.server.impl.dao.NodeDao" />
+	<bean id="taskDao" class="com.broada.carrier.monitor.server.impl.dao.TaskDao" />
+	<bean id="stateDao" class="com.broada.carrier.monitor.server.impl.dao.StateDao" />
+	<bean id="instanceDao" class="com.broada.carrier.monitor.server.impl.dao.InstanceDao" />
+	<bean id="localRemoteKeyDao" class="com.broada.carrier.monitor.server.impl.dao.LocalRemoteKeyDao" />
+
+	<bean id="probeRunInfoCollector" class="com.broada.carrier.monitor.server.impl.logic.probe.ProbeRunInfoCollector" factory-method="getDefault" init-method="startup" />
+	<bean id="stateService" parent="transactionProxy">
+		<property name="target">
+			<bean class="com.broada.carrier.monitor.server.impl.logic.trans.ServerStateServiceTrans" />			
+		</property>
+	</bean>
+	
+	<bean id="systemService" class="com.broada.carrier.monitor.server.impl.logic.ServerSystemServiceImpl" />
+	<bean id="localRemoteMapper" class="com.broada.carrier.monitor.server.impl.logic.LocalRemoteMapperImpl">
+		<constructor-arg>
+			<bean parent="transactionProxy">
+				<property name="target">
+					<bean class="com.broada.carrier.monitor.server.impl.logic.trans.LocalRemoteMapperTrans" />
+				</property>
+			</bean>
+		</constructor-arg>
+	</bean>
+	<bean id="probeService" class="com.broada.carrier.monitor.server.impl.logic.ServerProbeServiceImpl">
+		<constructor-arg>
+			<bean parent="transactionProxy">
+				<property name="target">
+					<bean class="com.broada.carrier.monitor.server.impl.logic.trans.ServerProbeServiceTrans" />
+				</property>
+			</bean>
+		</constructor-arg>
+	</bean>
+	<bean id="taskService" class="com.broada.carrier.monitor.server.impl.logic.ServerTaskServiceImpl">
+		<constructor-arg>
+			<bean parent="transactionProxy">
+				<property name="target">
+					<bean class="com.broada.carrier.monitor.server.impl.logic.trans.ServerTaskServiceTrans" />
+				</property>
+			</bean>
+		</constructor-arg>
+	</bean>
+	<bean id="methodService" class="com.broada.carrier.monitor.server.impl.logic.ServerMethodServiceImpl" />
+	<bean id="policyService" class="com.broada.carrier.monitor.server.impl.logic.ServerPolicyServiceImpl" />
+	<bean id="typeService" class="com.broada.carrier.monitor.server.impl.logic.ServerTypeServiceImpl" />
+	<bean id="targetTypeService" class="com.broada.carrier.monitor.server.impl.logic.ServerTargetTypeServiceImpl" />
+	<bean id="targetGroupService" class="com.broada.carrier.monitor.server.impl.logic.ServerTargetGroupServiceImpl" />
+	<bean id="resourceService" class="com.broada.carrier.monitor.server.impl.logic.ServerResourceServiceImpl"
+		autowire="byName" />
+	<bean id="nodeService" parent="transactionProxy">
+		<property name="target">
+			<bean class="com.broada.carrier.monitor.server.impl.logic.trans.ServerNodeServiceTrans" />
+		</property>
+	</bean>
+</beans>  

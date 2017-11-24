@@ -1,0 +1,12 @@
+rem 脚本元信息
+rem name=采集进程句柄数
+rem interval=120
+
+rem 准备wmi连接与执行采集操作
+Set objWMIService = GetObject("winmgmts:\\.\root\cimv2")
+Set colItems = objWMIService.ExecQuery("Select * from Win32_Process",,48)
+
+For Each objItem in colItems
+    rem 输出结果
+	wscript.echo "metric=system.process.handle.count|value=" & objItem.HandleCount & "|tags=process:" & objItem.Name
+Next

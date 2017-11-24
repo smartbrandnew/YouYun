@@ -1,0 +1,16 @@
+#!/bin/sh
+# coding: utf-8
+"exec" "python" "./bin/build" "$@"
+
+
+if __name__ == '__main__':
+    import sys
+    from docopt import docopt
+    from os.path import dirname, abspath
+    root_dir = dirname(dirname(abspath(__file__)))
+    del sys.path[0]
+    sys.path.insert(0, root_dir)
+
+    from build import builder
+    cli_args = docopt(builder.__doc__)
+    builder.Builder.handle_cli(cli_args)

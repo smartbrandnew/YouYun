@@ -1,0 +1,256 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<pmdb-map>
+	<monitor type="DM-BASIC">
+		
+		<object local="resource" remote="DM" states="SUCCESSED,FAILED,OVERSTEP">
+			<item local="monitor.state" remote="state.available_status"
+				function="monitorState2availableStatus" />
+			<item local="perf.DM-BASIC-1" remote="attr.dmSID" />
+			<item local="perf.DM-BASIC-3" remote="attr.dmMode" />
+			<item local="perf.DM-BASIC-4" remote="attr.dmVersion" />
+			<item local="perf.DM-BASIC-5" remote="attr.hostName" />
+			<item local="perf.DM-BASIC-6" remote="attr.dmStatus" />
+			<item local="method.port" remote="attr.usePort" />
+		</object>
+	
+		<object local="instance" remote="DMInstance">
+			<item local="monitor.state" remote="state.available_status"
+				function="monitorState2availableStatus" />
+			<item local="resource.id" remote="rs.ComponentOf" />
+			<item local="perf.DM-BASIC-1" remote="attr.code" />
+			<item local="perf.DM-BASIC-2" remote="attr.name" />	
+							
+		</object>		
+	</monitor>
+
+
+	<monitor type="DM-CHECKPOINT">
+		<!-- DM-CHECKPOINT-1 发生检查点数 次 DM-CHECKPOINT-2 完成检查点数 次 -->
+		<object local="resource" remote="DM">
+			<item local="perf.DM-CHECKPOINT-1" remote="perf.dm-ckpts.ckpts_total_count" />
+			<item local="perf.DM-CHECKPOINT-2" remote="perf.dm-ckpts.ckpts_redo_reserve" />
+			<item local="perf.DM-CHECKPOINT-3" remote="perf.dm-ckpts.ckpts_time_used" />
+		</object>
+	</monitor>
+
+	<monitor type="DM-DATAFILE">
+		<!-- DM-DATAFILE-1 读次数 次 DM-DATAFILE-2 写次数 次 DM-DATAFILE-3 
+			文件大小 MB DM-DATAFILE-4 文件剩余大小 MB -->
+		<object local="instance" remote="DMFile">
+			<item local="resource.id" remote="rs.ComponentOf" />
+			<item local="instance.code" remote="attr.code" />
+			<item local="instance.name" remote="attr.name" />
+			<item local="perf.DM-DATAFILE-1" remote="perf.dm-file.read_times" />
+			<item local="perf.DM-DATAFILE-2" remote="perf.dm-file.write_times" />
+			<item local="perf.DM-DATAFILE-3" remote="perf.dm-file.file_total_size" />
+			<item local="perf.DM-DATAFILE-4" remote="perf.dm-file.free_size" />
+		</object>
+	</monitor>
+
+	<monitor type="DM-PATCHRATE">
+		<!-- DM-PATCHRATE-1 FSFI值 % -->
+		<object local="resource" remote="DM">
+			<item local="perf.DM-PATCHRATE-1" remote="perf.dm-patchrate.fsfi" />
+		</object>
+	</monitor>
+	
+	<monitor type="DM-REDOLOG">
+		<!-- DM-REDOLOG-1 重做日志缓冲中用户进程不能分配空间的次数 次 DM-REDOLOG-2 归档重做日志文件的数目 次 
+			DM-REDOLOG-3 重做条目的平均大小 MB -->
+		<object local="resource" remote="DM">
+			<item local="perf.DM-REDOLOG-1" remote="perf.dm-redolog.unAllocs" />
+			<item local="perf.DM-REDOLOG-2" remote="perf.dm-redolog.archCount" />
+			<item local="perf.DM-REDOLOG-3" remote="perf.dm-redolog.redofile_avg_size" />
+		</object>
+	</monitor>
+	
+	<monitor type="DM-SESS">
+		<!-- DM-SESS-1 会话ID DM-SESS-2 当前用户 DM-SESS-3 sql语句 DM-SESS-4 会话状态
+			DM-SESS-5 当前模式 DM-SESS-6 会话创建时间 DM-SESS-7 客户类型 DM-SESS-8 是否自动提交
+			DM-SESS-9 客户主机名
+		-->
+		<object local="instance" remote="DMSession">
+			<item local="resource.id" remote="rs.ComponentOf" />
+			<item local="instance.code" remote="attr.code" />
+			<item local="instance.name" remote="attr.name" />
+			<item local="perf.DM-SESS-1" remote="attr.sessionId" />
+			<item local="perf.DM-SESS-2" remote="attr.userName" />
+			<item local="perf.DM-SESS-3" remote="attr.sessSql" />
+			<item local="perf.DM-SESS-4" remote="attr.sessState" />
+			<item local="perf.DM-SESS-5" remote="attr.currSch" />
+			<item local="perf.DM-SESS-6" remote="attr.sessCreateTime" />
+			<item local="perf.DM-SESS-7" remote="attr.clntType" />
+			<item local="perf.DM-SESS-8" remote="attr.autoCmt" />
+			<item local="perf.DM-SESS-9" remote="attr.clntHost" />
+		</object>
+	</monitor>
+	
+	<monitor type="DM-LOCK">
+		<object local="instance" remote="DMLock">
+			<item local="resource.id" remote="rs.ComponentOf" />
+			<item local="instance.code" remote="attr.code" />
+			<item local="instance.name" remote="attr.name" />
+			<item local="perf.DM-LOCK-1" remote="attr.sessId" />
+			<item local="perf.DM-LOCK-2" remote="attr.trxID" />
+			<item local="perf.DM-LOCK-3" remote="attr.lockSql" />
+			<item local="perf.DM-LOCK-4" remote="attr.ocurTime" />
+		</object>
+	</monitor>
+	
+	<monitor type="DM-BUFFERPOOL">
+		<!-- DM-BUFFERPOOL-1 缓存区名称 DM-BUFFERPOOL-2 页大小 DM-BUFFERPOOL-3 页数 DM-BUFFERPOOL-4 正使用页数 DM-BUFFERPOOL-5 空闲页数
+			DM-BUFFERPOOL-6 脏页数 DM-BUFFERPOOL-7 非空闲页数 DM-BUFFERPOOL-8 最大页数 DM-BUFFERPOOL-9 read命中的页数 DM-BUFFERPOOL-10 淘汰的页数
+			DM-BUFFERPOOL-11 未命中的页数 DM-BUFFERPOOL-12 批量读的次数  DM-BUFFERPOOL-13 命中率 -->
+		<object local="instance" remote="DMBufferpool">
+			<item local="resource.id" remote="rs.ComponentOf" />
+			<item local="instance.code" remote="attr.code" />
+			<item local="instance.name" remote="attr.name" />
+			<item local="perf.DM-BUFFERPOOL-1" remote="attr.bufName" />
+			<item local="perf.DM-BUFFERPOOL-2" remote="perf.dm-bufferpool.pageSize" />
+			<item local="perf.DM-BUFFERPOOL-3" remote="perf.dm-bufferpool.pageNo" />
+			<item local="perf.DM-BUFFERPOOL-4" remote="perf.dm-bufferpool.usePage" />
+			<item local="perf.DM-BUFFERPOOL-5" remote="perf.dm-bufferpool.freePage" />
+			<item local="perf.DM-BUFFERPOOL-6" remote="perf.dm-bufferpool.dirtyPage" />
+			<item local="perf.DM-BUFFERPOOL-7" remote="perf.dm-bufferpool.busyPage" />
+			<item local="perf.DM-BUFFERPOOL-8" remote="perf.dm-bufferpool.maxPage" />
+			<item local="perf.DM-BUFFERPOOL-9" remote="perf.dm-bufferpool.logicReads" />
+			<item local="perf.DM-BUFFERPOOL-10" remote="perf.dm-bufferpool.discard" />
+			<item local="perf.DM-BUFFERPOOL-11" remote="perf.dm-bufferpool.phyReads" />
+			<item local="perf.DM-BUFFERPOOL-12" remote="perf.dm-bufferpool.multiReads" />
+			<item local="perf.DM-BUFFERPOOL-13" remote="perf.dm-bufferpool.hitRate" />
+		</object>
+	</monitor>
+	
+	<monitor type="DM-LOGFILES">
+		<!--  -->
+		<object local="resource" remote="DM">
+			<item local="perf.DM-LOGFILES-1" remote="perf.dm-logfiles.ckptLsn" />
+			<item local="perf.DM-LOGFILES-2" remote="perf.dm-logfiles.fileLsn" />
+			<item local="perf.DM-LOGFILES-3" remote="perf.dm-logfiles.flushLsn" />
+			<item local="perf.DM-LOGFILES-4" remote="perf.dm-logfiles.currLsn" />
+			<item local="perf.DM-LOGFILES-5" remote="perf.dm-logfiles.nextSeq" />
+			<item local="perf.DM-LOGFILES-6" remote="perf.dm-logfiles.magic" />
+			<item local="perf.DM-LOGFILES-7" remote="perf.dm-logfiles.flushPages" />
+			<item local="perf.DM-LOGFILES-8" remote="perf.dm-logfiles.flushingPages" />
+			<item local="perf.DM-LOGFILES-9" remote="perf.dm-logfiles.currFile" />
+			<item local="perf.DM-LOGFILES-10" remote="perf.dm-logfiles.currOffset" />
+			<item local="perf.DM-LOGFILES-11" remote="perf.dm-logfiles.ckptFile" />
+			<item local="perf.DM-LOGFILES-12" remote="perf.dm-logfiles.ckptOffset" />
+			<item local="perf.DM-LOGFILES-13" remote="perf.dm-logfiles.freeSpace" />
+			<item local="perf.DM-LOGFILES-14" remote="perf.dm-logfiles.totalSpace" />
+			<item local="perf.DM-LOGFILES-15" remote="perf.dm-logfiles.useRate" />
+		</object>
+	</monitor>
+	
+	<monitor type="DM-CACHE">
+		<!--  -->
+		<object local="instance" remote="DMCache">
+			<item local="resource.id" remote="rs.ComponentOf" />
+			<item local="instance.code" remote="attr.code" />
+			<item local="instance.name" remote="attr.name" />
+			<item local="perf.DM-CACHE-1" remote="attr.address" />
+			<item local="perf.DM-CACHE-2" remote="attr.type" />
+			<item local="perf.DM-CACHE-3" remote="attr.isOverflow" />
+			<item local="perf.DM-CACHE-4" remote="attr.inPool" />
+			<item local="perf.DM-CACHE-5" remote="attr.disabled" />
+			<item local="perf.DM-CACHE-6" remote="attr.fixed" />
+			<item local="perf.DM-CACHE-7" remote="attr.timeSize" />
+		</object>
+	</monitor>
+	
+	<monitor type="DM-LOGBUF">
+		<!--  -->
+		<object local="resource" remote="DM">
+			<item local="perf.DM-LOGBUF-1" remote="perf.dm-logbuf.beginLsn" />
+			<item local="perf.DM-LOGBUF-2" remote="perf.dm-logbuf.endLsn" />
+			<item local="perf.DM-LOGBUF-3" remote="perf.dm-logbuf.totalPage" />
+			<item local="perf.DM-LOGBUF-4" remote="perf.dm-logbuf.fixedPage" />
+			<item local="perf.DM-LOGBUF-5" remote="perf.dm-logbuf.useRate" />
+		</object>
+	</monitor>
+	
+	<monitor type="DM-RAMPOOL">
+		<!--  -->
+		<object local="instance" remote="DMRampool">
+			<item local="resource.id" remote="rs.ComponentOf" />
+			<item local="instance.code" remote="attr.code" />
+			<item local="instance.name" remote="attr.name" />
+			<item local="perf.DM-RAMPOOL-1" remote="perf.dm-rampool.counts" />
+			<item local="perf.DM-RAMPOOL-2" remote="perf.dm-rampool.totalSize" />
+			<item local="perf.DM-RAMPOOL-3" remote="perf.dm-rampool.freeSize" />
+			<item local="perf.DM-RAMPOOL-4" remote="perf.dm-rampool.usedSize" />
+			<item local="perf.DM-RAMPOOL-5" remote="perf.dm-rampool.useRate" />
+		</object>
+	</monitor>
+	
+	<monitor type="DM-TRX">
+		<!--  -->
+		<object local="instance" remote="DMTrx">
+			<item local="resource.id" remote="rs.ComponentOf" />
+			<item local="instance.code" remote="attr.code" />
+			<item local="instance.name" remote="attr.name" />
+			<item local="perf.DM-TRX-1" remote="attr.trxID" />
+			<item local="perf.DM-TRX-2" remote="attr.trxStatus" />
+			<item local="perf.DM-TRX-3" remote="attr.isolation" />
+			<item local="perf.DM-TRX-4" remote="attr.readOnly" />
+			<item local="perf.DM-TRX-5" remote="attr.sessID" />
+			<item local="perf.DM-TRX-6" remote="attr.insCnt" />
+			<item local="perf.DM-TRX-7" remote="attr.delCnt" />
+			<item local="perf.DM-TRX-8" remote="attr.uptCnt" />
+			<item local="perf.DM-TRX-9" remote="attr.uptInsCnt" />
+			<item local="perf.DM-TRX-10" remote="attr.urecSeq" />
+			<item local="perf.DM-TRX-11" remote="attr.waiting" />
+		</object>
+	</monitor>
+	
+	<monitor type="DM-SQL">
+		<!--  -->
+		<object local="instance" remote="DMSql">
+			<item local="resource.id" remote="rs.ComponentOf" />
+			<item local="instance.code" remote="attr.code" />
+			<item local="instance.name" remote="attr.name" />
+			<item local="perf.DM-SQL-1" remote="attr.seqNo" />
+			<item local="perf.DM-SQL-2" remote="attr.sessID" />
+			<item local="perf.DM-SQL-3" remote="attr.trxID" />
+			<item local="perf.DM-SQL-4" remote="attr.sqlText" />
+			<item local="perf.DM-SQL-5" remote="attr.startTime" />
+			<item local="perf.DM-SQL-6" remote="attr.timeUsed" />
+			<item local="perf.DM-SQL-7" remote="attr.isOver" />
+			<item local="perf.DM-SQL-8" remote="attr.userName" />
+			<item local="perf.DM-SQL-9" remote="attr.clntIp" />
+			<item local="perf.DM-SQL-10" remote="attr.appName" />
+		</object>
+	</monitor>
+	
+	<monitor type="DM-THREAD">
+		<!--  -->
+		<object local="instance" remote="DMThread">
+			<item local="resource.id" remote="rs.ComponentOf" />
+			<item local="instance.code" remote="attr.code" />
+			<item local="instance.name" remote="attr.name" />
+			<item local="perf.DM-THREAD-1" remote="attr.threadId" />
+			<item local="perf.DM-THREAD-2" remote="attr.threadName" />
+			<item local="perf.DM-THREAD-3" remote="attr.startTime" />
+		</object>
+	</monitor>
+
+	<monitor type="DM-LINK">
+		<!--  -->
+		<object local="instance" remote="DMLink">
+			<item local="resource.id" remote="rs.ComponentOf" />
+			<item local="instance.code" remote="attr.code" />
+			<item local="instance.name" remote="attr.name" />
+			<item local="perf.DM-LINK-1" remote="attr.linkID" />
+			<item local="perf.DM-LINK-1" remote="attr.linkName" />
+			<item local="perf.DM-LINK-1" remote="attr.isPublic" />
+			<item local="perf.DM-LINK-1" remote="attr.loginName" />
+			<item local="perf.DM-LINK-1" remote="attr.hostName" />
+			<item local="perf.DM-LINK-1" remote="attr.port" />
+			<item local="perf.DM-LINK-1" remote="attr.loggenOn" />
+			<item local="perf.DM-LINK-1" remote="attr.heterrogeneous" />
+			<item local="perf.DM-LINK-1" remote="attr.protocol" />
+			<item local="perf.DM-LINK-1" remote="attr.inUse" />
+		</object>
+	</monitor>
+	
+</pmdb-map>

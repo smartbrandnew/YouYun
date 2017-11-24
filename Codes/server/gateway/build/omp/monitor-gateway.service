@@ -1,0 +1,12 @@
+[Unit]  
+Description=monitor-gateway
+After=network.target  
+   
+[Service]  
+Type=oneshot
+RemainAfterExit=yes  
+ExecStart=/usr/bin/su -l root /opt/uyun/monitor/gateway/bin/bat-gateway.sh start
+ExecStop=/usr/bin/su -l root /opt/uyun/monitor/gateway/bin/bat-gateway.sh stop
+   
+[Install]  
+WantedBy=multi-user.target

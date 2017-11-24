@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<pmdb-map>
+	<monitor type="MSSQL-BASIC" >
+		<!-- 
+		MSSQL-BASIC-1	Windows版本	
+		MSSQL-BASIC-2	处理器名称	
+		MSSQL-BASIC-3	处理器数目	
+		MSSQL-BASIC-4	主机名	
+		MSSQL-BASIC-5	内存(MB)	
+		MSSQL-BASIC-6	数据库数目	个
+		MSSQL-BASIC-7	会话数目	个
+		MSSQL-BASIC-8	启动时间	
+		MSSQL-BASIC-9	阻塞进程数	个
+		MSSQL-BASIC-10	数据库版本	
+		MSSQL-BASIC-11	数据文件大小	MB
+		MSSQL-BASIC-12	日志文件大小	MB
+		MSSQL-BASIC-13	CPU使用率	%
+		MSSQL-BASIC-14	连接会话数	个
+		 -->
+		<object local="resource" remote="SQLServer" states="SUCCESSED,FAILED,OVERSTEP">
+			<item local="monitor.state" remote="state.available_status" function="monitorState2availableStatus"/>
+			<item local="method.port" remote="attr.usePort" />		
+			<item local="perf.MSSQL-BASIC-6" remote="perf.mssql.database_count" />
+			<item local="perf.MSSQL-BASIC-7" remote="perf.db.current_conns" />
+			<item local="perf.MSSQL-BASIC-9" remote="perf.mssql.processes_blocked" />
+			<item local="perf.MSSQL-BASIC-10" remote="attr.edition" />
+			<item local="perf.MSSQL-BASIC-11" remote="perf.mssql.datafile_size" />
+			<item local="perf.MSSQL-BASIC-12" remote="perf.mssql.log_file_size" />
+			<item local="perf.MSSQL-BASIC-13" remote="perf.db.proc_cpu_used_pct" />
+			<item local="perf.MSSQL-BASIC-14" remote="perf.db.current_conns" />
+		</object>
+	</monitor>
+	
+	<monitor type="MSSQL-DBSIZE" >
+		<!-- 
+		MSSQL-DBSIZE-1	数据库大小	MB
+		MSSQL-DBSIZE-2	数据大小	MB
+		MSSQL-DBSIZE-3	索引大小	MB
+		MSSQL-DBSIZE-4	未使用大小	MB
+		MSSQL-DBSIZE-5	未分配大小	MB
+		MSSQL-DBSIZE-6	保留大小	MB
+		 -->
+		<object local="resource" remote="SQLServer">
+		<![CDATA[
+			util.setOutputValue("MSSQL-DBSIZE-1", "sum", "perf.mssql.dbspace_size");
+			util.setOutputValue("MSSQL-DBSIZE-2", "sum", "perf.mssql.dbspace_used_size");
+			util.setOutputValue("MSSQL-DBSIZE-3", "sum", "perf.mssql.idx_size");
+			util.setOutputValue("MSSQL-DBSIZE-4", "sum", "perf.mssql.free_space");
+			util.setOutputValue("MSSQL-DBSIZE-5", "sum", "perf.mssql.unallocate_space");
+			util.setOutputValue("MSSQL-DBSIZE-6", "sum", "perf.mssql.reserve_size");
+		]]>
+		</object>		
+		<object local="instance" remote="SQLServerInstance">
+		<![CDATA[
+			output.setValue(input, "rs.ComponentOf", input.resource.id);
+			output.setValue(input, "attr.code", input.instance.instCode);
+			output.setValue(input, "attr.name", input.instance.instName);
+			
+			double dbspaceSize = input.instance.getIndicator("MSSQL-DBSIZE-1");
+			double dataSize = input.instance.getIndicator("MSSQL-DBSIZE-2");
+			double idxSize = input.instance.getIndicator("MSSQL-DBSIZE-3");
+			output.setValue(input, "perf.mssql-instance.free_space", input.instance.getIndicator("MSSQL-DBSIZE-4"));
+			output.setValue(input, "perf.mssql-instance.unallocate_space", input.instance.getIndicator("MSSQL-DBSIZE-5"));
+			output.setValue(input, "perf.mssql-instance.reserve_size", input.instance.getIndicator("MSSQL-DBSIZE-6"));
+			output.setValue(input, "perf.mssql-instance.data_size", dataSize);
+			output.setValue(input, "perf.mssql-instance.idx_size", idxSize);
+			output.setValue(input, "perf.db-instance.dbspace_size", dbspaceSize);
+			double dbspaceUsedPct = 0;
+			if (dbspaceSize == 0)
+				dbspaceUsedPct = (dataSize + idxSize) / dbspaceSize * 100;
+			output.setValue(input, "perf.db-instance.dbspace_used_pct", dbspaceUsedPct);
+		]]>
+		</object>		
+	</monitor>	
+	
+	<monitor type="MSSQL-FILE" >
+		<!-- 
+		MSSQL-FILE-1	数据库	
+		MSSQL-FILE-2	文件组	
+		MSSQL-FILE-3	大小	MB
+		MSSQL-FILE-4	容量	
+		MSSQL-FILE-5	增长方式	
+		MSSQL-FILE-6	路径	
+		 -->
+		<object local="instance" remote="SQLServerFile">
+			<item local="resource.id" remote="rs.ComponentOf" />
+			<item local="instance.code" remote="attr.code" />
+			<item local="instance.name" remote="attr.name" />			
+			<item local="perf.MSSQL-FILE-3" remote="perf.db-file.datafile_size" />
+			<item local="perf.MSSQL-FILE-6" remote="attr.filePath" />
+		</object>
+	</monitor>
+</pmdb-map>

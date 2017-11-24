@@ -1,0 +1,12 @@
+[Unit]  
+Description=monitor-nginx
+After=network.target  
+   
+[Service]  
+Type=forking  
+ExecStart=/opt/uyun/monitor/nginx/bin/bat-nginx.sh start
+ExecStop=/opt/uyun/monitor/nginx/bin/bat-nginx.sh stop
+PrivateTmp=true
+   
+[Install]  
+WantedBy=multi-user.target

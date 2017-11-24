@@ -1,0 +1,22 @@
+init_config:
+
+instances:
+
+  - name: ssh
+    search_string: ['ssh', 'sshd']
+    tags:
+      - env:staging
+      - cluster:big-data
+    collect_events: False
+    thresholds:
+      critical: [1, 7]
+      warning: [3, 5]
+
+  - name: postgres
+    search_string: ['postgres']
+    ignore_denied_access: True
+    collect_events: True
+
+  - name: nodeserver
+    search_string: ['node server.js']
+    exact_match: False

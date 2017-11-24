@@ -1,0 +1,15 @@
+init_config:
+
+instances:
+  - varnishstat: /usr/bin/varnishstat
+
+    name: myvarnishinstance
+
+    tags:
+      - instance:production
+
+    privilleges. You can configure your sudoers file for this:
+
+    varnishadm: /usr/bin/varnishadm
+
+    secretfile: /etc/varnish/secret

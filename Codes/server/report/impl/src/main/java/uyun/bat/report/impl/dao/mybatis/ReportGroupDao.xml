@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="uyun.bat.report.impl.dao.ReportGroupDao" >
+  <resultMap id="BaseResultMap" type="uyun.bat.report.api.entity.ReportGroup" >
+    <id column="group_id" property="groupId" typeHandler="uyun.whale.common.mybatis.type.UUIDTypeHandler" />
+    <result column="group_name" property="groupName" jdbcType="VARCHAR" />
+    <result column="modified" property="modified" jdbcType="TIMESTAMP" />
+    <result property="status" column="status" jdbcType="SMALLINT" />
+    <result column="parent_id" property="parentId" typeHandler="uyun.whale.common.mybatis.type.UUIDTypeHandler" />
+    <result column="tenant_id" property="tenantId" typeHandler="uyun.whale.common.mybatis.type.UUIDTypeHandler" />
+  </resultMap>
+
+  <sql id="Base_Column_List" >
+    group_id, group_name, modified, status, parent_id, tenant_id
+  </sql>
+
+  <insert id="createReportGroup" parameterType="uyun.bat.report.api.entity.ReportGroup" >
+    insert into report_group (group_id, group_name, modified, status, parent_id, tenant_id)
+    values (#{groupId,typeHandler=uyun.whale.common.mybatis.type.UUIDTypeHandler},
+      #{groupName,jdbcType=VARCHAR}, #{modified,jdbcType=TIMESTAMP}, #{status,jdbcType=SMALLINT},
+      #{parentId,typeHandler=uyun.whale.common.mybatis.type.UUIDTypeHandler},
+      #{tenantId,typeHandler=uyun.whale.common.mybatis.type.UUIDTypeHandler}
+    )
+  </insert>
+
+  <update id="updateReportGroup" parameterType="uyun.bat.report.api.entity.ReportGroup" >
+    update report_group
+    <set >
+      <if test="groupName != null" >
+        group_name = #{groupName,jdbcType=VARCHAR},
+      </if>
+      <if test="modified != null" >
+        modified = #{modified,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where group_id = #{groupId,typeHandler=uyun.whale.common.mybatis.type.UUIDTypeHandler}
+  </update>
+
+  <update id="deleteReportGroupOnLogic" parameterType="uyun.bat.report.api.entity.ReportGroup" >
+    update report_group set status = -1
+    where group_id = #{groupId,typeHandler=uyun.whale.common.mybatis.type.UUIDTypeHandler}
+    and tenant_id = #{tenantId,typeHandler=uyun.whale.common.mybatis.type.UUIDTypeHandler}
+  </update>
+
+  <select id="getAllReportGroups" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select <include refid="Base_Column_List" />
+    from report_group
+    where tenant_id = #{tenantId,typeHandler=uyun.whale.common.mybatis.type.UUIDTypeHandler}
+    and status > 0
+    order by modified;
+  </select>
+
+  <select id="getHistoryGroups" parameterType="java.lang.String" resultMap="BaseResultMap" >
+    select <include refid="Base_Column_List" />
+    from report_group
+    where tenant_id = #{tenantId,typeHandler=uyun.whale.common.mybatis.type.UUIDTypeHandler}
+  </select>
+
+  <insert id="batchInsertGroups" parameterType="java.util.List" >
+    insert into report_group (group_id, group_name, modified, status, parent_id, tenant_id)
+    values
+    <foreach collection="list" item="item" separator=",">
+      (
+        #{item.groupId, typeHandler=uyun.whale.common.mybatis.type.UUIDTypeHandler},
+        #{item.groupName,jdbcType=VARCHAR}, #{item.modified,jdbcType=TIMESTAMP}, #{item.status,jdbcType=SMALLINT},
+        #{item.parentId, typeHandler=uyun.whale.common.mybatis.type.UUIDTypeHandler},
+        #{item.tenantId, typeHandler=uyun.whale.common.mybatis.type.UUIDTypeHandler}
+      )
+    </foreach>
+  </insert>
+
+  <delete id="deleteGroup" parameterType="uyun.bat.report.api.entity.ReportGroup">
+    delete from report_group
+    where tenant_id = #{tenantId,typeHandler=uyun.whale.common.mybatis.type.UUIDTypeHandler}
+    and group_id = #{groupId,typeHandler=uyun.whale.common.mybatis.type.UUIDTypeHandler}
+  </delete>
+
+</mapper>

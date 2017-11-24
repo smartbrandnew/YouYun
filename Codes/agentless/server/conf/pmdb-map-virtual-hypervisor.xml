@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<pmdb-map>
+	<!-- 本文件可用于项目补丁或扩展 -->
+	<monitor type="hyperVInfo">
+        <!--
+        1.当前状态
+        2.健康状态
+        3.运行时长
+        4.安装时间
+        5.操作系统
+        6.分配内存(M)
+        7.CPU核心数
+        8.最后状态改变时间
+        9.备注
+        -->
+        <object local="resource" remote="Hypervisor">
+            <item local="perf.CLI-hyperVState-1" remote="attr.currentState" />
+            <item local="perf.CLI-hyperVState-2" remote="attr.healthState" />
+            <item local="perf.CLI-hyperVState-3" remote="attr.onlineTime" />
+            <item local="perf.CLI-hyperVState-4" remote="attr.installTime" />
+            <item local="perf.CLI-hyperVState-5" remote="attr.operatingSystem" />
+            <item local="perf.CLI-hyperVState-6" remote="attr.memoryGrant" />
+            <item local="perf.CLI-hyperVState-7" remote="attr.logicCoreNum" />
+            <!-- <item local="perf.CLI-hyperVState-8" remote="state.installTime" /> -->
+            <!-- <item local="perf.CLI-hyperVState-9" remote="attr.installTime" /> -->
+        </object>
+    </monitor>  
+    
+    <monitor type="hyperVCPU">
+        <!--
+        -->
+        <object local="resource" remote="Hypervisor">
+            <item local="perf.CLI-hyperVCPU-3" remote="perf.hv-cpu-use.cpu_usage" />
+        </object>
+    </monitor> 
+</pmdb-map>

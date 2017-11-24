@@ -1,0 +1,9 @@
+/target/
+/monitor-agentless/
+/.settings/
+.classpath
+.project
+*.iml
+.idea/base/
+/base/
+/base/.classpath

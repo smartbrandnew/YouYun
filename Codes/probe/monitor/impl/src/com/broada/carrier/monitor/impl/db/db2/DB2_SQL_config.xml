@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<collect-define>
+	<category name="buffer-pool">
+	   <sql name="data-index-ratio">
+	   SELECT 
+		pool_data_l_reads,
+		pool_index_l_reads,
+		pool_data_p_reads,
+		pool_index_p_reads,
+		(case pool_data_l_reads when 0 then 1 else (1-(pool_data_p_reads/cast(pool_data_l_reads as decimal(16,2)))) end) as pool_data_ratio,
+		(case pool_index_l_reads when 0 then 1 else (1 - (pool_index_p_reads /cast(pool_index_l_reads as decimal(16,2)))) end) as pool_index_ratio,
+		direct_reads,
+		direct_writes 
+		FROM TABLE (SNAPSHOT_BP('$DATABASE', -1) ) AS SNAPSHOT_BP
+	   </sql>
+	   <sql name="cat-pkg-ratio">
+	   SELECT 
+		(case cat_cache_lookups when 0 then 1 else (1-(cat_cache_inserts/cast(cat_cache_lookups as decimal(16,2)))) end) as cat_cache_ratio ,
+		(case pkg_cache_lookups when 0 then 1 else (1-(pkg_cache_inserts/cast(pkg_cache_lookups as decimal(16,2)))) end) as pkg_cache_ratio 
+		FROM TABLE (SNAPSHOT_DATABASE('$DATABASE', -1) ) AS SNAPSHOT_DATABASE
+	   </sql>
+	   <sql name="data-index-ratio-new">
+	   SELECT 
+		pool_data_l_reads,
+		pool_index_l_reads,
+		pool_data_p_reads,
+		pool_index_p_reads,
+		(case pool_data_l_reads when 0 then 1 else (1-(pool_data_p_reads/cast(pool_data_l_reads as decimal(16,2)))) end) as pool_data_ratio,
+		(case pool_index_l_reads when 0 then 1 else (1 - (pool_index_p_reads /cast(pool_index_l_reads as decimal(16,2)))) end) as pool_index_ratio,
+		direct_reads,
+		direct_writes 
+		FROM TABLE (SNAP_GET_BP('$DATABASE', -1) ) AS SNAP_GET_BP
+	   </sql>
+	   <sql name="cat-pkg-ratio-new">
+	   SELECT 
+		(case cat_cache_lookups when 0 then 1 else (1-(cat_cache_inserts/cast(cat_cache_lookups as decimal(16,2)))) end) as cat_cache_ratio ,
+		(case pkg_cache_lookups when 0 then 1 else (1-(pkg_cache_inserts/cast(pkg_cache_lookups as decimal(16,2)))) end) as pkg_cache_ratio 
+		FROM TABLE (SNAP_GET_DB('$DATABASE', -1) ) AS SNAP_GET_DB
+	   </sql>
+	</category>
+	<category name="lock">
+	   <sql name="dead-lock">
+	   SELECT deadlocks FROM TABLE(SNAPSHOT_DATABASE('$DATABASE', -1)) AS SNAPSHOT_DATABASE
+	   </sql>
+	   <sql name="wait-lock">
+	   SELECT locks_waiting FROM TABLE(SNAPSHOT_DATABASE('$DATABASE', -1)) AS SNAPSHOT_DATABASE
+	   </sql>
+	   <sql name="escalade-lock">
+	   SELECT lock_escals FROM TABLE(SNAPSHOT_DATABASE('$DATABASE', -1)) AS SNAPSHOT_DATABASE
+	   </sql>
+	</category>
+	<category name="sort">
+	   <sql name="base">
+	   SELECT TOTAL_SORTS,(case TOTAL_SORTS when 0 then 0 else SORT_OVERFLOWS/cast(TOTAL_SORTS as decimal(16,2)) end) as sort_over_ratio 
+       FROM TABLE(SNAPSHOT_DATABASE('$DATABASE', -1)) AS SNAPSHOT_DATABASE
+	   </sql>
+	   <sql name="base-new">
+	   SELECT TOTAL_SORTS,(case TOTAL_SORTS when 0 then 0 else SORT_OVERFLOWS/cast(TOTAL_SORTS as decimal(16,2)) end) as sort_over_ratio 
+       FROM TABLE(SNAP_GET_DB('$DATABASE', -1)) AS SNAP_GET_DB
+	   </sql>
+	</category>
+</collect-define>

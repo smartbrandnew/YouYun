@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="uyun.bat.datastore.dao.ResourceDetailDao">
+	<resultMap type="uyun.bat.datastore.api.entity.ResourceDetail"
+		id="resourceDetailMap">
+		<result property="resourceId" column="resource_id" jdbcType="BINARY"
+			typeHandler="uyun.whale.common.mybatis.type.UUIDTypeHandler" />
+		<result property="tenantId" column="tenant_id" jdbcType="BINARY"
+			typeHandler="uyun.whale.common.mybatis.type.UUIDTypeHandler" />
+		<result property="detail" column="detail" />
+		<result property="agentDesc" column="agent_desc" />
+	</resultMap>
+
+	<insert id="insert" parameterType="uyun.bat.datastore.api.entity.ResourceDetail">
+		insert into res_detail
+		(resource_id,tenant_id,detail,agent_desc)
+		values(#{resourceId,typeHandler=uyun.whale.common.mybatis.type.UUIDTypeHandler},
+		#{tenantId,typeHandler=uyun.whale.common.mybatis.type.UUIDTypeHandler},
+		#{detail},#{agentDesc})
+	</insert>
+
+	<update id="update" parameterType="uyun.bat.datastore.api.entity.ResourceDetail">
+		update res_detail
+		set
+		resource_id=#{resourceId,typeHandler=uyun.whale.common.mybatis.type.UUIDTypeHandler},
+		tenant_id=#{tenantId,typeHandler=uyun.whale.common.mybatis.type.UUIDTypeHandler},
+		detail=#{detail},
+		agent_desc=#{agentDesc}
+		where
+		resource_id=#{resourceId,typeHandler=uyun.whale.common.mybatis.type.UUIDTypeHandler}
+
+	</update>
+
+	<delete id="delete">
+		delete from res_detail where
+		resource_id=#{resourceId,typeHandler=uyun.whale.common.mybatis.type.UUIDTypeHandler}
+	</delete>
+
+	<select id="queryByResId" resultMap="resourceDetailMap"
+		parameterType="string">
+		select * from res_detail where
+		resource_id=#{resourceId,typeHandler=uyun.whale.common.mybatis.type.UUIDTypeHandler}
+	</select>
+
+	<delete id="deleteResDetailBatch" parameterType="list">
+		DELETE FROM res_detail WHERE resource_id IN
+		<foreach collection="list" index="index" item="item" open="("
+			separator="," close=")">
+			#{item,typeHandler=uyun.whale.common.mybatis.type.UUIDTypeHandler}
+		</foreach>
+	</delete>
+</mapper>

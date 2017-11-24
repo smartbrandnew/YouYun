@@ -1,0 +1,8 @@
+[watcher:openresty]
+cmd=$(CIRCLE.ENV.ANT_ROOT_DIR)/openresty/nginx/sbin/nginx -p $(CIRCLE.ENV.ANT_ROOT_DIR)/openresty/nginx -c $(CIRCLE.ENV.ANT_ROOT_DIR)/openresty/nginx/conf/nginx.conf
+numprocess=1
+stop_children=True
+
+[env:openresty]
+ANT_MODULE_ROOT=$ANT_ROOT_DIR
+LD_LIBRARY_PATH=$LD_LIBRARY_PATH:./openresty/luajit/lib

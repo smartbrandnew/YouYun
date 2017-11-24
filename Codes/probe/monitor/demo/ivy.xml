@@ -1,0 +1,29 @@
+<ivy-module version="2.0">
+	<info organisation="com.broada.carrier" module="carrier.monitor.demo" />
+
+	<configurations>
+		<conf name="default" />
+		<conf name="env" />
+		<conf name="test" />
+		<conf name="dev" />
+	</configurations>
+
+	<publications>
+		<artifact name="carrier.monitor.demo" type="jar" conf="default" ext="jar" />
+	</publications>
+
+	<dependencies>
+		<!-- 日志 -->
+		<dependency org="org.slf4j" name="org.slf4j.log4j.over.slf4j" rev="1.6.4" conf="test->default" />
+		<dependency org="ch.qos" name="ch.qos.logback.core" rev="1.0.7" conf="test->default" />
+		<dependency org="ch.qos" name="ch.qos.logback.classic" rev="1.0.7" conf="test->default" />
+		<dependency org="com.fasterxml" name="com.fasterxml.jackson.core" rev="2.1.1" conf="test->default" />
+		<dependency org="com.fasterxml" name="com.fasterxml.jackson.annotation" rev="2.1.1" conf="test->default" />
+		<dependency org="com.fasterxml" name="com.fasterxml.jackson.databind" rev="2.1.2" conf="test->default" />
+
+		<!-- 产品内 -->
+		<dependency org="com.broada.platform" name="platform.common.util" rev="2.0.1" conf="default->utils" changing="true" transitive="false" />
+		<dependency org="com.broada.carrier" name="carrier.monitor.server.api" rev="1.0.4" conf="default->default" changing="true" />
+		<dependency org="com.broada.carrier" name="carrier.monitor.impl" rev="1.0.3" conf="default->default" changing="true" />
+	</dependencies>
+</ivy-module> 

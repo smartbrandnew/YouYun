@@ -1,0 +1,43 @@
+---
+# snmp monitor host
+collect_methods: 
+  # name of monitoring method
+  - name: test
+    # monitoring type
+    type: ProtocolSnmp
+    # monitoring cycle:60s
+    interval: 60
+    # snmp service port
+    port: 161
+    #for snmp v3
+    #authPassword: 
+    #snmp v3 cryptographic algorithm:DES,AES128,AES192,AES256
+    #privProtocol:
+    #snmp v3 privPassword
+    #privPassword: 
+    #snmp v3 securityName
+    #securityName: 
+    #snmp v3 authProtocol
+    #authProtocol: 
+    #snmp v3 securityLevel
+    #securityLevel: 
+    #community
+    community: public
+    # timeout:ms
+    timeout: 2000
+    #V1、V2C、V3
+    version: V2C
+	cluster_id: 
+hosts: 
+  # name of monitoring method, same as the collect_methods name above
+  - collect_method: test
+    # ip of monitored host,must not be 127.0.0.1
+    ip: 127.0.0.1
+    # name of the monitored host
+    host:
+    # os of the monitored host(linux/windows/netdev[network device])
+    os: windows
+    # use semicolons to separate different tags(ip:127.0.0.1;host:myPC)
+    tags: 
+    # when deployed agent and agentless on the monitored host,id must be same,otherwise id is unnecessary
+    id: 

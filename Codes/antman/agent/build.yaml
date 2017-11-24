@@ -1,0 +1,162 @@
+windows-64:
+  name: agent
+  steps: 
+    - makedirs {t}
+    - copy {s}/bin {t}
+    - copy {s}/circle {t}
+    - copy {s}/framework {t}
+    - copy {s}/proc {t}
+    - copy {s}/requirements {t}
+    - copy {s}/templates {t}
+    - copy {s}/upgrade {t}
+    - copy {s}/manifest.yaml {t}
+
+    - support_plat {{'Windows':[64]}} {t}/manifest.yaml
+    - add_commitid {t}/manifest.yaml
+    - add_branch {t}/manifest.yaml
+    - rename {t}/proc/win_openresty.ini.disable {t}/proc/openresty.ini.disable
+    - remove {t}/bin/*.sh
+    - pip_install python-windows-64 {t}/requirements/production.txt
+    - copy python-windows-64 {t}
+    - rename {t}/python-windows-64 {t}/embedded
+    - git clone git@git.uyunsoft.cn:antman/openresty.git {s}/openresty
+    - copy {s}/openresty/openresty_win32/ {t}/openresty
+    - compress {t} {project_name} -windows-64-{project_version}.zip
+    - remove {t}
+  
+windows-32:
+  name: agent
+  steps: 
+    - makedirs {t}
+    - copy {s}/bin {t}
+    - copy {s}/circle {t}
+    - copy {s}/framework {t}
+    - copy {s}/proc {t}
+    - copy {s}/requirements {t}
+    - copy {s}/templates {t}
+    - copy {s}/upgrade {t}
+    - copy {s}/manifest.yaml {t}
+
+    - support_plat {{'Windows':[32]}} {t}/manifest.yaml
+    - add_commitid {t}/manifest.yaml
+    - add_branch {t}/manifest.yaml
+    - rename {t}/proc/win_openresty.ini.disable {t}/proc/openresty.ini.disable
+    - remove {t}/bin/*.sh
+    - pip_install python-windows-32 {t}/requirements/production.txt
+    - copy python-windows-32 {t}
+    - rename {t}/python-windows-32 {t}/embedded
+    - git clone git@git.uyunsoft.cn:antman/openresty.git {s}/openresty
+    - copy {s}/openresty/openresty_win32/ {t}/openresty
+    - compress {t} {project_name} -windows-32-{project_version}.zip
+    - remove {t}
+
+linux-64:
+  name: agent
+  steps: 
+    - makedirs {t}
+    - copy {s}/bin {t}
+    - copy {s}/circle {t}
+    - copy {s}/framework {t}
+    - copy {s}/proc {t}
+    - copy {s}/requirements {t}
+    - copy {s}/templates {t}
+    - copy {s}/upgrade {t}
+    - copy {s}/manifest.yaml {t}
+    
+    - support_plat {{'Linux':[64]}} {t}/manifest.yaml
+    - add_commitid {t}/manifest.yaml
+    - add_branch {t}/manifest.yaml
+    - remove {t}/proc/win_openresty.ini.disable
+    - remove {t}/bin/*.bat
+    - remove {t}/bin/*.exe
+    - chmod -R 750 {t}/bin
+    - pip_install python-linux-64 {t}/requirements/production.txt
+    - copy python-linux-64 {t}
+    - rename {t}/python-linux-64 {t}/embedded
+    - git clone git@git.uyunsoft.cn:antman/openresty.git {s}/openresty
+    - copy {s}/openresty/openresty_linux64/ {t}/openresty
+    - chmod -R g-w,o-rwx {t}
+    - compress {t} {project_name} -linux-64-{project_version}.tar.gz
+    - remove {t}
+
+linux-32:
+  name: agent
+  steps: 
+    - makedirs {t}
+    - copy {s}/bin {t}
+    - copy {s}/circle {t}
+    - copy {s}/framework {t}
+    - copy {s}/proc {t}
+    - copy {s}/requirements {t}
+    - copy {s}/templates {t}
+    - copy {s}/upgrade {t}
+    - copy {s}/manifest.yaml {t}
+    
+    - support_plat {{'Linux':[32]}} {t}/manifest.yaml
+    - add_commitid {t}/manifest.yaml
+    - add_branch {t}/manifest.yaml
+    - remove {t}/proc/win_openresty.ini.disable
+    - remove {t}/bin/*.bat
+    - remove {t}/bin/*.exe
+    - chmod -R 750 {t}/bin
+    - pip_install python-linux-32 {t}/requirements/production.txt
+    - copy python-linux-32 {t}
+    - rename {t}/python-linux-32 {t}/embedded
+    - pip_install python-linux-32 {t}/requirements/production.txt
+    - chmod -R g-w,o-rwx {t}
+    - compress {t} {project_name} -linux-32-{project_version}.tar.gz
+    - remove {t}
+
+suse10-64:
+  name: agent
+  steps: 
+    - makedirs {t}
+    - copy {s}/bin {t}
+    - copy {s}/circle {t}
+    - copy {s}/framework {t}
+    - copy {s}/proc {t}
+    - copy {s}/requirements {t}
+    - copy {s}/templates {t}
+    - copy {s}/upgrade {t}
+    - copy {s}/manifest.yaml {t}
+    
+    - support_plat {{'SUSE10':[64]}} {t}/manifest.yaml
+    - add_commitid {t}/manifest.yaml
+    - add_branch {t}/manifest.yaml
+    - remove {t}/proc/win_openresty.ini.disable
+    - remove {t}/bin/*.bat
+    - remove {t}/bin/*.exe
+    - chmod -R 750 {t}/bin
+    - pip_install python-suse10-64 {t}/requirements/production.txt exclude_pkgs=paramiko
+    - copy python-suse10-64 {t}
+    - rename {t}/python-suse10-64 {t}/embedded
+    - chmod -R g-w,o-rwx {t}
+    - compress {t} {project_name} -suse10-64-{project_version}.tar.gz
+    - remove {t}
+
+aix-64:
+  name: agent
+  steps: 
+    - makedirs {t}
+    - copy {s}/bin {t}
+    - copy {s}/circle {t}
+    - copy {s}/framework {t}
+    - copy {s}/proc {t}
+    - copy {s}/requirements {t}
+    - copy {s}/templates {t}
+    - copy {s}/upgrade {t}
+    - copy {s}/manifest.yaml {t}
+    
+    - support_plat {{'AIX':[64]}} {t}/manifest.yaml
+    - add_commitid {t}/manifest.yaml
+    - add_branch {t}/manifest.yaml
+    - remove {t}/proc/win_openresty.ini.disable
+    - remove {t}/bin/*.bat
+    - remove {t}/bin/*.exe
+    - chmod -R 750 {t}/bin
+    - pip_install python-aix-64 {t}/requirements/production.txt exclude_pkgs=paramiko
+    - copy python-aix-64 {t}
+    - rename {t}/python-aix-64 {t}/embedded
+    - chmod -R g-w,o-rwx {t}
+    - compress {t} {project_name} -aix-64-{project_version}.tar.gz
+    - remove {t}

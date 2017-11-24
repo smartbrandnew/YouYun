@@ -1,0 +1,1162 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<ci-model> 
+  <!-- 元数据定义区域 -->  
+  <definition code-casesensitive="false" lazy-load="false"> 
+    <root-ci-types> 
+      <ci-type code="NetDev" name="网络设备" category="device"/>  
+      <ci-type code="Computer" name="计算机" category="device"/>  
+      <ci-type code="Unknown" name="未知设备" category="device"/>  
+      <ci-type code="StorageDev" name="存储设备" category="device"/>  
+      <ci-type code="Database" name="数据库" category="non_device"/>  
+      <ci-type code="BaseService" name="基础服务" category="non_device"/>  
+      <ci-type code="Middleware" name="中间件" category="non_device"/>  
+      <ci-type code="Virtual" name="虚拟化" category="non_device"/> 
+    </root-ci-types> 
+  </definition>
+  <table-ci-type>
+ 	<ci-type code="Y_Subnets" name="子网" cmdbCode="subnets"> 
+	  <property code="Y_subnetId" name="子网ID" mappingCode="col1" cmdbCode="subnetId"/>  
+	  <property code="Y_subnetGetway" name="子网网关" mappingCode="col2" cmdbCode="subnetGetway"/>  
+	  <property code="Y_subnetMask" name="子网掩码" mappingCode="colybJ78s5W8R" cmdbCode="subnetMask"/> 
+	</ci-type>
+  </table-ci-type>
+  <embedded-ci-type> 
+    <ci-type code="Y_NetPort" name="网络设备端口" cmdbCode="NetworkPort"> 
+      <property code="Y_name" name="名称" mappingCode="col1" cmdbCode="name"/>  
+      <property code="Y_ip" name="IP地址" mappingCode="col2" cmdbCode="ip"/>  
+      <property code="Y_portIndex" name="端口号" mappingCode="col3" type="int" cmdbCode="portIndex"/>  
+      <property code="Y_speed" name="端口速率" mappingCode="col4" type="int" cmdbCode="portRate" unit="Mbps"/>  
+      <property code="Y_macAddr" name="MAC地址" mappingCode="col5" cmdbCode="macAddr"/> 
+    </ci-type>  
+    <ci-type code="Y_nicList" name="网卡" cmdbCode="Nic"> 
+      <property code="Y_nicName" name="名称" mappingCode="col1" cmdbCode="name"/>  
+      <property code="Y_nicMacAddr" name="MAC地址" mappingCode="col2" cmdbCode="macAddr"/>  
+      <property code="Y_nicIPAddr" name="IP地址" mappingCode="col3"/>  
+      <property code="Y_nicSubnetMask" name="子网掩码" mappingCode="col4"/>  
+      <property code="Y_bcast" name="网关" type="col5"/>  
+      <property code="Y_nicSpeed" name="网卡速率" mappingCode="col6" /> 
+    </ci-type>  
+    <ci-type code="Y_VirtualNic" name="虚拟网卡" parent="Y_Virual Resource" cmdbCode="VirtualNic"> 
+      <property code="Y_name" name="名称" type="string" cmdbCode="name"/>  
+      <property code="Y_nicMacAddr" name="MAC地址" type="string" cmdbCode="nicMacAddr"/>  
+      <property code="Y_nicIPAddr" name="IP地址" type="string" cmdbCode="nicIPAddr"/>  
+      <property code="Y_nicSubnetMask" name="子网掩码" type="string" cmdbCode="nicSubnetMask"/>  
+      <property code="Y_systemID" name="系统ID" type="string" cmdbCode="systemID"/> 
+    </ci-type>  
+    <ci-type code="Y_hbaList" name="光纤网卡" > 
+      <property code="Y_hbaName" name="名称" mappingCode="col1" cmdbCode="hbaName"/>  
+      <property code="Y_hbaSpeed" name="网卡速率" mappingCode="col2" cmdbCode="hbaSpeed"/>  
+      <property code="Y_wwn" name="wwn" mappingCode="col3" cmdbCode="wwn"/> 
+    </ci-type>  
+    <ci-type code="Y_physicalDiskList" name="物理磁盘" cmdbCode="PhysicalDisk"> 
+      <property code="name" name="名称" mappingCode="col0" cmdbCode="name"/>  
+      <property code="Y_phyDiskModel" name="型号" mappingCode="col1" cmdbCode="model"/>  
+      <property code="Y_phyDiskCapacity" name="容量" type="double" unit="G" mappingCode="col2" cmdbCode="capacity"/>  
+      <property code="Y_phyDiskSN" name="序列号" mappingCode="col3" cmdbCode="serialNumber"/>  
+      <property code="raidLevel" name="raid级别" mappingCode="col4" cmdbCode="raidLevel"/> 
+    </ci-type>  
+    <ci-type code="Y_logicDiskList" name="逻辑磁盘" cmdbCode="LogicalDisk"> 
+      <property code="Y_diskName" name="分区名" mappingCode="col1" cmdbCode="name"/>  
+      <property code="Y_diskCapacity" name="容量" unit="G" type="double" mappingCode="col2" cmdbCode="capacity"/>  
+      <property code="Y_diskFormat" name="分区格式" mappingCode="col3" cmdbCode="format"/> 
+    </ci-type>  
+    <ci-type code="Y_installedSoftwareList" name="已安装软件" cmdbCode="Software"> 
+      <property code="Y_sfwName" name="软件名称" mappingCode="col1" cmdbCode="name"/>
+      <property code="Y_sfwVersion" name="版本号" mappingCode="col2" cmdbCode="version"/>  
+      <property code="Y_sfwInstaller" name="安装用户" mappingCode="col3" cmdbCode="installer"/> 
+    </ci-type>  
+    <ci-type code="Y_SybaseDbs" name="Sybase数据库" cmdbCode="SybaseDB"> 
+      <property code="Y_name" name="名称" mappingCode="col1" cmdbCode="name"/>  
+      <property code="Y_size" name="大小" type="double" mappingCode="col2" cmdbCode="size" unit="MiB"/>  
+    </ci-type>  
+    <ci-type code="Y_MongoDBInstance" name="MongoDB数据库" cmdbCode="MongoDBDB"> 
+      <property code="Y_name" name="名称" mappingCode="col1" cmdbCode="name"/>  
+      <property code="Y_sizeOnDisk" name="所占大小"  type="double" mappingCode="col2" cmdbCode="size"/> 
+    </ci-type>  
+    <ci-type code="Y_OracleTablespace" name="Oracle表空间" cmdbCode="OracleTablespace"> 
+      <property code="Y_tsName" name="名称" mappingCode="col1" cmdbCode="name"/>  
+      <property code="Y_tsType" name="类型" mappingCode="col2" cmdbCode="oracleTSType"/>  
+      <property code="Y_tsState" name="状态" mappingCode="col3" cmdbCode="oracleTSState"/>  
+      <property code="Y_tsMaxExtents" name="最大Extent数量" mappingCode="col4" cmdbCode="maxExtents"/>  
+      <property code="Y_isAutoExtend" name="是否自动扩展" mappingCode="col5" cmdbCode="isAutoExtend"/>  
+      <property code="Y_maxSpaceSize" name="允许最大空间(GiB)" type="double" mappingCode="col6" cmdbCode="maxSpaceSize"/>  
+      <property code="Y_segmentMgtType" name="段管理方式  " mappingCode="col7" cmdbCode="segmentMgtType"/> 
+    </ci-type>  
+    <ci-type code="Y_OracleDBFile" name="Oracle文件" cmdbCode="OracleDBFile"> 
+      <property code="Y_fileName" name="文件名" mappingCode="col1" cmdbCode="path"/>  
+      <property code="Y_fileState" name="状态" mappingCode="col2" cmdbCode="oracleDBFileState"/>  
+      <property code="Y_autoextensible" name="自动扩展容量" mappingCode="col3" cmdbCode="isAutoExtend"/>  
+      <property code="Y_ownedByTs" name="所属表空间" mappingCode="col4" cmdbCode="ownedByTs"/> 
+    </ci-type>  
+    <ci-type code="Y_MysqlDbs" name="MySQL数据库" cmdbCode="MysqlDB"> 
+      <property code="Y_name" name="名称" mappingCode="col1" cmdbCode="name"/>  
+      <property code="Y_Size" name="数据所占空间" type="double" mappingCode="col2" cmdbCode="dbSize"/>  
+      <property code="Y_indexSize" name="索引所占空间" type="double" mappingCode="col3" cmdbCode="indexSize"/> 
+    </ci-type>  
+    <ci-type code="Y_SQLServerFile" name="SQLServer文件" cmdbCode="SQLServerDBFile"> 
+      <property code="Y_name" name="名称" mappingCode="col1" cmdbCode="name"/>  
+      <property code="Y_filePath" name="文件路径" mappingCode="col2" cmdbCode="path"/>  
+      <property code="Y_size" name="文件大小" type="double"  mappingCode="col3" cmdbCode="dbFileSize"/> 
+    </ci-type>  
+    <ci-type code="Y_SQLServerDbs" name="SQLServer数据库" cmdbCode="SQLServerDB"> 
+      <property code="Y_name" name="名称" mappingCode="col1" cmdbCode="name"/>  
+      <property code="Y_createDate" name="创建时间" mappingCode="col2" type="dateTime" cmdbCode="createDateTime"/>  
+      <property code="Y_filePathName" name="主文件路径" mappingCode="col3" cmdbCode="filePathName"/>  
+      <property code="Y_size" name="总大小" mappingCode="col4" type="double" cmdbCode="totalSize"/>  
+      <property code="Y_sizeAvailable" name="可用大小" mappingCode="col5" type="double" cmdbCode="avaliableSize"/> 
+    </ci-type>  
+    <ci-type code="Y_DBTwoTablespace" name="DB2表空间" cmdbCode="DB2TableSpace"> 
+      <property code="Y_tsName" name="名称" mappingCode="col1" cmdbCode="name"/>  
+      <property code="Y_tsType" name="类型" mappingCode="col2" cmdbCode="db2TSType"/>  
+      <property code="Y_pageSize" name="页长" unit="KB" mappingCode="col4" cmdbCode="pageSize"/>  
+      <property code="Y_pageTotalCount" name="总页数" mappingCode="col5" type="int" cmdbCode="pageTotalCount"/>  
+      <property code="Y_prefetchSize" name="预取大小" unit="KB" mappingCode="col6" type="double" cmdbCode="prefetchSize"/>  
+      <property code="Y_extensionDataBlockSize" name="扩展数据块大小" unit="KB" mappingCode="col7" type="double" cmdbCode="extDataBlockSize"/> 
+    </ci-type>  
+	<ci-type code="Y_PgSQLTablespace" name="PGSQL表空间" cmdbCode="PgSQLTableSpace"> 
+		<property code="Y_name" name="名称" cmdbCode="name"/>
+		<property code="owner" name="所属用户" cmdbCode="tsOwners"/>
+		<property code="position" name="位置" cmdbCode="position"/> 
+	</ci-type>
+	<!-- TODO -->
+    <ci-type code="Y_WebApp" name="web容器应用" cmdbCode="tomcatWebApp"> 
+      <property code="Y_name" name="名称" mappingCode="col1" cmdbCode="name"/>  
+      <property code="Y_path" name="路径" mappingCode="col2" cmdbCode="path"/>  
+      <property code="Y_state" name="状态" mappingCode="colay4bYmXzPw" cmdbCode="state"/> 
+    </ci-type>  
+  	<!-- TODO -->
+    <ci-type code="Y_WebSphereWebApp" name="WebSphereWebApp" parent="Y_Platform Resource" cmdbCode="wsWebApp"> 
+      <property code="Y_name" name="名称" type="string" cmdbCode="name"/>  
+      <property code="Y_validation" name="应用程序引用验证" type="string" cmdbCode="validation"/>  
+      <property code="Y_startingWeight" name="启动顺序" type="int" cmdbCode="startingWeight"/>  
+      <property code="Y_backgroundApplication" name="是否在服务器完成启动之前启动应用程序" type="enum" cmdbCode="backgroundApplication"/>  
+      <property code="Y_createMBeansForResources" name="是否为资源创建MBean" type="enum" cmdbCode="createMBeansForResources"/>  
+      <property code="Y_URI" name="URI" type="string" cmdbCode="URI"/>  
+      <property code="Y_moduleType" name="模块类型" type="string" cmdbCode="moduleType"/>  
+      <property code="Y_servers" name="部署的服务器" type="string" cmdbCode="servers"/> 
+    </ci-type>  
+    <ci-type code="Y_WebSphereDataSource" name="WAS数据源" parent="Y_Platform Resource" cmdbCode="DataSource"> 
+      <property code="Y_name" name="名称" type="string" cmdbCode="name"/>  
+      <property code="Y_Scope" name="作用域" type="string" cmdbCode="scop"/>  
+      <property code="Y_provider" name="提供商" type="string" cmdbCode="provider"/>  
+      <property code="Y_JNDIName" name="JNDIName" type="string" cmdbCode="JNDIName"/>  
+      <property code="Y_driverType" name="驱动类型" type="string" cmdbCode="driverType"/>  
+      <property code="Y_dataBaseName" name="数据库名" type="string" cmdbCode="dataBaseName"/>  
+      <property code="Y_serverName" name="主机" type="string" cmdbCode="serverName"/>  
+      <property code="Y_portNumber" name="主机端口" type="string" cmdbCode="portNumber"/> 
+    </ci-type> 
+    <ci-type code="Y_file" name="配置文件" cmdbCode="ConfigurationFile"> 
+      <property code="Y_name" name="名称" mappingCode="col1" cmdbCode="name"/>  
+      <property code="fileSize" name="大小" mappingCode="col2" unit="KB" type="double" cmdbCode="fileSize"/>  
+      <property code="access" name="权限" mappingCode="col3" cmdbCode="fileAccess"/>  
+      <property code="changetime" name="修改时间" mappingCode="col4" type="dateTime" cmdbCode="changetime"/>  
+      <property code="filetype" name="类型" mappingCode="col5" cmdbCode="fileType"/>  
+      <property code="md" name="md5" mappingCode="col5" cmdbCode="md5"/> 
+    </ci-type>  
+    <ci-type code="Y_docker" name="docker"  cmdbCode="Container"> 
+      <property code="containerType" name="容器类型" mappingCode="col0" cmdbCode="containerType"/>  
+      <property code="containerId" name="container Id" mappingCode="col1" cmdbCode="containerID"/>  
+      <property code="image" name="镜像" mappingCode="col2" cmdbCode="image"/>  
+      <property code="command" name="运行命令" mappingCode="col3" cmdbCode="command"/>  
+      <property code="created" name="创建时间" mappingCode="col4"  type="dateTime" cmdbCode="createDateTime"/>  
+      <property code="ports" name="端口" mappingCode="col5" cmdbCode="ports"/>  
+      <property code="Y_name" name="容器名称" mappingCode="col6" cmdbCode="name"/> 
+    </ci-type> 
+  </embedded-ci-type>  
+  <ci-type-define> 
+    <ci-type code="Y_Application" name="应用" parent="Y_Business Application" cmdbCode="Application"> 
+      <property code="Y_name" name="名称" type="string" cmdbCode="name"/>  
+      <property code="Y_testGroup" name="测试组" type="user" cmdbCode="testGroup"/>  
+      <property code="Y_approvalGroup" name="开发组" type="user" cmdbCode="approvalGroup"/>  
+      <property code="Y_description" name="描述" type="string" cmdbCode="desc"/>  
+      <property code="Y_installed" name="部署路径" type="string" cmdbCode="installPath"/>  
+      <property code="Y_owner" name="负责人" type="user" cmdbCode="owner"/>  
+      <property code="Y_supportGroup" name="运维支撑组" type="user" cmdbCode="supportGroup"/>  
+      <property code="Y_tcpPorts" name="TCP端口" type="string" cmdbCode="tcpPorts"/>  
+      <property code="Y_version" name="版本" type="string" cmdbCode="version"/> 
+    </ci-type>  
+    <ci-type code="Y_Business" name="业务系统" parent="Y_Business Application" cmdbCode="Business"> 
+      <property code="Y_name" name="名称" type="string" cmdbCode="name"/>  
+      <property code="Y_description" name="描述" type="string" cmdbCode="desc"/>  
+      <property code="Y_owner" name="负责人" type="user" cmdbCode="owner"/> 
+    </ci-type>  
+    <ci-type code="Y_Router" name="路由器" parent="Y_Infrastructure" cmdbCode="Router" nmapCode="router"> 
+      <property code="Y_name" name="名称" type="string" cmdbCode="name" nmapCode="name"/>  
+      <property code="Y_ip" name="IP地址" type="string" cmdbCode="ip" nmapCode="ip"/>  
+      <property code="descr" name="描述" type="string" cmdbCode="desc"/>  
+      <property code="Y_ports" name="端口数量" type="int" cmdbCode="portNum"/>  
+      <property code="Y_serialnumber" name="序列号" type="string" cmdbCode="serialnumber"/>  
+      <property code="Y_model" name="型号" type="string" cmdbCode="ntModel"/>  
+      <property code="Y_vendor" name="厂商" type="string" cmdbCode="ntVendor"/>  
+      <property code="Y_NetPort" name="端口" type="inline" cmdbCode="NetPort"/>  
+      <property code="Y_powernum" name="电源数量" type="int"/>  
+      <property code="Y_sysUpTime" name="开机启动时间" type="string"/>  
+      <property code="Y_Os" name="系统版本(IOS)" type="string" cmdbCode="sysVersion"/> 
+    </ci-type>  
+    <ci-type code="Y_Server" name="PC服务器" parent="Y_Infrastructure" cmdbCode="PCServer"  nmapCode="server"> 
+      <property code="Y_name" name="名称" type="string" cmdbCode="name"  nmapCode="name"/>  
+      <property code="Y_ip" name="IP地址" type="string" cmdbCode="ip"  nmapCode="ip"/>  
+      <property code="Y_cpuFrequency" name="CPU主频" type="double" unit="GHz" cmdbCode="cpuFrequency"/>  
+      <property code="Y_cpuModel" name="CPU型号" type="string" cmdbCode="cpuModel"/>  
+      <property code="Y_memory" name="物理内存" type="double" unit="GiB" cmdbCode="memoryCapacity"/>  
+      <property code="Y_model" name="型号" type="string" cmdbCode="computerModel"/>  
+      <property code="Y_cpuCores" name="CPU核数" type="int" cmdbCode="cpuCores"/>  
+      <property code="Y_cpuBits" name="CPU位数" type="enum"/>  
+      <property code="Y_storageSize" name="存储总容量" type="double" unit="GiB" cmdbCode="storageSize"/>  
+      <property code="Y_physicalDiskList" name="物理磁盘" type="inline" cmdbCode="physicalDisks"/>  
+      <property code="Y_nicList" name="网卡" type="inline" cmdbCode="NICs"/>  
+      <property code="Y_hbaList" name="光纤网卡" type="table"/>  
+      <property code="Y_vendor" name="厂商" type="string" cmdbCode="hostVendor"/>  
+      <property code="Y_os" name="操作系统" type="string" cmdbCode="os"/>  
+      <property code="Y_physicalCpus" name="物理CPU个数" type="int" cmdbCode="phyCpuNum"/>  
+      <property code="Y_logicCpus" name="逻辑CPU个数" type="int"/>  
+      <property code="Y_virtualMemSize" name="虚拟内存" type="double" unit="GiB"/>  
+      <!-- new add for zheshang -->  
+      <property code="biosVersion" name="bios版本" type="string" />  
+      <property code="firmwareVersion" name="固件版本" type="string" />  
+      <property code="memorySlots" name="内存插槽" type="int" />  
+      <property code="memorySpeed" name="内存速率" type="string"/>  
+      <property code="powerNum" name="电源数量" type="int" />  
+      <property code="startTime" name="启动时间" type="string" unit="天"/>  
+      <property code="microcode" name="微码版本" type="string" />  
+      <property code="nicBond" name="网卡聚合绑定" type="string"/>  
+      <property code="nicNum" name="网卡数量" type="int"/>  
+      <property code="hbaNum" name="光纤网卡数量" type="int"/> 
+    </ci-type>  
+    <ci-type code="Y_MiniServer" name="小型机" parent="Y_Infrastructure" cmdbCode="MiniServer"> 
+      <property code="Y_name" name="名称" type="string" cmdbCode="name"/>  
+      <property code="Y_ip" name="IP地址" type="string" cmdbCode="ip"/>  
+      <property code="Y_cpuFrequency" name="CPU主频" type="double" unit="GHz" cmdbCode="cpuFrequency"/>  
+      <property code="Y_cpuModel" name="CPU型号" type="string" cmdbCode="cpuModel"/>  
+      <property code="Y_memory" name="物理内存" type="double" unit="GiB" cmdbCode="memoryCapacity"/>  
+      <property code="Y_model" name="型号" type="string" cmdbCode="computerModel"/>  
+      <property code="Y_cpuCores" name="CPU核数" type="int" cmdbCode="cpuCores"/>  
+      <property code="Y_cpuBits" name="CPU位数" type="enum"/>  
+      <property code="Y_storageSize" name="存储总容量" type="double" unit="GiB" cmdbCode="storageSize"/>  
+      <property code="Y_physicalDiskList" name="物理磁盘" type="inline" cmdbCode="physicalDisks"/>  
+      <property code="Y_nicList" name="网卡" type="inline" cmdbCode="NICs"/>  
+      <property code="Y_hbaList" name="光纤网卡" type="table"/>  
+      <property code="Y_vendor" name="厂商" type="string" cmdbCode="hostVendor"/>  
+      <property code="Y_os" name="操作系统" type="string" cmdbCode="os"/>  
+      <property code="Y_physicalCpus" name="物理CPU个数" type="int" cmdbCode="phyCpuNum"/>  
+      <property code="Y_logicCpus" name="逻辑CPU个数" type="int"/>  
+      <property code="Y_virtualMemSize" name="虚拟内存" type="double" unit="GiB"/>  
+      <!-- new add for zheshang -->  
+      <property code="biosVersion" name="bios版本" type="string" />  
+      <property code="firmwareVersion" name="固件版本" type="string" />  
+      <property code="memorySlots" name="内存插槽" type="int" />  
+      <property code="memorySpeed" name="内存速率" type="string"/>  
+      <property code="powerNum" name="电源数量" type="int" />  
+      <property code="startTime" name="启动时间" type="string" unit="天"/>  
+      <property code="microcode" name="微码版本" type="string" />  
+      <property code="nicBond" name="网卡聚合绑定" type="string"/>  
+      <property code="nicNum" name="网卡数量" type="int"/>  
+      <property code="hbaNum" name="光纤网卡数量" type="int"/> 
+    </ci-type>  
+    <ci-type code="Y_Switch" name="交换机" parent="Y_Infrastructure" cmdbCode="Switch" nmapCode="switch"> 
+      <property code="Y_name" name="名称" type="string" cmdbCode="name" nmapCode="name"/>  
+      <property code="Y_ip" name="IP地址" type="string" cmdbCode="ip" nmapCode="ip"/>  
+      <property code="Y_description" name="描述" type="string" cmdbCode="desc"/>  
+      <property code="Y_ports" name="端口数量" type="int" cmdbCode="portNum"/>  
+      <property code="Y_serialnumber" name="序列号" type="string" cmdbCode="serialNumber"/>  
+      <property code="Y_model" name="型号" type="string" cmdbCode="ntModel"/>  
+      <property code="Y_vendor" name="厂商" type="string" cmdbCode="ntVendor"/>  
+      <property code="Y_NetPort" name="端口" type="inline" cmdbCode="portList"/>  
+      <property code="Y_powernum" name="电源数量" type="int"/>  
+      <property code="Y_sysUpTime" name="开机启动时间" type="string"/>  
+      <property code="Y_Os" name="系统版本(IOS)" type="string" cmdbCode="sysVersion"/> 
+    </ci-type>  
+    <ci-type code="Y_Storage" name="存储" parent="Y_Infrastructure" cmdbCode="Storage"> 
+      <property code="Y_name" name="名称" type="string" cmdbCode="name"/>  
+      <property code="Y_ip" name="IP地址" type="string" cmdbCode="ip"/>  
+      <property code="Y_description" name="描述" type="string" cmdbCode="desc"/>  
+      <property code="Y_brand" name="品牌" type="string" cmdbCode="brand"/>  
+      <property code="Y_capacity" name="存储容量" type="double" unit="GiB" cmdbCode="capacity"/>  
+      <property code="Y_ firmwareVersion" name="固件版本" type="string" cmdbCode=" firmwareVersion"/>  
+      <property code="subnetMask" name="子网掩码" type="string" cmdbCode="subnetMask"/>  
+      <property code="defaultGateway" name="默认网关" type="string" cmdbCode="defaultGateway"/>  
+      <property code="Y_model" name="型号" type="string" cmdbCode="model"/>  
+      <property code="Y_vendor" name="厂商" type="string" cmdbCode="vendor"/> 
+    </ci-type>  
+    <ci-type code="Y_Firewall" name="防火墙" parent="Y_Infrastructure" cmdbCode="Firewall" nmapCode="firewall"> 
+      <property code="Y_name" name="名称" type="string" cmdbCode="name" nmapCode="name"/>  
+      <property code="Y_ip" name="IP地址" type="string" cmdbCode="ip" nmapCode="ip"/>  
+      <property code="Y_description" name="描述" type="string" cmdbCode="desc"/>  
+      <property code="Y_ports" name="端口数量" type="int" cmdbCode="portNum"/>  
+      <property code="Y_serialnumber" name="序列号" type="string" cmdbCode="serialNumber"/>  
+      <property code="Y_model" name="型号" type="string" cmdbCode="safetyModel"/>  
+      <property code="Y_vendor" name="厂商" type="string" cmdbCode="safetyVendor"/>  
+      <property code="Y_NetPort" name="端口" type="inline" cmdbCode="ports"/>  
+      <property code="Y_powernum" name="电源数量" type="int"/>  
+      <property code="Y_sysUpTime" name="开机启动时间" type="string"/>  
+      <property code="Y_Os" name="系统版本(IOS)" type="string" cmdbCode="sysVersion"/>  
+    </ci-type>  
+    <ci-type code="Y_LoadBalance" name="负载均衡" parent="Y_Infrastructure" cmdbCode="LoadBalancer"> 
+      <property code="Y_name" name="名称" type="string" cmdbCode="name"/>  
+      <property code="Y_ip" name="IP地址" type="string" cmdbCode="ip"/>  
+      <property code="Y_description" name="描述" type="string" cmdbCode="desc"/>  
+      <property code="Y_ports" name="端口数量" type="int" cmdbCode="portNum"/>  
+      <property code="Y_serialnumber" name="序列号" type="string" cmdbCode="serialNumber"/>  
+      <property code="Y_model" name="型号" type="string" cmdbCode="ntModel"/>  
+      <property code="Y_brand" name="品牌" type="string" cmdbCode="ntBrand"/>  
+      <property code="Y_vendor" name="厂商" type="string" cmdbCode="ntVendor"/>  
+      <property code="Y_NetPort" name="端口" type="inline" cmdbCode="portList"/>  
+      <property code="Y_powernum" name="电源数量" type="int" cmdbCode = "portNum"/>  
+      <property code="Y_sysUpTime" name="开机启动时间" />  
+      <property code="Y_Os" name="系统版本(IOS)" type="string" cmdbCode="sysVersion"/>   
+    </ci-type>  
+    <ci-type code="Y_VS" name="VS" parent="Y_LoadBalance" cmdbCode="VS"> 
+      <property code="Y_name" name="名称" type="string" cmdbCode="name"/>  
+      <property code="Y_sourceAddrTransType" name="源地址转换方式" type="string" cmdbCode="sourceAddrTransType"/>  
+      <property code="Y_sourceAddrTransPool" name="源地址转换pool" type="string" cmdbCode="sourceAddrTransPool"/>  
+      <property code="Y_persistProfileName" name="持久化档案名称" type="string" cmdbCode="persistProfileName"/>  
+      <property code="Y_ip" name="IP" type="string" cmdbCode="ip"/>  
+      <property code="Y_Port" name="端口" type="int" cmdbCode="port"/> 
+    </ci-type>  
+    <ci-type code="Y_Pool" name="Pool" parent="Y_LoadBalance" cmdbCode="Pool"> 
+      <property code="Y_name" name="名称" type="string" cmdbCode="name"/>  
+      <property code="Y_monitorRule" name="监督规则" type="string" cmdbCode="monitorRule"/>  
+      <property code="Y_lbMode" name="负载均衡方式" type="string" cmdbCode="lbMode"/> 
+    </ci-type>  
+    <ci-type code="Y_PoolMember" name="PoolMember" parent="Y_LoadBalance" cmdbCode="PoolMember"> 
+      <property code="Y_name" name="名称" type="string" cmdbCode="name"/>  
+      <property code="Y_ip" name="IP" type="string" cmdbCode="ip"/>  
+      <property code="Y_port" name="端口" type="int" cmdbCode="port"/> 
+    </ci-type>  
+    <ci-type code="Y_Windows" name="Windows" parent="Y_Infrastructure" cmdbCode="Windows" nmapCode="windows"> 
+      <property code="Y_name" name="名称" type="string" cmdbCode="name" nmapCode="name"/>  
+      <property code="Y_ip" name="IP地址" type="string" cmdbCode="ip" nmapCode="ip"/>  
+      <property code="Y_version" name="版本" type="string" cmdbCode="version"/>  
+      <property code="Y_bits" name="位长" type="int" cmdbCode="bits"/>  
+      <property code="Y_kernelVersion" name="内核版本" type="string" cmdbCode="kernelVersion"/>  
+      <property code="Y_logicDiskList" name="逻辑磁盘" type="inline" cmdbCode="logicDiskList"/>  
+      <property code="Y_installedSoftwareList" name="安装软件" type="inline" cmdbCode="installedSoftwareList"/> 
+    </ci-type>  
+    <ci-type code="Y_UNIX" name="UNIX" parent="Y_Infrastructure" cmdbCode="UNIX"   nmapCode="unix"> 
+      <property code="Y_name" name="名称" type="string" cmdbCode="name"   nmapCode="name"/>  
+      <property code="Y_ip" name="IP地址" type="string" cmdbCode="ip"   nmapCode="ip"/>  
+      <property code="Y_version" name="版本" type="string" cmdbCode="version"/>  
+      <property code="Y_bits" name="位长" type="int" cmdbCode="bits"/>  
+      <property code="Y_kernelVersion" name="内核版本" type="string" cmdbCode="kernelVersion"/>  
+      <property code="Y_charset" name="字符集" type="string" cmdbCode="charset"/>  
+      <property code="Y_timeZone" name="时区" type="string" cmdbCode="timeZone"/>  
+      <property code="Y_portRange" name="端口范围" type="string" cmdbCode="portRange"/>  
+      <property code="Y_DNS" name="DNS服务" type="string" cmdbCode="DNS"/>  
+      <property code="Y_installedSoftwareList" name="安装软件" type="inline" cmdbCode="installedSoftwareList"/> 
+    </ci-type>  
+    <ci-type code="Y_Linux" name="Linux" parent="Y_Infrastructure" cmdbCode="Linux" nmapCode="linux"> 
+      <property code="Y_name" name="名称" type="string" cmdbCode="name" nmapCode="name"/>  
+      <property code="Y_ip" name="IP地址" type="string" cmdbCode="ip" nmapCode="ip"/>  
+      <property code="Y_version" name="版本" type="string" cmdbCode="version"/>  
+      <property code="Y_bits" name="位长" type="int" cmdbCode="bits"/>  
+      <property code="Y_kernelVersion" name="内核版本" type="string" cmdbCode="kernelVersion"/>  
+      <property code="Y_charset" name="字符集" type="string" cmdbCode="charset"/>  
+      <property code="Y_timeZone" name="时区" type="string" cmdbCode="timeZone"/>  
+      <property code="Y_portRange" name="端口范围" type="string" cmdbCode="portRange"/>  
+      <property code="Y_DNS" name="DNS服务" type="string" cmdbCode="DNS"/>  
+      <property code="Y_iptables" name="是否启用iptables" type="enum" cmdbCode="iptables"/>  
+      <property code="Y_hugepages" name="是否启用大内存页面" type="enum" cmdbCode="hugepages"/>  
+      <property code="Y_nmonInstalled" name="是否安装Nmon" type="enum" cmdbCode="nmonInstalled"/>  
+      <property code="Y_OSWatcherInstalled" name="是否安装OSWatcher" type="enum" cmdbCode="OSWatcherInstalled"/>  
+      <property code="Y_SELinux" name="是否启用SELinux" type="enum" cmdbCode="SELinux"/>  
+      <property code="Y_ntpEnabled" name="是否启用NTP" type="enum" cmdbCode="ntpEnabled"/>  
+      <property code="Y_ntpMode" name="NTP模式" type="enum" cmdbCode="ntpMode"/>  
+      <property code="Y_ntpServer" name="NTP服务器" type="string" cmdbCode="ntpServer"/>  
+      <property code="Y_TLPageOpen" name="是否开启透明大页" type="enum" cmdbCode="TLPageOpen"/>  
+      <property code="Y_maxFileOpen" name="最大打开文件数" type="string" cmdbCode="maxFileOpen"/>  
+      <property code="Y_aioMaxNr" name="最大异步IO请求数" type="string" cmdbCode="aioMaxNr"/>  
+      <property code="Y_defaultRmem" name="接收套接字缓冲区默认大小" type="double" unit="KiB" cmdbCode="defaultRmem"/>  
+      <property code="Y_maxRmem" name="接收套接字缓冲区最大值" type="double" unit="KiB" cmdbCode="maxRmem"/>  
+      <property code="Y_defaulWmem" name="发送套接字缓冲区默认大小" type="double" unit="KiB" cmdbCode="defaulWmem"/>  
+      <property code="Y_maxWmem" name="发送套接字缓冲区最大值" type="double" unit="KiB" cmdbCode="maxWmem"/>  
+      <property code="Y_minFree" name="最低保留内存" type="double" unit="MiB" cmdbCode="minFree"/>  
+      <property code="Y_vfsCachePressure" name="回收内存倾向" type="int" cmdbCode="vfsCachePressure"/>  
+      <property code="Y_swappiness" name="使用交换分区的内存界限" type="int" unit="%" cmdbCode="swappiness"/>  
+      <property code="Y_shmmni" name="共享内存段的最大数" type="int" cmdbCode="shmmni"/>  
+      <property code="Y_shmall" name="可使用的共享内存的总量" type="double" unit="MiB" cmdbCode="shmall"/>  
+      <property code="Y_shmmax" name="单个共享内存段的最大值" type="double" unit="MiB" cmdbCode="shmmax"/>  
+      <property code="Y_logicDiskList" name="逻辑磁盘" type="inline" cmdbCode="logicDiskList"/>  
+      <property code="Y_installedSoftwareList" name="安装软件" type="inline" cmdbCode="Software"/>  
+      <property code="Y_file" name="配置文件" type="table" />  
+      <property code="Y_docker" name="docker" type="table" /> 
+    </ci-type>  
+    <ci-type code="DBCluster" name="数据库集群" parent="Y_Platform Resource" cmdbCode="DBCluster"> 
+      <property code="Y_name" name="名称" type="string" cmdbCode="name"/>  
+      <property code="Y_ip" name="IP" type="string" cmdbCode="ip"/>  
+      <property code="desc" name="描述" type="string" cmdbCode="desc"/>  
+    </ci-type>  
+    <ci-type code="MessageCluster" name="中间件集群" parent="Y_Platform Resource" cmdbCode="MessageCluster"> 
+      <property code="Y_name" name="名称" type="string" cmdbCode="name"/>  
+      <property code="Y_ip" name="IP" type="string" cmdbCode="ip"/>  
+      <property code="desc" name="描述" type="string" cmdbCode="desc"/>  
+    </ci-type>  
+    <ci-type code="VirtualCluster" name="虚拟化集群" parent="Y_Platform Resource" cmdbCode="VirtualCluster"> 
+      <property code="Y_name" name="名称" type="string" cmdbCode="name"/>  
+      <property code="Y_ip" name="IP" type="string" cmdbCode="ip"/>  
+      <property code="desc" name="IP" type="string" cmdbCode="desc"/>  
+    </ci-type>  
+    <ci-type code="WebCluster" name="虚拟化集群" parent="Y_Platform Resource" cmdbCode="WebCluster"> 
+      <property code="Y_name" name="名称" type="string" cmdbCode="name"/>  
+      <property code="Y_ip" name="IP" type="string" cmdbCode="ip"/>  
+      <property code="desc" name="IP" type="string" cmdbCode="desc"/>  
+    </ci-type>  
+    
+    <ci-type code="Y_Mysql" name="Mysql" parent="Y_Platform Resource" cmdbCode="Mysql"> 
+      <property code="Y_name" name="名称" type="string" cmdbCode="name"/>  
+      <property code="Y_ip" name="IP地址" type="string" cmdbCode="ip" />  
+      <property code="Y_keyBuffersize" name="索引缓冲区大小" type="double" unit="MiB" cmdbCode="idxBufferSize"/>  
+      <property code="Y_maxAllowedpacket" name="可接收数据包大小" type="double" unit="MiB" cmdbCode="maxAllowedpacket"/>  
+      <property code="Y_maxConnections" name="允许最大连接数" type="int" cmdbCode="maxConnections"/>  
+      <property code="Y_port" name="监听端口" type="int" cmdbCode="port"/>  
+      <property code="Y_tabOpencache" name="表缓冲区大小" type="double" unit="MiB"/>  
+      <property code="Y_version" name="版本" type="string" cmdbCode="version"/>  
+      <property code="Y_serverCharset" name="字符集" type="string" cmdbCode="serverCharset"/>  
+      <property code="Y_socket" name="登录套接字" type="string" cmdbCode="socket"/>  
+      <property code="Y_lowerctn" name="是否大小写敏感" type="enum" cmdbCode="lowerCtn"/>  
+      <property code="Y_basedir" name="运行目录" type="string" cmdbCode="baseDir"/>  
+      <property code="Y_datadir" name="数据目录" type="string" cmdbCode="dataDir"/>  
+      <property code="Y_tmpdir" name="临时目录" type="string" cmdbCode="tmpDir"/>  
+      <property code="Y_plugindir" name="插件目录" type="string" cmdbCode="pluginDir"/>  
+      <property code="Y_serviceId" name="服务ID" type="string" cmdbCode="serviceID"/>  
+      <property code="Y_waitTimeout" name="空闲连接超时时间" type="int" unit="秒" cmdbCode="waitTimeout"/>  
+      <property code="Y_interactiveTimeout" name="交互式连接超时时间" type="int" unit="秒" cmdbCode="interactiveTimeout"/>  
+      <property code="Y_backLog" name="请求的backlog队列长度" type="int" cmdbCode="backLog"/>  
+      <property code="Y_netWriteTimeout" name="写操作的超时时间" type="int" unit="秒" cmdbCode="netWriteTimeout"/>  
+      <property code="Y_netReadTimeout" name="读操作的超时时间" type="int" unit="秒" cmdbCode="netReadTimeout"/>  
+      <property code="Y_skipNameResolve" name="跳过域名解析" type="string" cmdbCode="skipNameResolve"/>  
+      <property code="Y_sqlMode" name="服务器的SQL模式" type="string" cmdbCode="sqlMode"/>  
+      <property code="Y_maxHeapTableSize" name="内存表所能使用的最大容量" type="double" unit="MiB" cmdbCode="maxHeapTableSize"/>  
+      <property code="Y_connectTimeout" name="连接超时时间" type="int" unit="秒" cmdbCode="connectTimeout"/>  
+      <property code="Y_tabCacheSize" name="表高速缓存大小" type="double" unit="MiB" cmdbCode="tabCacheSize"/>  
+      <property code="Y_maxUserConnections" name="用户的最大连接" type="int" cmdbCode="maxUserConnections"/>  
+      <property code="Y_queryCacheSize" name="结果缓存大小" type="double" unit="MiB" cmdbCode="queryCacheSize"/>  
+      <property code="Y_theadConcurrency" name="并发线程数" type="int" cmdbCode="theadConcurrency"/>  
+      <property code="Y_threadCacheSize" name="线程缓存大小" type="int" unit="MiB" cmdbCode="threadCacheSize"/>  
+      <property code="Y_sqlLogBin" name="是否开启binlog" type="enum" cmdbCode="sqlLogBin"/>  
+      <property code="Y_logSlaveUpdates" name="主从操作写入binlog" type="enum" cmdbCode="logSlaveUpdates"/>  
+      <property code="Y_maxBinlogSize" name="binlog文件的最大容量" type="double" unit="MiB" cmdbCode="maxBinlogSize"/>  
+      <property code="Y_binlogFormat" name="binlog的格式" type="enum" cmdbCode="binlogFormat"/>  
+      <property code="Y_expireLogsDays" name="binlog过期/删除时间" type="int" unit="天" cmdbCode="expireLogsDays"/>  
+      <property code="Y_logbinTfc" name="是否支持routine的创建" type="enum" cmdbCode="logbinTfc"/>  
+      <property code="Y_slaveRunning" name="是否是从库" type="enum" cmdbCode="slaveRunning"/>  
+      <property code="Y_innodbfpt" name="InnoDB 引擎独立表空间开启" type="enum" cmdbCode="innoDBFpt"/>  
+      <property code="Y_innodbfs" name="redo日志的大小" type="int" unit="MiB" cmdbCode="innoDBFs"/>  
+      <property code="Y_innodblfig" name="redo日志的文件个数" type="int" cmdbCode="innoDBLfig"/>  
+      <property code="Y_innodbbps" name="innodb引擎的数据与索引缓存大小" type="double" unit="MiB" cmdbCode="innoDBBps"/>  
+      <property code="Y_innodbflatc" name="innodb事务redo日志刷盘时机" type="int" cmdbCode="innoDBFlatc"/>  
+      <property code="Y_innodbrit" name="读io的后台线程数" type="int" cmdbCode="innoDBRit"/>  
+      <property code="Y_innodbwit" name="写io的后台线程数" type="int" cmdbCode="innoDBWit"/>  
+      <property code="Y_innodbLogBufferSize" name="事务日志所使用的缓冲区大小" type="double" unit="MiB" cmdbCode="innoDBLogBufferSize"/>  
+      <property code="Y_innodbVersion" name="innodb版本号" type="string" cmdbCode="innoDBVersion"/>  
+      <property code="Y_innodbtableLocks" name="是否启用表锁" type="enum" cmdbCode="innoDBtableLocks"/>  
+      <property code="Y_innodbFlushMethod" name="innodb刷新策略" type="enum" cmdbCode="innoDBFlushMethod"/>  
+      <property code="Y_errorLogFile" name="错误日志文件" type="string" cmdbCode="errorLogFile"/>  
+      <property code="Y_logsq" name="是否记录满查询" type="enum" cmdbCode="logSq"/>  
+      <property code="Y_logWarning" name="是否产生额外日志" type="enum" cmdbCode="logWarning"/>  
+      <property code="Y_MysqlDbs" name="MySQL数据库" type="inline" cmdbCode="MysqlDB"/> 
+    </ci-type>  
+    <ci-type code="Y_Nginx" name="Nginx" parent="Y_Platform Resource" cmdbCode="Nginx"> 
+      <property code="Y_name" name="名称" type="string" cmdbCode="name"/>  
+      <property code="Y_ip" name="IP" type="string" cmdbCode="ip"/>  
+      <property code="Y_keepTimeout" name="活动连接超时时间" type="int" cmdbCode="keepTimeout"/>  
+      <property code="Y_port" name="监听端口" type="int" cmdbCode="port"/>   
+      <property code="Y_proConnecttimeout" name="proxy连接超时时间" type="int" cmdbCode="proxyConnTimeout"/>  
+      <property code="Y_version" name="版本信息" type="string" cmdbCode="version"/>  
+      <property code="Y_wkrConnections" name="进程最大连接数" type="int" cmdbCode="wkrConnections"/>  
+      <property code="Y_wkrProcesses" name="工作进程数" type="int" cmdbCode="wkrProcesses"/>  
+      <property code="Y_installPath" name="安装路径" type="string" cmdbCode="installPath"/>  
+      <property code="Y_proxyConnTimeout" name="proxy连接超时时间" type="int" cmdbCode="proxyConnTimeout"/> 
+    </ci-type>  
+    <ci-type code="Y_Oracle" name="Oracle" parent="Y_Platform Resource" cmdbCode="Oracle"> 
+      <property code="Y_name" name="名称" type="string" cmdbCode="name"/>  
+      <property code="Y_ip" name="IP地址" type="string" cmdbCode="ip"/>  
+      <property code="Y_port" name="监听端口" type="int" cmdbCode="port"/>  
+      <property code="Y_version" name="版本" type="string" cmdbCode="version"/>  
+      <property code="Y_patchInfo" name="补丁信息" type="string" cmdbCode="patchInfo"/>  
+      <property code="Y_instance" name="实例名" type="string"/>  
+      <property code="Y_bits" name="位长" type="enum" cmdbCode="bits"/>  
+      <property code="Y_maxConnections" name="最大连接数" type="int" cmdbCode="maxConnections"/>  
+      <property code="Y_dbFiles" name="允许数据文件数" type="int" cmdbCode="dbFileNum"/>  
+      <property code="Y_archieveMode" name="归档模式" type="enum" cmdbCode="archieveMode"/>  
+      <property code="Y_archiveDest" name="归档路径" type="string" cmdbCode="archiveDest"/>  
+      <property code="Y_archivingDestType" name="归档目的地类型" type="string" cmdbCode="archivingDestType"/>  
+      <property code="Y_dumpSpacePath" name="转储空间路径" type="string" cmdbCode="dumpSpacePath"/>  
+      <property code="Y_awsSnapInterval" name="快照采集间隔" type="string" cmdbCode="awsSnapInterval"/>  
+      <property code="Y_pwdExpired" name="密码有效期" type="string" cmdbCode="pwdExpired"/>  
+      <property code="Y_pwdLockTimes" name="密码错误锁定次数" type="int" cmdbCode="pwdLockTimes"/>  
+      <property code="Y_undoRetention" name="保留过期Undo段时间" type="int" cmdbCode="undoRetention"/>  
+      <property code="Y_recyclebin" name="是否开启回收站" type="enum" cmdbCode="recyclebin"/>  
+      <property code="Y_processes" name="用户进程数" type="int" cmdbCode="processes"/>  
+      <property code="Y_pgaTarget" name="PGA设置目标值" type="double" unit="MiB" cmdbCode="pgaTarget"/>  
+      <property code="Y_pgaSize" name="PGA总大小" type="double" unit="MiB" cmdbCode="pgaSize"/>  
+      <property code="Y_sgaMaxSize" name="SGA设置最大值" type="double" unit="MiB" cmdbCode="sgaMaxSize"/>  
+      <property code="Y_sgaTarget" name="SGA设置目标值" type="double" unit="MiB" cmdbCode="sgaTarget"/>  
+      <property code="Y_maxOpenCursors" name="会话允许最大游标数" type="int" cmdbCode="maxOpenCursors"/>  
+      <property code="Y_GCPolictTime" name="GC时间" type="int" cmdbCode="GCPolictTime"/>  
+      <property code="Y_serialDirectRead" name="关闭直接路径读" type="enum" cmdbCode="serialDirectRead"/>  
+      <property code="Y_GCUndoAffinity" name="关闭DRM特性" type="enum" cmdbCode="GCUndoAffinity"/>  
+      <property code="Y_parallelForceLocal" name="并行跨实例查询" type="string" cmdbCode="parallelForceLocal"/>  
+      <property code="Y_controlFiles" name="控制文件个数" type="int" cmdbCode="controlFiles"/>  
+      <property code="Y_dbCacheSize" name="默认缓冲区池大小" type="double" unit="MiB" cmdbCode="dbCacheSize"/>  
+      <property code="Y_sharedPoolSize" name="共享池大小" type="double" unit="MiB" cmdbCode="sharedPoolSize"/>  
+      <property code="Y_memoryTarget" name="AMM管理设置内存大小" type="double" unit="MiB" cmdbCode="memoryTarget"/>  
+      <property code="Y_sessionCachedCursors" name="会话缓存游标大小" type="int" unit="" cmdbCode="sessionCachedCursors"/>  
+      <property code="Y_largePoolSize" name="大型池大小" type="double" unit="MiB" cmdbCode="largePoolSize"/>  
+      <property code="Y_sortAreaSize" name="排序区大小" type="double" unit="MiB" cmdbCode="sortAreaSize"/>  
+      <property code="Y_logBuffer" name="日志缓冲大小" type="double" unit="MiB" cmdbCode="logBuffer"/>  
+      <property code="Y_redoLogGroups" name="Redo日志组个数" type="int" cmdbCode="redoLogGroups"/>  
+      <property code="Y_redoLogMemberFileSize" name="redo日志成员文件大小" type="int" cmdbCode="redoLogMemberFileSize"/>  
+      <property code="Y_monitorLogPath" name="监听日志路径" type="string" cmdbCode="monitorLogPath"/>  
+      <property code="Y_dbInstanceLogPath" name="数据库实例日志路径" type="string" cmdbCode="dbInstanceLogPath"/>  
+      <property code="Y_clusterLogPath" name="集群日志路径" type="string" cmdbCode="clusterLogPath"/>  
+      <property code="Y_auditTrail" name="数据库审计模式" type="enum" cmdbCode="auditTrail"/>  
+      <property code="Y_OracleTablespace" name="表空间" type="inline" cmdbCode="oracleDBTablespace"/>  
+      <property code="Y_OracleDbFile" name="数据文件" type="inline" cmdbCode="oracleDBFile"/> 
+    </ci-type>  
+    <ci-type code="Y_Redis" name="Redis" parent="Y_Platform Resource" cmdbCode="Redis"> 
+      <property code="Y_name" name="名称" type="string" cmdbCode="name"/>  
+      <property code="Y_ip" name="IP地址" type="string" cmdbCode="ip"/>  
+      <property code="Y_logLevel" name="日志级别" type="enum" cmdbCode="logLevel"/>  
+      <property code="Y_maxClients" name="最大客户端连接数" type="int" cmdbCode="maxClients"/>  
+      <property code="Y_maxmemory" name="最大内存大小" type="double" unit="MiB" cmdbCode="maxMemory"/>  
+      <property code="Y_port" name="监听端口" type="int" cmdbCode="port"/>  
+      <property code="Y_timeout" name="连接超时时间" type="int" cmdbCode="timeout"/>  
+      <property code="Y_version" name="版本" type="string" cmdbCode="version"/>  
+      <property code="Y_dbFileName" name="本地数据库文件名" type="string" cmdbCode="dbFileName"/>  
+      <property code="Y_requirePass" name="登录是否需要密码" type="enum" cmdbCode="requirePass"/>  
+      <property code="Y_pidfile" name="守护进程的pid文件" type="string" cmdbCode="pidfile"/>  
+      <property code="Y_databases" name="数据库数" type="int" cmdbCode="databases"/>  
+      <property code="Y_daemonize" name="是否以守护进程方式启动" type="enum" cmdbCode="daemonize"/>  
+      <property code="Y_rdbCompression" name="使用启用RDB压缩" type="enum" cmdbCode="rdbCompression"/>  
+      <property code="Y_dir" name="数据库存放目录" type="string" cmdbCode="dir"/>  
+      <property code="Y_save" name="数据同步策略" type="string" cmdbCode="syncFilePolicy"/>  
+      <property code="Y_appendFsync" name="日志更新条件" type="string" cmdbCode="appendFsync"/>  
+      <property code="Y_logFile" name="日志记录方式" type="string" cmdbCode="logMode"/>  
+      <property code="Y_appendOnly" name="是否开启AOF模式" type="enum" cmdbCode="appendOnly"/>  
+      <property code="Y_activeRehashing" name="是否激活重置哈希" type="enum" cmdbCode="activeRehashing"/>  
+      <property code="Y_slaveOf" name="master服务的ip及端口号" type="string" cmdbCode="slaveOf"/>  
+      <property code="Y_bind" name="绑定的主机地址" type="string" cmdbCode="bind"/> 
+    </ci-type>  
+    <ci-type code="Y_Tomcat" name="Tomcat" parent="Y_Platform Resource" cmdbCode="Tomcat"> 
+      <property code="Y_name" name="名称" type="string" cmdbCode="name"/>  
+      <property code="Y_ip" name="IP" type="string" cmdbCode="ip"/>  
+      <property code="Y_connTimeout" name="连接超时时间" type="int" cmdbCode="connTimeout"/>  
+      <property code="Y_jdkVersion" name="JDK版本" type="string" cmdbCode="jdkVersion"/>  
+      <property code="Y_maxThreads" name="最大线程数" type="int" cmdbCode="maxThreads"/>  
+      <property code="Y_port" name="监听端口" type="int" cmdbCode="port"/>  
+      <property code="Y_version" name="版本信息" type="string" cmdbCode="version"/>  
+      <property code="Y_installPath" name="安装路径" type="string" cmdbCode="installPath"/>  
+      <property code="Y_shutdownPort" name="shutdown端口" type="string" cmdbCode="shutdownPort"/>  
+      <property code="Y_jvmTotalMemory" name="jvm最大内存" type="string" cmdbCode="jvmTotalMemory"/>  
+      <property code="Y_jvmMaxMemory" name="jvm总内存" type="string"/>  
+      <property code="Y_WebApp" name="Tomcat应用" type="inline" cmdbCode="tomcatWebApp"/> 
+    </ci-type>  
+    <ci-type code="Y_Apache" name="Apache" parent="Y_Platform Resource" cmdbCode="Apache"> 
+      <property code="Y_name" name="名称" type="string" cmdbCode="name"/>  
+      <property code="Y_ip" name="IP" type="string" cmdbCode="ip"/>  
+      <property code="Y_port" name="监听端口" type="int" cmdbCode="port"/>   
+      <property code="Y_version" name="版本信息" type="string" cmdbCode="version"/>  
+      <property code="Y_timeOut" name="超时等待时间" type="int" cmdbCode="connTimeout"/>  
+      <property code="Y_maxClients" name="最大连接请求数" type="int" cmdbCode="maxConnections"/>  
+      <property code="Y_keepAliveTimeout" name="活动连接超时时间" type="int" cmdbCode="keepAliveTimeout"/>  
+      <property code="Y_maxKeepAliveRequests" name="最大keepAlive请求数" type="int" cmdbCode="maxKeepAliveRequests"/>  
+      <property code="Y_installPath" name="安装路径" type="string" cmdbCode="installPath"/> 
+    </ci-type>  
+    <ci-type code="Y_WebSphere" name="WebSphere" parent="Y_Platform Resource" cmdbCode="WebSphere"> 
+      <property code="Y_name" name="名称" type="string" cmdbCode="name"/>  
+      <property code="Y_ip" name="IP" type="string" cmdbCode="ip"/>  
+      <property code="Y_port" name="监听端口" type="int" cmdbCode="port"/>   
+      <property code="Y_installed" name="安装路径" type="string" cmdbCode="installPath"/>  
+      <property code="Y_version" name="版本信息" type="string" cmdbCode="version"/>  
+      <!--addded-->  
+      <property code="Y_clusterName" name="所属集群名" type="string" />  
+      <property code="Y_nodeName" name="节点名" type="string" cmdbCode="nodeName"/>  
+      <property code="Y_developmentMode" name="以开发方式运行" type="enum" cmdbCode="developmentMode"/>  
+      <property code="Y_parallelStartEnabled" name="并行启动" type="enum" cmdbCode="parallelStartEnabled"/>  
+      <property code="Y_internalClassesAccessMode" name="访问内部服务器类" type="string" cmdbCode="internalClassesAccessMode"/>  
+      <property code="Y_applicationClassLoaderPolicy" name="类装入器策略" type="string" cmdbCode="appClassLoaderPolicy"/>  
+      <property code="Y_applicationClassLoadingMode" name="类装入方式" type="string" cmdbCode="appClassLoadingMode"/>  
+      <!--会话管理信息-->  
+      <property code="Y_enableSSLTracking" name="启用SSL标识跟踪" type="enum" cmdbCode="enableSSLTracking"/>  
+      <property code="Y_enableCookies" name="启用cookie" type="enum" cmdbCode="enableCookies"/>  
+      <property code="Y_enableUrlRewriting" name="启用URL重写" type="enum" cmdbCode="enableUrlRewriting"/>  
+      <property code="Y_enableProtocolSwitchRewriting" name="启用协议切换重写" type="enum" cmdbCode="enableProtocolSwitchRewriting"/>  
+      <property code="Y_maxInMemorySessionCount" name="内存中最大会话量" type="int" cmdbCode="maxInMemorySessionCount"/>  
+      <property code="Y_allowOverflow" name="会话允许溢出" type="enum" cmdbCode="allowOverflow"/>  
+      <property code="Y_vnone" name="会话超时" type="string" cmdbCode="sessionTimeout"/>  
+      <property code="Y_enableSecurityIntegration" name="安全性集成" type="enum" cmdbCode="enableSecurityIntegration"/>  
+      <property code="Y_allowSerializedSessionAccess" name="允许序列访问" type="enum" cmdbCode="allowSerializedSessionAccess"/>  
+      <property code="Y_maxWaitTime" name="最长等待时间" unit="s" type="int" cmdbCode="maxWaitTime"/>  
+      <property code="Y_accessSessionOnTimeout" name="允许访问超时" type="enum" cmdbCode="accessSessionOnTimeout"/>  
+      <!--SIP容器-->  
+      <property code="Y_maxAppSessions" name="最大应用程序会话数" type="int" cmdbCode="maxAppSessions"/>  
+      <property code="Y_maxMessagesPerSecond" name="每平均时间段最大消息数" type="int" cmdbCode="maxMessagesPerSecond"/>  
+      <property code="Y_maxDispatchQueueSize" name="最大分派队列大小" type="int" cmdbCode="maxDispatchQueueSize"/>  
+      <property code="Y_enableResponseTime" name="启用最大响应时间" type="enum" cmdbCode="enableResponseTime"/>  
+      <property code="Y_maxResponseTime" name="最大响应时间" unit="ms" type="int" cmdbCode="maxResponseTime"/>  
+      <property code="Y_averagingPeriod" name="平均时间段" unit="ms" type="int" cmdbCode="averagingPeriod"/>  
+      <property code="Y_statisticUpdateRate" name="统计信息更新率" type="string" cmdbCode="statisticUpdateRate"/>  
+      <!--Web 容器-->  
+      <property code="Y_enableServletCaching" name="启用servlet高速缓存" type="enum" cmdbCode="enableServletCaching"/>  
+      <property code="Y_disablePooling" name="禁用servlet请求和响应池" type="enum" cmdbCode="disablePooling"/>  
+      <!--Portlet 容器-->  
+      <property code="Y_enablePortletCaching" name="启用 portlet 片段高速缓存" type="enum" cmdbCode="enablePortletCaching"/>  
+      <!--EJBContainer-->  
+      <property code="Y_inactivePoolCleanupInterval" name="不活动的池清除时间间隔" unit="ms" type="int" cmdbCode="inactivePoolCleanupInterval"/>  
+      <!--EJB 高速缓存设置-->  
+      <property code="Y_cleanupInterval" name="清除时间间隔" unit="ms" type="int" cmdbCode="cleanupInterval"/>  
+      <property code="Y_cacheSize" name="高速缓存大小(存储区)" type="int" cmdbCode="cacheSize"/>  
+      <!--EJB 计时器服务设置-->  
+      <property code="Y_useInternal" name="是否使用内部EJB计时器服务" type="enum" cmdbCode="useInternal"/>  
+      <property code="Y_datasourceJNDIName" name="数据源JNDI名称" type="string" cmdbCode="datasourceJNDIName"/>  
+      <property code="Y_tablePrefix" name="表前缀" type="string" cmdbCode="tablePrefix"/>  
+      <property code="Y_pollInterval" name="轮询时间间隔" unit="s" type="int" cmdbCode="pollInterval"/>  
+      <property code="Y_numAlarmThreads" name="计时器线程数" type="int" cmdbCode="numAlarmThreads"/>  
+      <property code="Y_schedulerJNDIName" name="调度JNDI名称" type="string" cmdbCode="schedulerJNDIName"/>  
+      <!--Application profiling 服务-->  
+      <property code="Y_ApplicationProfiling" name="是否启用Application profiling服务" type="enum" cmdbCode="enableAppProfiling"/>  
+      <property code="Y_compatibility" name="是否5.x兼容性方式" type="enum" cmdbCode="compatibility"/>  
+      <!--事务服务-->  
+      <property code="Y_totalTranLifetimeTimeout" name="总事务生存期超时" unit="s" type="int" cmdbCode="totalTranLifetimeTimeout"/>  
+      <property code="Y_asyncResponseTimeout" name="异步响应超时" unit="s" type="int" cmdbCode="asyncResponseTimeout"/>  
+      <property code="Y_clientInactivityTimeout" name="客户机非活动超时" unit="s" type="int" cmdbCode="clientInactivityTimeout"/>  
+      <property code="Y_propogatedOrBMTTranLifetimeTimeout" name="最大事务超时数" unit="s" type="int" cmdbCode="maxTransTimeout"/>  
+      <property code="Y_heuristicRetryLimit" name="试探性重试限制(重试次数)" type="int" cmdbCode="heuristicRetryLimit"/>  
+      <property code="Y_heuristicRetryWait" name="试探性重试等待" unit="s" type="int" cmdbCode="heuristicRetryWait"/>  
+      <property code="Y_enableLoggingForHeuristicReporting" name="为试探性报告启用记录" type="enum" cmdbCode="enableLoggingForHeuristicReporting"/>  
+      <property code="Y_LPSHeuristicCompletion" name="试探性完成指导" type="string" cmdbCode="LPSHeuristicCompletion"/>  
+      <property code="Y_enableFileLocking" name="启用文件锁定" type="enum" cmdbCode="enableFileLocking"/>  
+      <property code="Y_enableProtocolSecurity" name="启用协议安全性" type="enum" cmdbCode="enableProtocolSecurity"/>  
+      <property code="Y_httpProxyPrefix" name="HTTP代理前缀" type="string" cmdbCode="httpProxyPrefix"/>  
+      <property code="Y_httpsProxyPrefix" name="HTTPS代理前缀" type="string" cmdbCode="httpsProxyPrefix"/>  
+      <property code="Y_mbeanTransactionLogDirectory" name="事务日志目录" type="string" cmdbCode="mbeanTransactionLogDirectory"/>  
+      <property code="Y_mbeanManualTransactions" name="手工事务" type="string" cmdbCode="mbeanManualTransactions"/>  
+      <property code="Y_mbeanRetryTransactions" name="重试事务" type="string" cmdbCode="mbeanRetryTransactions"/>  
+      <property code="Y_mbeanHeuristicTransactions" name="试探性事务" type="string" cmdbCode="mbeanHeuristicTransactions"/>  
+      <property code="Y_mbeanImportedPreparedTransactions" name="已导入的已就绪事务" type="string" cmdbCode="mbeanImportedPreparedTransactions"/>  
+      <!--动态高速缓存服务-->  
+      <property code="Y_DynamicCache" name="是否启动态高速缓存服务" type="enum" cmdbCode="enableDynamicCache"/>  
+      <property code="Y_cacheSize" name="高速缓存大小(条目)" type="int" cmdbCode="cacheSize"/>  
+      <property code="Y_defaultPriority" name="缺省优先级" type="string" cmdbCode="defaultPriority"/>  
+      <property code="Y_enableDiskOffload" name="启用磁盘减负" type="enum" cmdbCode="enableDiskOffload"/>  
+      <!--Compensation服务-->  
+      <property code="Y_CompensationService" name="是否启用Compensation服务" type="enum" cmdbCode="enableCompensationSer"/>  
+      <property code="Y_recoveryLogDirectory" name="恢复日志目录" type="string" cmdbCode="recoveryLogDirectory"/>  
+      <property code="Y_recoveryLogFileSize" name="恢复日志文件大小" type="int" unit="MiB" cmdbCode="recoveryLogFileSize"/>  
+      <property code="Y_compensationHandlerRetryLimit" name="补偿处理程序重试限制" type="int" cmdbCode="compensationHandlerRetryLimit"/>  
+      <property code="Y_compensationHandlerRetryInterval" name="补偿处理程序重试时间间隔(秒)" type="int" cmdbCode="compensationHandlerRetryInterval"/>  
+      <!--Internationalization 服务-->  
+      <property code="Y_I18NService" name="是否启用Internationalization服务" type="enum" cmdbCode="I18NService"/>  
+      <!--Object pool 服务-->  
+      <property code="Y_ObjectPoolService" name="是否启用对象池服务" type="enum" cmdbCode="objPoolServ"/>  
+      <!--ORB 服务-->  
+      <property code="Y_requestTimeout" name="请求超时(秒)" type="int" cmdbCode="requestTimeout"/>  
+      <property code="Y_requestRetriesCount" name="请求重试次数(重试次数)" type="int" cmdbCode="requestRetriesCount"/>  
+      <property code="Y_requestRetriesDelay" name="请求重试延迟(毫秒)" type="int" cmdbCode="requestRetriesDelay"/>  
+      <property code="Y_connectionCacheMaximum" name="连接高速缓存最大值(连接)" type="int" cmdbCode="connectionCacheMaximum"/>  
+      <property code="Y_connectionCacheMinimum" name="连接高速缓存最小值(连接)" type="int" />  
+      <property code="Y_commTraceEnabled" name="ORB 跟踪" type="enum" cmdbCode="commTraceEnabled"/>  
+      <property code="Y_locateRequestTimeout" name="定位请求超时(秒)" type="int" cmdbCode="locateRequestTimeout"/>  
+      <property code="Y_forceTunnel" name="强制隧道" type="string" cmdbCode="forceTunnel"/>  
+      <property code="Y_tunnelAgentURL" name="隧道代理 URL" type="string" cmdbCode="tunnelAgentURL"/>  
+      <property code="Y_noLocalCopies" name="按引用传递" type="enum" cmdbCode="noLocalCopies"/>  
+      <!--Startup bean 服务-->  
+      <property code="Y_StartupBeansService" name="是否启用Startup bean服务" type="enum" cmdbCode="enableStartupBeansServ"/>  
+      <!--ActivitySession 服务-->  
+      <property code="Y_ActivitySessionService" name="是否启用ActivitySession 服务" type="enum" cmdbCode="enableSessionService"/>  
+      <property code="Y_defaultTimeout" name="缺省超时" unit="s" type="int" cmdbCode="defaultTimeout"/>  
+      <!--Work Area 服务-->  
+      <property code="Y_WorkAreaService" name="是否启用WorkArea服务" type="enum" cmdbCode="workAreaService"/>  
+      <property code="Y_maxSendSize" name="最大发送大小" unit="b" type="int" cmdbCode="maxSendSize"/>  
+      <property code="Y_maxReceiveSize" name="最大接收大小" unit="b" type="int" cmdbCode="maxReceiveSize"/>  
+      <property code="Y_enableWebServicePropagation" name="启用 Web Service 传播" type="enum" cmdbCode="enableWebServicePropagation"/>  
+      <!--SIB 服务-->  
+      <property code="Y_SIBService" name="是否启用SIB 服务" type="enum" cmdbCode="SIBService"/>  
+      <property code="Y_configurationReloadEnabled" name="启用配置重新装入" type="enum" cmdbCode="configurationReloadEnabled"/>
+      <property code="Y_WebSphereDataSource" name="WebSphere数据源" type="inline" cmdbCode="wsDataSource"/>
+      <property code="Y_WebSpherePort" name="WebSphere端口" type="inline" cmdbCode="wsPort"/>
+      <property code="Y_WebSphereWebApp" name="WebSphereWeb应用" type="inline" cmdbCode="wsWebApp"/>
+    </ci-type>  
+    <ci-type code="Y_IBMHttpServer" name="IBMHttp服务器" parent="Y_Platform Resource"> 
+      <property code="Y_name" name="名称" type="string" cmdbCode="name"/>  
+      <property code="Y_type" name="类型" type="string" cmdbCode="type"/>  
+      <property code="Y_nodeName" name="节点名" type="string" cmdbCode="nodeName"/>  
+      <property code="Y_version" name="版本" type="string" cmdbCode="version"/>  
+      <property code="Y_webServerType" name="web服务器类型" type="string" cmdbCode="webServerType"/>  
+      <property code="Y_hostname" name="主机名" type="string" cmdbCode="hostname"/>  
+      <property code="Y_port" name="端口" type="int" cmdbCode="port"/>  
+      <property code="Y_installPath" name="安装位置" type="string" cmdbCode="installPath"/>  
+      <property code="Y_configFileName" name="配置文件名" type="string" cmdbCode="configFileName"/>  
+      <property code="Y_serviceName" name="服务名称" type="string" cmdbCode="serviceName"/>  
+      <property code="Y_platformType" name="平台类型" type="string" cmdbCode="platformType"/> 
+    </ci-type>  
+    <ci-type code="Y_WebSphereMQ" name="WebSphereMQ" parent="Y_Platform Resource" cmdbCode="WebSphereMQ"> 
+      <property code="Y_name" name="名称" type="string" cmdbCode="name"/>  
+      <property code="Y_type" name="类型" type="string" cmdbCode="type"/>  
+      <property code="Y_uuid" name="UUID" type="string" cmdbCode="uuid"/>  
+      <property code="Y_MQServerType" name="服务器类型" type="string" cmdbCode="MQServerType"/>  
+      <property code="Y_useBindingsMode" name="是否使用绑定传输方式" type="enum" cmdbCode="useBindingsMode"/>  
+      <property code="Y_port" name="WebSphere MQ端口" type="int" cmdbCode="port"/>  
+      <property code="Y_transportChainNameSelect" name="传输链名称" type="string" cmdbCode="transportChainNameSelect"/>  
+      <property code="Y_channel" name="WebSphere MQ通道" type="string" cmdbCode="channel"/>  
+      <property code="Y_secAuthAlias" name="消息传递认证别名" type="string" cmdbCode="secAuthAlias"/>  
+      <property code="Y_trustUserIdentifiers" name="在消息中接收到的信任用户标识" type="enum" cmdbCode="trustUserIdentifiers"/>  
+      <property code="Y_autoDiscovResources" name="自动发现资源" type="enum" cmdbCode="autoDiscovResources"/>  
+      <property code="Y_discovAuthAlias" name="资源发现认证别名" type="string" cmdbCode="discovAuthAlias"/>  
+      <property code="Y_replyToQueue" name="应答队列" type="string" cmdbCode="replyToQueue"/> 
+    </ci-type>  
+    <ci-type code="Y_ActiveMQ" name="ActiveMQ" parent="Y_Platform Resource" cmdbCode="ActiveMQ"> 
+      <property code="Y_name" name="名称" type="string" cmdbCode="name"/>  
+      <property code="Y_version" name="版本信息" type="string" cmdbCode="version"/>  
+      <property code="Y_ip" name="IP" type="string" cmdbCode="ip"/>  
+      <property code="Y_installed" name="安装路径" type="string" cmdbCode="installPath"/>  
+      <property code="Y_slave" name="是否为从节点" type="string" cmdbCode="slave"/>  
+      <property code="Y_jmsPort" name="JMX管理端口" type="int" cmdbCode="jmxPort"/>  
+      <property code="Y_memLimit" name="内存限制" type="double" unit="MiB" cmdbCode="memLimit"/>  
+      <property code="Y_port" name="监听端口" type="int" cmdbCode="port"/>   
+      <property code="Y_brokerVersion" name="Broker版本" type="string" cmdbCode="brokerVersion"/>  
+      <property code="Y_brokerName" name="Broker名称" type="string" cmdbCode="brokerName"/>  
+      <property code="Y_dataDirectory" name="数据存放路径" type="string" cmdbCode="dataDirectory"/>  
+      <property code="Y_storeLimit" name="存储限制" type="double" unit="GiB" cmdbCode="storeLimit"/>  
+      <property code="Y_statisticsEnabled" name="是否开启统计" type="enum" cmdbCode="statisticsEnabled"/>  
+      <property code="Y_maxAuditDepth" name="最大审计深度" type="int" cmdbCode="maxAuditDepth"/>  
+      <property code="Y_maxPageSize" name="内存消息数上限" type="int" cmdbCode="maxPageSize"/>  
+      <property code="Y_useCache" name="是否启用缓存" type="enum" cmdbCode="useCache"/>  
+      <property code="Y_alwaysRetroactive" name="是否保持追溯" type="enum" cmdbCode="alwaysRetroactive"/>  
+      <property code="Y_maxProducersToAudit" name="待审计生产者上限" type="int" cmdbCode="maxProducersToAudit"/>  
+      <property code="Y_prioritizedMessages" name="是否开启消息优化" type="enum" cmdbCode="prioritizedMessages"/>  
+      <property code="Y_persistanceType" name="消息持久化" type="enum" cmdbCode="persistanceType"/> 
+    </ci-type>
+    <ci-type code="Y_rabbitMQ" name="RabbitMQ" parent="Y_Platform Resource" cmdbCode="RabbitMQ">
+		<property code="Y_name" name="名称" type="String"  cmdbCode="name"/>
+		<property code="Y_ip" name="IP" type="string"  cmdbCode="ip"/>
+		<property code="Y_version" name="版本" type="String"  cmdbCode="version"/>
+		<property code="Y_configFile" name="配置文件路径" type="String"  cmdbCode="configFile"/>
+		<property code="Y_dbDir" name="数据库文件路径" type="String"  cmdbCode="dbDir"/>
+		<property code="Y_logFile" name="日志路径" type="String"  cmdbCode="logFile"/>
+		<property code="Y_SASLLogFile" name="SASL日志路径" type="String"  cmdbCode="SASLLogFile"/>
+		<property code="Y_port" name="web管理端口" type="String"  cmdbCode="port"/>
+		<property code="Y_diskFreeLimit" name="最小需求硬盘空间" type="int" unit="mib" cmdbCode="diskFreeLimit"/>
+		<property code="Y_fileDiscriptorTotal" name="文件描述符上限" type="int" cmdbCode="fileDiscriptorTotal"/>
+		<property code="Y_socketDiscriptorTotal" name="socket限制" type="int" cmdbCode="socketDiscriptorTotal"/>
+		<property code="Y_ratesMode" name="rates mode" type="String" cmdbCode="ratesMode"/>
+		<property code="Y_erlangProcessAvliable" name="erlang进程数限制" type="int" cmdbCode="erlangProcessAvliable"/>
+		<property code="Y_erlangVersion" name="erLang版本" type="String" cmdbCode="erlangVersion"/>
+		<property code="Y_enabledPlugins" name="允许的插件" type="String" cmdbCode="enabledPlugins"/>
+		<property code="Y_managementVersion" name="控制台版本" type="String" cmdbCode="managementVersion"/>
+	</ci-type>
+    <ci-type code="Y_WebLogic" name="WebLogic" parent="Y_Platform Resource" cmdbCode="WebLogic"> 
+      <property code="Y_name" name="名称" type="string" cmdbCode="name"/>  
+      <property code="Y_ip" name="IP地址" type="string" cmdbCode="ip"/>  
+      <property code="Y_port" name="监听端口" type="int" cmdbCode="port"/>  
+      <property code="Y_version" name="版本" type="string" cmdbCode="version"/>  
+      <property code="Y_initialCapacity" name="连接池初始连接数" type="int" cmdbCode="initialCapacity"/>  
+      <property code="Y_maxMemCapacity" name="最大内存容量" type="double" unit="MiB"/>  
+      <property code="Y_heapSize" name="JVM堆的当前大小" type="double" unit="MiB"/>  
+      <property code="Y_sslPort" name="SSL端口" type="string"/>  
+      <property code="Y_loginTimeoutMillis" name="登录超时" type="int" unit="毫秒" cmdbCode="loginTimeoutMillis"/>  
+      <property code="Y_sslLoginTimeoutMillis" name="SSL登录超时" type="int" unit="毫秒" cmdbCode="sslLoginTimeoutMillis"/>  
+      <property code="Y_runningState" name="运行状态" type="string" cmdbCode="runningState"/>  
+      <property code="Y_activationTime" name="激活时间" type="dateTime" cmdbCode="activationTime"/>  
+      <property code="Y_middlewareHome" name="中间件主目录" type="string" cmdbCode="middlewareHome"/>  
+      <property code="Y_jdkVersion" name="JDK版本" type="string" cmdbCode="jdkVersion"/>  
+      <property code="Y_minJdkVersion" name="要求JDK最低版本" type="string"/>  
+      <property code="Y_vmName" name="Java虚拟机名" type="string"/>  
+      <property code="Y_vmVersion" name="Java虚拟机版本" type="string"/>  
+      <property code="Y_jaccEnabled" name="启用JACC" type="enum" cmdbCode="jaccEnabled"/>  
+      <property code="Y_heapFreeCurrent" name="JVM堆中当前可用的内存" type="double" unit="MiB"/>  
+      <property code="Y_heapSizeMax" name="JVM配置的最大空闲内存" type="double" unit="MiB"/>  
+      <property code="Y_minMemCapacity" name="最小内存容量" type="double" unit="MiB"/>  
+      <property code="Y_maxOpenSockCount" name="最大打开套接字数" type="int" cmdbCode="maxOpenSockCount"/>  
+      <property code="Y_stuckThreadMaxTime" name="阻塞线程最长时间" type="int" cmdbCode="stuckThreadMaxTime"/>  
+      <property code="Y_stuckThreadTimerInterval" name="阻塞线程计时器间隔" type="int" cmdbCode="stuckThreadTimerInterval"/>  
+      <property code="Y_acceptBacklog" name="接受的最大tcp连接数" type="int" cmdbCode="acceptBacklog"/>  
+      <property code="Y_maxStuckThreadTime" name="最长线程阻塞时间" type="int" cmdbCode="maxStuckThreadTime"/>  
+      <property code="Y_stuckThreadCount" name="阻塞线程计数" type="int" cmdbCode="stuckThreadCount"/>  
+      <property code="Y_maxConcurrentNewThreads" name="最大并发新建线程数" type="int" cmdbCode="maxConcurrentNewThreads"/>  
+      <property code="Y_baseDomainLogFileName" name="域日志文件名称" type="string" cmdbCode="baseDomainLogFileName"/>  
+      <property code="Y_baseDomainLogRelationType" name="域日志滚动类型" type="string" cmdbCode="baseDomainLogFileType"/>  
+      <property code="Y_baseDomainLogFileMinSize" name="域日志滚动文件大小" type="double" unit="MiB" cmdbCode="baseDomainLogFileMinSize"/>  
+      <property code="Y_baseDomainLogFileCount" name="域日志保留的文件数" type="int" cmdbCode="baseDomainLogFileCount"/>  
+      <property code="Y_baseDomainLogRotationTime" name="域日志滚动开始时间" type="dateTime" cmdbCode="baseDomainLogRotationTime"/>  
+      <property code="Y_baseDomainLogFileTimeSpan" name="域日志滚动时间间隔" type="int" cmdbCode="baseDomainLogFileTimeSpan"/>  
+      <property code="Y_normalLogFileName" name="一般日志文件名称" type="string" cmdbCode="normalLogFileName"/>  
+      <property code="Y_normalLogRotationType" name="一般日志滚动类型" type="string" cmdbCode="normalLogRotationType"/>  
+      <property code="Y_normalLogFileMinSize" name="一般日志滚动文件大小" type="double" unit="MiB" cmdbCode="normalLogFileMinSize"/>  
+      <property code="Y_normalLogFileCount" name="一般日志保留的文件数" type="int" cmdbCode="normalLogFileCount"/>  
+      <property code="Y_httpLogFileName" name="http日志文件名称" type="string" cmdbCode="httpLogFileName"/>  
+      <property code="Y_httpLogRotationType" name="http日志滚动类型" type="string" cmdbCode="httpLogRotationType"/>  
+      <property code="Y_httpLogFileMinSize" name="http日志滚动文件大小" type="double" unit="MiB" cmdbCode="httpLogFileMinSize"/>  
+      <property code="Y_httpLogFileCount" name="http日志保留的文件数" type="int" cmdbCode="httpLogFileCount"/>  
+      <property code="Y_installPath" name="安装路径" type="string" cmdbCode="installPath"/>  
+      <property code="Y_sharedCapacityForWorkManagers" name="服务器中可存在的请求总数" type="int" cmdbCode="sharedCapacityForWorkManagers"/>  
+      <property code="Y_maxConcurrentLongRunningRequests" name="最大并发长时间请求数" type="int" cmdbCode="maxConcurrentLongRunningRequests"/>  
+      <property code="Y_heapFreePercent" name="JVM最大空闲内存百分比" type="double" unit="%"/>  
+      <property code="Y_processCpuLoad" name="进程CPU负载" type="double"/>  
+      <property code="Y_systemCpuLoad" name="系统CPU负载" type="double"/> 
+    </ci-type>  
+    <ci-type code="Y_PostgreSQL" name="PostgreSQL" parent="Y_Platform Resource" cmdbCode="PostgreSQL"> 
+      <property code="Y_name" name="名称" type="string" cmdbCode="name"/>  
+      <property code="Y_ip" name="IP" type="string" cmdbCode="ip"/>  
+      <property code="Y_port" name="监听端口" type="int" cmdbCode="port"/>   
+      <property code="Y_installed" name="安装路径" type="string" cmdbCode="installPath"/>  
+      <property code="Y_version" name="版本信息" type="string" cmdbCode="version"/>  
+      <property code="Y_maxConnections" name="最大连接数" type="int" cmdbCode="maxConnections"/>  
+      <property code="Y_sharedBuffers" name="共享缓冲内存" type="double" cmdbCode="sharedBuffers"/>  
+      <property code="Y_walBuffers" name="WAL共享数据内存" type="double" cmdbCode="walBuffers"/>  
+      <property code="Y_workMem" name="临时内存" type="double" cmdbCode="workMem"/>  
+      <property code="Y_effectiveCacheSize" name="最大缓存" type="double" cmdbCode="effectiveCacheSize"/>  
+      <property code="Y_databaseSize" name="数据库大小" type="int" cmdbCode="databaseSize"/>  
+      <property code="Y_totalSize" name="占用磁盘大小" type="double" cmdbCode="diskUsed"/>  
+      <property code="Y_indexSize" name="索引大小" type="double" cmdbCode="indexSize"/>  
+      <property code="Y_tableSize" name="表大小" type="double" cmdbCode="tableSize"/> 
+      <property code="Y_PgSQLTablespace" name="表空间" type="inline" cmdbCode="PgSQLTablespace"/> 
+    </ci-type>  
+    <ci-type code="Y_SQL Server" name="SQL Server" parent="Y_Platform Resource" cmdbCode="SQLServer"> 
+      <property code="Y_name" name="名称" type="string" cmdbCode="name"/>  
+      <property code="Y_ip" name="IP地址" type="string" cmdbCode="ip"/>  
+      <property code="Y_port" name="监听端口" type="int" cmdbCode="port"/>   
+      <property code="Y_version" name="版本" type="string" cmdbCode="version"/>  
+      <property code="Y_patchInfo" name="补丁信息" type="string"/>  
+      <property code="Y_awe" name="是否开启AWE选项" type="enum" cmdbCode="awe"/>  
+      <property code="Y_maxMemCapacity" name="服务器最大内存" type="double" unit="MiB" cmdbCode="maxMemCapacity"/>  
+      <property code="Y_maxWorkspaceMem" name="进程最大可用内存" type="double" unit="MiB" cmdbCode="maxWorkspaceMem"/>  
+      <property code="Y_maxWorkingThreads" name="最大工作线程数" type="int" cmdbCode="maxWorkingThreads"/>  
+      <property code="Y_lightWeightCache" name="轻量级缓冲池大小" type="double" unit="MiB" cmdbCode="lightWeightCache"/>  
+      <!--new added-->  
+      <property code="Y_instanceCreationTime" name="实例创建时间" type="string"/>  
+      <property code="Y_lastBackupDate" name="末次备份时间" type="string"/>  
+      <property code="Y_serverName" name="服务器名称" type="string"/>  
+      <!--new added-->  
+      <property code="Y_SQLServerDbs" name="SQLServer数据库" type="inline" cmdbCode = "SQLServerDB" />  
+      <property code="Y_SQLServerFile" name="SQL Server 文件" type="inline" cmdbCode="sqlServerDBFile"/> 
+    </ci-type>  
+    <ci-type code="Y_Sybase" name="Sybase" parent="Y_Platform Resource" cmdbCode="Sybase"> 
+      <property code="Y_name" name="名称" type="string" cmdbCode="name"/>  
+      <property code="Y_ip" name="IP地址" type="string" cmdbCode="ip"/>  
+      <property code="Y_port" name="监听端口" type="int" cmdbCode="port"/>   
+      <property code="Y_version" name="版本" type="string" cmdbCode="version"/>  
+      <property code="Y_maxMemory" name="最大内存" type="int" unit="MiB" cmdbCode="maxMemory"/>  
+      <property code="Y_procedureCache" name="最大存储过程缓存" type="double" unit="MiB" cmdbCode="procedureCache"/>  
+      <property code="Y_dataCache" name="高速缓存" type="int" unit="MiB" cmdbCode="dataCache"/>  
+      <property code="Y_maxConnections" name="最大连接数" type="int" cmdbCode="maxConnections"/>  
+      <property code="Y_openIndex" name="最大索引" type="int" cmdbCode="openIndex"/>  
+      <property code="Y_locks" name="最大锁数" type="int" cmdbCode="maxLocks"/>  
+      <property code="Y_SybaseDbs" name="数据库" type="inline" cmdbCode="sybaseDBs"/> 
+    </ci-type>  
+    <ci-type code="Y_Informix" name="Informix" parent="Y_Platform Resource" cmdbCode="Informix"> 
+      <property code="Y_name" name="名称" type="string" cmdbCode="name"/>  
+      <property code="Y_ip" name="IP" type="string" cmdbCode="ip"/>  
+      <property code="Y_port" name="监听端口" type="int" cmdbCode="port"/>   
+      <property code="Y_installed" name="安装路径" type="string" cmdbCode="installPath"/>  
+      <property code="Y_version" name="版本信息" type="string" cmdbCode="version"/>  
+      <property code="Y_shmadd" name="内存区域" type="double" cmdbCode="shmAdd"/>  
+      <property code="Y_shmtotal" name="最大公用内存" type="double" cmdbCode="shmTotal"/>  
+      <property code="Y_dsTotalMemory" name="查询所需内存上限" type="double" cmdbCode="dsTotalMemory"/>  
+      <property code="Y_dsMaxScans" name="扫描数上限" type="int" cmdbCode="dsMaxScans"/>  
+      <property code="Y_locks" name="最大锁数" type="int" cmdbCode="maxLocks"/>  
+      <property code="Y_buffers" name="缓冲大小" type="double" cmdbCode="buffers"/>  
+      <property code="Y_maxConns" name="最大连接数" type="int"/>  
+      <property code="Y_rootName" name="根数据库空间名" type="string"/>  
+      <property code="Y_rootSize" name="根数据库空间大小" type="double" unit="kib"/> 
+    </ci-type>  
+    <ci-type code="Y_DB2" name="DB2" parent="Y_Platform Resource" cmdbCode="DB2"> 
+      <property code="Y_name" name="名称" type="string" cmdbCode="name"/>  
+      <property code="Y_ip" name="IP地址" type="string" cmdbCode="ip"/>  
+      <property code="Y_port" name="监听端口" type="int" cmdbCode="port"/>   
+      <property code="Y_version" name="版本" type="string" cmdbCode="version"/>  
+      <property code="Y_appHeapSize" name="应用程序堆大小" type="int" unit="MiB" cmdbCode="appHeapSize"/>  
+      <property code="Y_dbMem" name="数据库共享内存" type="int" cmdbCode="dbMem"/>  
+      <property code="Y_dskful" name="日志磁盘已满时挂起" type="enum" cmdbCode="dskful"/>  
+      <property code="Y_packInfo" name="补丁信息" type="enum" cmdbCode="packInfo"/>  
+      <property code="Y_dbMemThresh" name="数据库内存阙值" type="int" unit="%" cmdbCode="dbMemThresh"/>  
+      <property code="Y_lastBackupTime" name="末次备份时间" type="dateTime" cmdbCode="lastBackupTime"/>  
+      <property code="Y_DBtwoTablespace" name="DB2表空间" type="inline" cmdbCode="db2Tablespace"/> 
+    </ci-type>  
+    <ci-type code="Y_MongoDB" name="MongoDB" parent="Y_Platform Resource" cmdbCode="MongoDB"> 
+      <property code="Y_name" name="名称" type="string" cmdbCode="name"/>  
+      <property code="Y_ip" name="IP地址" type="string" cmdbCode="ip"/>  
+      <property code="Y_port" name="监听端口" type="int" cmdbCode="port"/>   
+      <property code="Y_version" name="版本" type="string" cmdbCode="version"/>  
+      <property code="Y_bits" name="位数" type="enum" cmdbCode="bits"/>  
+      <property code="Y_javascriptEngine" name="javascript引擎" type="string" cmdbCode="javascriptEngine"/>  
+      <property code="Y_maxBsonObjectSize" name="最大bson对象大小" type="double" unit="MiB" cmdbCode="maxBsonObjectSize"/>  
+      <property code="Y_isMaster" name="是否主库" type="enum" cmdbCode="isMaster"/>  
+      <property code="Y_maxMessageSizeBytes" name="最大消息" type="int" unit="Byte" cmdbCode="maxMessageSizeBytes"/>  
+      <property code="Y_maxWriteBatchSize" name="最大批量写入大小" type="int" unit="MiB" cmdbCode="maxWriteBatchSize"/> 
+      <property code="Y_MongoDBInstance" name="MongoDBDB" type="inline" cmdbCode="MongoDBDB"/> 
+    </ci-type>  
+    <ci-type code="Y_IIS" name="IIS" parent="Y_Platform Resource" cmdbCode="IIS"> 
+      <property code="Y_name" name="名称" type="string" cmdbCode="name"/>  
+      <property code="Y_IP" name="IP" type="string" cmdbCode="ip"/>  
+      <property code="Y_port" name="监听端口" type="int" cmdbCode="port"/>   
+      <property code="Y_installed" name="安装路径" type="string" cmdbCode="installPath"/>  
+      <property code="Y_version" name="版本信息" type="string" cmdbCode="version"/> 
+    </ci-type>  
+    <ci-type code="Y_VM" name="虚拟机" parent="Y_Virual Resource" cmdbCode="VM"> 
+      <property code="Y_name" name="名称" type="string" cmdbCode="name"/>  
+      <property code="Y_ip" name="IP地址" type="string" cmdbCode="ip"/>  
+      <property code="Y_memory" name="物理内存" type="double" unit="GiB" />  
+      <property code="Y_model" name="型号" type="string" />  
+      <property code="Y_vendor" name="厂商" type="string" />  
+      <property code="Y_cpuModel" name="CPU型号" type="string"/>  
+      <property code="Y_cpuFrequency" name="CPU主频" type="double" unit="GHz" />  
+      <property code="Y_physicalCpus" name="物理CPU个数" type="int" />  
+      <property code="Y_cpuCores" name="CPU核数" type="int" cmdbCode="cpuNumber"/>  
+      <property code="Y_cpuBits" name="CPU位数" type="enum"/>  
+      <property code="Y_virtualMemSize" name="虚拟内存" type="double" unit="GiB" cmdbCode="memoryCapacity"/>  
+      <property code="Y_storageSize" name="存储总容量" type="double" unit="GiB" cmdbCode="storageSize"/>  
+      <property code="Y_VirtualNic" name="物理磁盘" type="inline"/>  
+      <property code="Y_VirtualNic" name="网卡" type="inline"  cmdbCode="NICs"/>  
+      <property code="Y_virtualType" name="虚拟化类型" type="string" cmdbCode="virtualType"/>  
+      <property code="Y_os" name="操作系统" type="string" cmdbCode="os"/>  
+      <property code="Y_logicCpus" name="逻辑CPU个数" type="int" />  
+      <property code="Y_dec" name="描述" type="string" />  
+      <property code="availabilityZone" name="可用区" type="string" />  
+      <property code="Y_memoryTotal" name="内存大小" type="double" unit="MiB" />  
+      <property code="Y_storageTotal" name="存储大小" type="double" unit="GiB" />  
+      <property code="hostId" name="主机标识" type="string"/>  
+      <property code="region" name="地域" type="string" />  
+      <property code="Y_systemID" name="系统ID" type="string"/>  
+      <!-- new add for zheshang -->  
+      <property code="biosVersion" name="bios版本" type="string" />  
+      <property code="firmwareVersion" name="firmware版本" type="string"/>  
+      <property code="memorySlots" name="内存插槽" type="int" />  
+      <property code="memorySpeed" name="内存速率" type="string"/>  
+      <property code="powerNum" name="电源数量" type="int" />  
+      <property code="startTime" name="开机运行时间" type="string" unit="天" /> 
+    </ci-type>  
+    <ci-type code="Y_VirtualDC" name="虚拟数据中心" parent="Y_Virual Resource" cmdbCode="VirtualDC"> 
+      <property code="Y_name" name="名称" type="string" cmdbCode="name"/>  
+      <property code="Y_ip" name="IP地址" type="string" cmdbCode="ip"/>  
+      <property code="Y_desc" name="描述" type="string" cmdbCode="desc"/>  
+    </ci-type>  
+    <ci-type code="Y_Hypervisor" name="虚拟化管理器" parent="Y_Virual Resource" cmdbCode="Hypervisor"> 
+      <property code="Y_name" name="名称" type="string" cmdbCode="name"/>  
+      <property code="Y_ip" name="IP地址" type="string" cmdbCode="ip"/>  
+      <property code="Y_virtualType" name="虚拟化类型" type="string" cmdbCode="virtualType"/>  
+      <property code="Y_cpus" name="CPU个数" type="int" cmdbCode="phyCpuNum"/>  
+      <property code="Y_cpuCapacity" name="CPU总容量" type="double" unit="GHz" cmdbCode="cpuCapacity"/>  
+      <property code="Y_cpuReserved" name="CPU预留量" type="double" unit="GHz" cmdbCode="cpuReserved"/>  
+      <property code="Y_memoryCapacity" name="内存总容量" type="double" unit="MiB" cmdbCode="memoryCapacity"/>  
+      <property code="Y_memoryReserved" name="内存预留量" type="double" unit="MiB" cmdbCode="memoryReserved"/>  
+      <property code="Y_storageCapacity" name="存储总容量" type="double" unit="GiB" cmdbCode="storageCapacity"/>  
+      <property code="Y_nics" name="网卡数量" type="int" cmdbCode="NICNum"/>  
+      <property code="Y_maxRunningVMs" name="最大运行虚拟机数" type="int" cmdbCode="maxRunningVMs"/>  
+      <property code="Y_maxSupportedVcpus" name="最大支持CPU数" type="int" cmdbCode="maxSupportedcpus"/>  
+      <property code="Y_maxSupportedVMs" name="最大支持虚拟机数" type="int" cmdbCode="maxSupportedVMs"/>  
+      <!-- Openstack -->  
+      <property code="Y_systemID" name="系统ID" type="string" />  
+      <property code="Y_cpuNumber" name="CPU总核数" type="int" />  
+      <property code="Y_memoryTotal" name="内存大小" type="double" unit="MiB" />  
+      <property code="Y_storageLocal" name="本地存储大小" type="double" unit="GiB"/>  
+      <property code="Y_cpuNumberUsed" name="已分配CPU量" type="int" />  
+      <property code="Y_memoryUsed" name="已分配内存大小" type="double" unit="MiB" />  
+      <property code="Y_storageUsed" name="已使用磁盘大小" type="double" unit="GiB"/>
+	  
+      <!-- 浙商 -->  
+      <property code="Y_gateway" name="网关" type="double" unit="GiB" />  
+      <property code="Y_niccount" name="网卡数量" type="double" unit="GiB"/>  
+      <property code="Y_subnetmask" name="子网掩码" type="double" unit="GiB"/>  
+      <property code="Y_numHBAs" name="hba数量" type="double" unit="GiB" />  
+      <property code="y_os" name="操作系统" type="double" unit="GiB" /> 
+      
+    </ci-type>  
+    <ci-type code="Y_VirtualTempla" name="虚拟机模板" parent="Y_Virual Resource" cmdbCode="VirtualTemplate"> 
+      <property code="Y_name" name="名称" type="string" cmdbCode="name"/>  
+      <property code="guid" name="模板标识" type="string" cmdbCode="identifier"/>  
+      <property code="Y_os" name="操作系统" type="string" cmdbCode="os"/>  
+      <property code="Y_virtualType" name="虚拟化类型" type="string" cmdbCode="virtualType"/>  
+      <property code="Y_createTime" name="创建时间" type="dateTime" cmdbCode="createDateTime"/> 
+    </ci-type>  
+    <!-- openstack -->  
+    <ci-type code="Y_OpenstackSyst" name="Openstack系统" parent="Y_Virual Resource" cmdbCode="OpenstackSystem"> 
+      <property code="Y_name" name="名称" type="string" cmdbCode="name"/>  
+      <property code="Y_authURL" name="认证服务URL" type="string" cmdbCode="authURL"/>  
+      <property code="Y_authAPIVersion" name="认证服务API版本" type="string" cmdbCode="authAPIVersion"/>  
+      <property code="Y_computerURL" name="计算服务URL" type="string" cmdbCode="computerURL"/>  
+      <property code="Y_computerAPIVersion" name="计算服务API版本" type="string" cmdbCode="computerAPIVersion"/>  
+      <property code="Y_storageURL" name="存储服务URL" type="string" cmdbCode="storageURL"/>  
+      <property code="Y_storageAPIVersion" name="存储服务API版本" type="string" cmdbCode="storageAPIVersion"/>  
+      <property code="Y_imageURL" name="镜像服务URL" type="string" cmdbCode="imageURL"/>  
+      <property code="Y_imageAPIVersion" name="镜像服务API版本" type="string" cmdbCode="imageAPIVersion"/>  
+      <property code="Y_networkURL" name="网络服务URL" type="string" cmdbCode="networkURL"/>  
+      <property code="Y_networkAPIVersion" name="网络服务API版本" type="string" cmdbCode="networkAPIVersion"/>  
+      <property code="Y_OrchestrationURL" name="编排服务URL" type="string"/>  
+      <property code="Y_OrchestrationAPIVersion" name="编排服务API版本" type="string" />  
+      <property code="Y_ObjectStorageURL" name="对象存储服务URL" type="string" cmdbCode="storageURL"/>  
+      <property code="Y_ObjectStorageAPIVersion" name="对象存储服务API版本" type="string" cmdbCode="storageAPIVersion"/>  
+      <property code="Y_tenantName" name="租户名" type="string" cmdbCode="tenantName"/>  
+      <property code="Y_accessPassword" name="API访问密码" type="string"/>  
+      <property code="Y_acessUser" name="API访问用户名" type="string"/> 
+    </ci-type>  
+    <ci-type code="Y_AvailDomain" name="可用域" parent="Y_Virual Resource" cmdbCode="AvailableZone"> 
+      <property code="Y_name" name="名称" type="string" cmdbCode="name"/> 
+    </ci-type>  
+    <ci-type code="Y_ResDomain" name="资源域" parent="Y_Virual Resource" cmdbCode="ResDomain"> 
+      <property code="Y_name" name="名称" type="string" cmdbCode="name"/>  
+      <property code="Y_hypervisorNumber" name="Hypervisor个数" type="int" cmdbCode="hypervisorNumber"/>  
+      <property code="Y_cpuNumber" name="CPU总核数" type="int" cmdbCode="cpuNumber"/>  
+      <property code="Y_memoryTotal" name="内存总量" type="double" unit="MiB" cmdbCode="memoryTotal"/>  
+      <property code="Y_storageTotal" name="存储总量" type="double" unit="GiB" cmdbCode="storageTotal"/>  
+      <property code="Y_systemID" name="系统ID" type="string" cmdbCode="systemID"/>  
+      <property code="Y_hostName" name="host名称" type="string" cmdbCode="hostName"/>  
+      <property code="Y_serviceName" name="服务名" type="string" cmdbCode="serviceName"/> 
+      <property code="Y_zone" name="所属可用域" type="string" /> 
+    </ci-type>  
+    <ci-type code="Y_ComputePlan" name="计算方案" parent="Y_Virual Resource" cmdbCode="ComputePlan"> 
+      <property code="Y_name" name="名称" type="string" cmdbCode="name"/>  
+      <property code="Y_vcpus" name="CPU核数" type="int" cmdbCode="vcpus"/>  
+      <property code="Y_memoryTotal" name="内存大小" type="int" unit="MiB" cmdbCode="memoryTotal"/>  
+      <property code="Y_storageRoot" name="根磁盘大小" type="int" unit="GiB" cmdbCode="storageRoot"/>  
+      <property code="Y_storageSwap" name="Swap磁盘大小" type="int" unit="GiB" cmdbCode="storageSwap"/>  
+      <property code="Y_storageTemp" name="临时磁盘大小" type="int" unit="GiB" cmdbCode="storageTemp"/>  
+      <property code="Y_systemID" name="系统ID" type="string" cmdbCode="systemID"/> 
+    </ci-type>  
+    <ci-type code="Y_Network" name="网络" parent="Y_Virual Resource" cmdbCode="Network"> 
+      <property code="Y_name" name="名称" type="string" cmdbCode="name"/>  
+      <property code="Y_Subnets" name="子网网关" type="table" cmdbCode="subnets"/>  
+      <property code="Y_systemID" name="系统ID" type="string" cmdbCode="systemID"/> 
+    </ci-type>  
+    <ci-type code="Y_Project" name="项目" parent="Y_Virual Resource" cmdbCode="Project"> 
+      <property code="Y_name" name="名称" type="string" cmdbCode="name"/>  
+      <property code="Y_systemID" name="系统ID" type="string" cmdbCode="systemID"/> 
+    </ci-type>  
+    <ci-type code="Y_Image" name="镜像" parent="Y_Virual Resource" cmdbCode="Image"> 
+      <property code="Y_imageType" name="磁盘格式" type="string" cmdbCode="imageType"/>  
+      <property code="Y_minDisk" name="最小内存" type="int" unit="MiB"/>  
+      <property code="Y_minRam" name="最小磁盘空间" type="int" unit="GiB"/>  
+      <property code="Y_systemID" name="系统ID" type="string" cmdbCode="systemID"/> 
+    </ci-type>  
+    <ci-type code="Y_User" name="用户" parent="Y_Virual Resource" cmdbCode="User"> 
+      <property code="Y_name" name="名称" type="string" cmdbCode="name"/>  
+      <property code="Y_username" name="用户名" type="string" cmdbCode="username"/>  
+      <property code="Y_enabled" name="是否可用" type="string" cmdbCode="enabled"/>  
+      <property code="Y_email" name="邮件地址" type="string" />  
+      <property code="Y_domainId" name="域id" type="string" />  
+      <property code="Y_systemID" name="系统ID" type="string" cmdbCode="systemID"/> 
+    </ci-type>  
+    <ci-type code="Y_SecurityGroup" name="安全组" parent="Y_Virual Resource" cmdbCode="SecurityGroup"> 
+      <property code="Y_name" name="名称" type="string" cmdbCode="name"/>  
+      <property code="Y_id" name="组id" type="string" cmdbCode="systemID"/>  
+      <property code="Y_domainId" name="域id" type="string" cmdbCode="domainID"/>  
+      <property code="Y_description" name="描述" type="string" cmdbCode="desc"/> 
+    </ci-type>  
+    <ci-type code="Y_Credentials" name="密钥对" parent="Y_Virual Resource" cmdbCode="Credentials" > 
+      <property code="Y_name" name="名称" type="string" cmdbCode="name" />  
+      <property code="Y_id" name="密钥id" type="string"  cmdbCode="systemID"/>  
+      <property code="Y_userId" name="用户id" type="string" cmdbCode="userId" />  
+      <property code="Y_projectId" name="项目id" type="string" cmdbCode="projectId" />  
+      <property code="Y_blob" name="密钥信息" type="string" cmdbCode="keyBlob" />  
+      <property code="Y_type" name="密钥类型" type="string" cmdbCode="keyType" /> 
+    </ci-type>  
+    <!-- <ci-type code="Y_IPAddr" name="IP地址" parent="Y_Infrastructure Resource" cmdbCode="IP"> 
+      <property code="Y_name" name="名称" type="string" cmdbCode="name"/>  
+      <property code="Y_ip" name="IP" type="string" cmdbCode="ip"/>  
+      <property code="Y_macAddr" name="MAC地址" type="string" cmdbCode="macAddr"/>  
+      <property code="Y_ipType" name="IP类型" type="string" cmdbCode="ipType"/> 
+    </ci-type>  -->
+    <ci-type code="Y_IPAddr" name="IP" parent="Y_Virual Resource" cmdbCode="IPAddress"> 
+      <property code="Y_bindStatus" name="状态" type="string" />  
+      <property code="Y_ipAddress" name="IP地址" type="string" cmdbCode="ip"/>  
+      <property code="Y_systemID" name="系统ID" type="string" cmdbCode="systemID"/> 
+    </ci-type>
+    <ci-type code="Y_BlockStorage" name="块存储" parent="Y_Virual Resource" cmdbCode="BlockStorage"> 
+      <property code="Y_name" name="名称" type="string" cmdbCode="name"/>  
+      <property code="Y_id" name="id" type="string" cmdbCode="systemID"/>  
+      <property code="Y_totalSizeQuota" name="总配额" type="double" unit="GiB" cmdbCode="totalSizeQuota"/>  
+      <property code="Y_volumesNumQuota" name="存储卷数配额" type="int" />  
+      <property code="Y_perVolumeSizeQuota" name="单个存储卷配额" type="double" unit="GiB" cmdbCode="perVolumeSizeQuota"/>  
+      <property code="Y_backupsNumQuota" name="备份卷数配额" type="int" cmdbCode="backupsNumQuota"/>  
+      <property code="Y_backupSizeQuota" name="备份卷配额" type="double" unit="GiB" cmdbCode="backupSizeQuota"/>  
+      <property code="Y_snapshotsNumQuota" name="快照数配额" type="int" cmdbCode="snapshotsNumQuota"/> 
+    </ci-type>  
+    <ci-type code="Y_StorageVolume" name="存储卷" parent="Y_Virual Resource" cmdbCode="StorageVolume"> 
+      <property code="Y_name" name="名称" type="string" cmdbCode="name"/>  
+      <property code="Y_volumeSize" name="卷大小" type="double" unit="GiB" cmdbCode="volumeSize"/>  
+      <property code="Y_systemID" name="系统ID" type="string" cmdbCode="systemID"/> 
+    </ci-type>  
+    <ci-type code="Y_BackupVolume" name="卷备份" parent="Y_Virual Resource" cmdbCode="BackupVolume"> 
+      <property code="Y_name" name="名称" type="string" cmdbCode="name"/>  
+      <property code="Y_volumeSize" name="卷大小" type="double" unit="GiB" cmdbCode="volumeSize"/>  
+      <property code="Y_systemID" name="系统ID" type="string" cmdbCode="systemID"/> 
+    </ci-type>  
+    <ci-type code="Y_ServiceStack" name="服务栈" parent="Y_Virual Resource" cmdbCode="ServiceStack"> 
+      <property code="Y_name" name="名称" type="string" cmdbCode="name"/>  
+      <property code="Y_id" name="id" type="string" cmdbCode="systemID"/>  
+      <property code="Y_description" name="描述" type="string" cmdbCode="desc"/>  
+      <property code="Y_owner" name="拥有者" type="string" cmdbCode="stackOwners"/>  
+      <property code="Y_status" name="状态" type="string" cmdbCode="stackStatus"/>  
+      <property code="Y_statusReason" name="导致当前状态的原因" type="string" cmdbCode="stackStatusReason"/>  
+      <property code="Y_userProjectId" name="项目id" type="string" cmdbCode="projectId"/>  
+      <property code="Y_tags" name="标签" type="string" cmdbCode="stackTags"/> 
+    </ci-type>  
+    <ci-type code="Y_Resource" name="服务资源" parent="Y_Virual Resource"> 
+      <property code="Y_name" name="名称" type="string" cmdbCode="name"/>  
+      <property code="Y_logicalId" name="逻辑栈id" type="string" cmdbCode="logicalId"/>  
+      <property code="Y_physicalId" name="物理栈id" type="string" cmdbCode="physicalId"/>  
+      <property code="Y_owner" name="拥有者" type="string" cmdbCode="owner"/>  
+      <property code="Y_status" name="状态" type="string" cmdbCode="status"/>  
+      <property code="Y_statusReason" name="导致当前状态的原因" type="string" cmdbCode="statusReason"/>  
+      <property code="Y_type" name="类型" type="string" cmdbCode="type"/> 
+    </ci-type>  
+    <ci-type code="Y_ObjectContainer" name="对象容器" parent="Y_Virual Resource" cmdbCode="ObjectContainer" > 
+      <property code="Y_name" name="名称" type="string" cmdbCode="name"/>  
+      <property code="Y_count" name="对象数量" type="int" cmdbCode="objectCount"/>  
+      <property code="Y_size" name="存储容量" type="double" unit="bytes" cmdbCode="objStorageSize"/> 
+    </ci-type>  
+    <ci-type code="Y_ObjectFile" name="对象文件" parent="Y_Virual Resource" cmdbCode="ObjectFile"> 
+      <property code="Y_name" name="名称" type="string" cmdbCode="name"/>  
+      <property code="Y_hash" name="对象MD5" type="string" cmdbCode="objFileHash"/>  
+      <property code="Y_size" name="文件大小" type="double" unit="bytes" cmdbCode="objFilesize"/> 
+    </ci-type>  
+    <!-- 浙商 -->  
+    <ci-type code="enclosure" name="刀箱" parent="Y_Infrastructure" > 
+      <property code="name" name="名称" type="string" cmdbCode="name"/>  
+      <property code="serial" name="序列号" type="string" cmdbCode="serial"/>  
+      <property code="vendor" name="品牌" type="string" cmdbCode="vendor"/>  
+      <property code="model" name="型号" type="string" cmdbCode="model"/>  
+      <property code="ip" name="IP" type="string" cmdbCode="ip"/>  
+      <property code="microcode" name="微码版本" type="string" cmdbCode="microcode"/> 
+    </ci-type>  
+    <ci-type code="Y_dlpar" name="DLPAR" parent="Y_Virual Resource"> 
+      <property code="Y_name" name="名称" type="string" cmdbCode="name"/>  
+      <property code="Y_ip" name="IP" type="string" cmdbCode="ip"/>  
+      <property code="Y_osversion" name="操作系统" type="string" cmdbCode="osversion"/>  
+      <property code="Y_memory" name="内存大小" type="string" cmdbCode="memory"/>  
+      <property code="Y_cpuNum" name="CPU内核总数" type="string" cmdbCode="cpuNum"/>  
+      <property code="Y_deviceDesc" name="磁盘信息描述" type="string" cmdbCode="deviceDesc"/>  
+      <property code="Y_DNS" name="DNS" type="string" cmdbCode="dns"/>  
+      <property code="Y_NTP" name="NTP" type="string" cmdbCode="NTP"/> 
+    </ci-type>  
+    <ci-type code="Y_HMC" name="HMC" parent="Y_Virual Resource" > 
+      <property code="Y_name" name="名称" type="string" cmdbCode="name"/>  
+      <property code="Y_serial" name="序列号" type="string" cmdbCode="serial"/>  
+      <property code="Y_vendor" name="品牌" type="string" cmdbCode="vendor"/>  
+      <property code="Y_model" name="型号" type="string" cmdbCode="model"/>  
+      <property code="Y_ip" name="IP" type="string" cmdbCode="ip"/>  
+      <property code="Y_microcode" name="微码版本" type="string" cmdbCode="microcode"/>  
+      <property code="Y_osversion" name="操作系统版本" type="string" cmdbCode="osversion"/> 
+    </ci-type>  
+    <ci-type code="powersupply" name="powersupply" parent="Y_Storage" />  
+    <ci-type code="diskdrive" name="diskdrive" parent="Y_Storage" />  
+    <ci-type code="cpu" name="cpu" parent="Y_Storage" />  
+    <ci-type code="raidcontroller" name="raidcontroller" parent="Y_Storage" />  
+    <ci-type code="enthernetcard" name="EnthernetCard" parent="Y_Storage" />  
+    <ci-type code="fccard" name="fccard" parent="Y_Storage" />  
+    <ci-type code="fcport" name="fcport" parent="Y_Storage" />  
+    <ci-type code="LUN" name="LUN" parent="Y_Storage" /> 
+  </ci-type-define>  
+  <relation-define> 
+    <relation type="RunsOn" label="运行"/>  
+    <relation type="Uses" label="使用"/>  
+    <relation type="DependsOn" label="依赖"/>  
+    <relation type="Provides" label="提供"/>  
+    <relation type="HasMember" label="包含"/>  
+    <relation type="ConnectsTo" label="连接"/>  
+    <relation type="Virtualizes" label="虚拟化"/>  
+    <relation type="Mapping" label="Mapping"/>  
+    <relation type="Manages" label="管理"/>  
+  </relation-define> 
+</ci-model>

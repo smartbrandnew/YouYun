@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:dubbo="http://code.alibabatech.com/schema/dubbo"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans  
+        http://www.springframework.org/schema/beans/spring-beans.xsd  
+        http://code.alibabatech.com/schema/dubbo  
+        http://code.alibabatech.com/schema/dubbo/dubbo.xsd">
+
+	<!-- 提供方应用信息，用于计算依赖关系 -->
+	<dubbo:application name="bat-agent-provider" />
+
+	<!-- 使用注册中心暴露服务地址 -->
+	<dubbo:registry address="${zk.url}" client="curator" timeout="30000"/>
+
+	<!-- 用dubbo协议暴露服务 -->
+	<dubbo:protocol id="rest-agent" name="rest" port="${bat.agent.port}"
+		contextpath="api"
+		extension="uyun.bat.common.rest.ext.RPCExceptionMapper,uyun.bat.common.rest.ext.RestExceptionMapper,uyun.bat.common.rest.ext.AuthFilter" />
+
+	<!-- 用dubbo协议暴露服务 -->
+	<dubbo:protocol id="dubbo" name="dubbo"
+		port="${bat.agent.front.port}" serialization="kryo" />
+
+	<dubbo:protocol id="rest-sync" name="rest" port="${bat.agent.autosync.port}"
+		contextpath="api"
+		extension="uyun.bat.common.rest.ext.RPCExceptionMapper,uyun.bat.common.rest.ext.RestExceptionMapper" />
+
+	<dubbo:annotation package="uyun.bat.agent.impl.service" />
+
+</beans>

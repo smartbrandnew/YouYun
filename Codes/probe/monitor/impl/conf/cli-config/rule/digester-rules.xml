@@ -1,0 +1,165 @@
+<?xml version="1.0"?>
+
+<digester-rules>
+	<object-create-rule pattern="collection-define"
+		classname="com.broada.carrier.monitor.method.cli.config.CollectionDefine"/>
+	<pattern value="*/cliconfiguration">
+		<object-create-rule classname="com.broada.carrier.monitor.method.cli.config.CLIConfiguration"/>
+		<set-properties-rule>
+			<alias attr-name="sysname" prop-name="sysname"/>
+		</set-properties-rule>
+		<pattern value="shellInteract">
+			<object-create-rule classname="com.broada.carrier.monitor.method.cli.config.ShellInteract"/>
+			<pattern value="shellStart/command">
+				<object-create-rule classname="com.broada.carrier.monitor.method.cli.config.Command"/>
+				<set-properties-rule>
+					<alias attr-name="cliPrompt" prop-name="cliPrompt"/>
+				</set-properties-rule>
+				<set-properties-rule>
+					<alias attr-name="delay" prop-name="delay"/>
+				</set-properties-rule>
+				<set-properties-rule>
+					<alias attr-name="output" prop-name="output"/>
+				</set-properties-rule>
+				<call-method-rule methodname="setCmd" paramcount="0"/>
+				<set-next-rule methodname="setShellStart"/>
+			</pattern>
+			<pattern value="shellEnd/command">
+				<object-create-rule classname="com.broada.carrier.monitor.method.cli.config.Command"/>
+				<set-properties-rule>
+					<alias attr-name="cliPrompt" prop-name="cliPrompt"/>
+				</set-properties-rule>
+				<set-properties-rule>
+					<alias attr-name="delay" prop-name="delay"/>
+				</set-properties-rule>
+				<set-properties-rule>
+					<alias attr-name="output" prop-name="output"/>
+				</set-properties-rule>
+				<call-method-rule methodname="setCmd" paramcount="0"/>
+				<set-next-rule methodname="setShellEnd"/>
+			</pattern>
+			<pattern value="shellExec/command">
+				<object-create-rule classname="com.broada.carrier.monitor.method.cli.config.Command"/>
+				<set-properties-rule>
+					<alias attr-name="cliPrompt" prop-name="cliPrompt"/>
+				</set-properties-rule>
+				<set-properties-rule>
+					<alias attr-name="delay" prop-name="delay"/>
+				</set-properties-rule>
+				<set-properties-rule>
+					<alias attr-name="output" prop-name="output"/>
+				</set-properties-rule>
+				<call-method-rule methodname="setCmd" paramcount="0"/>
+				<set-next-rule methodname="setShellExec"/>
+			</pattern>
+			<set-next-rule methodname="addShellInteract"/>
+		</pattern>
+		<pattern value="category">
+			<object-create-rule classname="com.broada.carrier.monitor.method.cli.config.Category"/>
+			<set-properties-rule>
+				<alias attr-name="host" prop-name="host"/>
+			</set-properties-rule>
+			<set-properties-rule>
+				<alias attr-name="name" prop-name="name"/>
+			</set-properties-rule>
+			<set-properties-rule>
+				<alias attr-name="sysversion" prop-name="sysversion"/>
+			</set-properties-rule>
+			<set-properties-rule>
+				<alias attr-name="description" prop-name="description"/>
+			</set-properties-rule>
+			<set-properties-rule>
+				<alias attr-name="remoteFilePath" prop-name="remoteFilePath"/>
+			</set-properties-rule>
+			<set-properties-rule>
+				<alias attr-name="sequence" prop-name="sequence"/>
+			</set-properties-rule>
+			
+			<pattern value="shell/command">
+				<object-create-rule classname="com.broada.carrier.monitor.method.cli.config.Command"/>
+				<set-properties-rule>
+					<alias attr-name="output" prop-name="output"/>
+				</set-properties-rule>
+				<set-properties-rule>
+					<alias attr-name="delay" prop-name="delay"/>
+				</set-properties-rule>
+				<call-method-rule methodname="setCmd" paramcount="0"/>
+				<set-next-rule methodname="setShellCmd"/>
+			</pattern>
+			
+			<pattern value="commands/command">
+				<object-create-rule classname="com.broada.carrier.monitor.method.cli.config.Command"/>
+				<set-properties-rule>
+					<alias attr-name="id" prop-name="id"/>
+				</set-properties-rule>
+				<set-properties-rule>
+					<alias attr-name="output" prop-name="output"/>
+				</set-properties-rule>
+				<set-properties-rule>
+					<alias attr-name="delay" prop-name="delay"/>
+				</set-properties-rule>
+				<call-method-rule methodname="setCmd" paramcount="0"/>
+				<set-next-rule methodname="addCommand"/>
+			</pattern>
+			
+			<pattern value="parserRule">
+				<object-create-rule
+					classname="com.broada.carrier.monitor.method.cli.parser.ParserRule"/>
+				<set-properties-rule>
+					<alias attr-name="start" prop-name="start"/>
+				</set-properties-rule>
+				<set-properties-rule>
+					<alias attr-name="end" prop-name="end"/>
+				</set-properties-rule>
+				<set-properties-rule>
+					<alias attr-name="delimeter" prop-name="delimeter"/>
+				</set-properties-rule>
+				<set-properties-rule>
+					<alias attr-name="datatype" prop-name="datatype"/>
+				</set-properties-rule>
+				<set-properties-rule>
+					<alias attr-name="title" prop-name="title"/>
+				</set-properties-rule>
+				<set-properties-rule>
+					<alias attr-name="titleIgnore" prop-name="titleIgnore"/>
+				</set-properties-rule>
+				<pattern value="parserItem">
+					<object-create-rule
+						classname="com.broada.carrier.monitor.method.cli.parser.ParserItem"/>
+					<set-properties-rule>
+						<alias attr-name="start" prop-name="start"/>
+					</set-properties-rule>
+					<set-properties-rule>
+						<alias attr-name="end" prop-name="end"/>
+					</set-properties-rule>
+					<set-properties-rule>
+						<alias attr-name="token" prop-name="token"/>
+					</set-properties-rule>
+					<set-properties-rule>
+						<alias attr-name="line" prop-name="line"/>
+					</set-properties-rule>
+					<set-properties-rule>
+						<alias attr-name="name" prop-name="name"/>
+					</set-properties-rule>
+					<set-properties-rule>
+						<alias attr-name="titleName" prop-name="titleName"/>
+					</set-properties-rule>
+					<call-method-rule methodname="setBsh" paramcount="0"
+						pattern="bsh"/>
+					<set-next-rule methodname="addParserItem"/>
+				</pattern>
+				<pattern value="bsh">
+					<object-create-rule classname="com.broada.carrier.monitor.method.cli.parser.Bsh"/>
+					<set-properties-rule>
+						<alias attr-name="file" prop-name="file"/>
+					</set-properties-rule>
+					<call-method-rule methodname="setScript" paramcount="0"/>
+					<set-next-rule methodname="setBsh"/>
+				</pattern>
+				<set-next-rule methodname="setParserRule"/>
+			</pattern>
+			<set-next-rule methodname="addCategory"/>
+		</pattern>
+		<set-next-rule methodname="addCliConfiguration"/>
+	</pattern>
+</digester-rules>

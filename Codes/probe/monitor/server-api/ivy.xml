@@ -1,0 +1,92 @@
+<ivy-module version="2.0">
+	<info organisation="com.broada.carrier" module="carrier.monitor.server.api" />
+
+	<configurations>
+		<conf name="common" />
+		<conf name="default" />
+		<conf name="dev" />
+	</configurations>
+
+	<publications>
+		<artifact name="carrier.monitor.server.api" type="jar" conf="default" ext="jar" />
+		<artifact name="carrier.monitor.common.patchloader" type="jar" conf="default" ext="jar" />
+	</publications>
+
+	<dependencies>
+		<!-- 日志 -->
+		<dependency org="org.apache" name="org.apache.commons.logging" rev="1.0.4" conf="default->default" />
+		<dependency org="org.slf4j" name="org.slf4j.api" rev="1.6.4" conf="default->default" />
+		<dependency org="org.slf4j" name="org.slf4j.log4j.over.slf4j" rev="1.6.4" conf="common->default" />
+		<dependency org="ch.qos" name="ch.qos.logback.core" rev="1.0.7" conf="common->default" />
+		<dependency org="ch.qos" name="ch.qos.logback.classic" rev="1.0.7" conf="common->default" />
+		
+		<!-- 消息总线 -->
+		<dependency org="com.broada.platform" name="platform.module.mq" rev="1.4.0" conf="common->default" changing="true"/>
+
+		<!-- 数据持久层 -->
+		<dependency org="org.apache" name="org.apache.commons.collections" rev="3.1.0" conf="common->default" />
+		<dependency org="org.apache" name="org.apache.commons.pool" rev="1.2.0" conf="common->default" />
+		<dependency org="org.apache" name="org.apache.commons.dbcp" rev="1.4.0" conf="common->default" />		
+		<dependency org="javax" name="javax.persistence" rev="2.0.0" conf="common->default" />
+
+		<!-- Web -->
+		<dependency org="javax" name="javax.servlet" rev="3.0.0" conf="common->default" />
+		<dependency org="com.fasterxml" name="com.fasterxml.jackson.core" rev="2.1.1" conf="common->default" />
+		<dependency org="com.fasterxml" name="com.fasterxml.jackson.annotation" rev="2.1.1" conf="common->default" />
+		<dependency org="com.fasterxml" name="com.fasterxml.jackson.databind" rev="2.1.2" conf="common->default" />
+
+		<!-- WebServer -->
+		<dependency org="org.apache" name="org.apache.catalina.startup" rev="7.0.56" conf="common->default" />
+
+		<!-- Spring -->
+		<dependency org="net.sf" name="net.sf.cglib" rev="2.2.0" conf="common->default" />
+		<dependency org="org.aopalliance" name="org.aopalliance" rev="1.0.0" conf="common->default" />
+		<dependency org="org.springframework" name="org.springframework.context" rev="3.2.0" conf="common->default" />
+		<dependency org="org.springframework" name="org.springframework.core" rev="3.2.0" conf="common->default" />
+		<dependency org="org.springframework" name="org.springframework.beans" rev="3.2.0" conf="common->default" />
+		<dependency org="org.springframework" name="org.springframework.orm" rev="3.2.0" conf="common->default" />
+		<dependency org="org.springframework" name="org.springframework.transaction" rev="3.2.0" conf="common->default" />
+		<dependency org="org.springframework" name="org.springframework.expression" rev="3.2.0" conf="common->default" />
+		<dependency org="org.springframework" name="org.springframework.jdbc" rev="3.2.0" conf="common->default" />
+		<dependency org="org.springframework" name="org.springframework.aop" rev="3.2.0" conf="common->default" />
+		<dependency org="org.springframework" name="org.springframework.web" rev="3.2.0" conf="common->default" />
+		<dependency org="org.springframework" name="org.springframework.webmvc" rev="3.2.0" conf="common->default" />
+		
+		<!-- 其它 -->
+		<dependency org="org.apache" name="org.apache.commons.io" rev="1.1.0" conf="common->default" />
+
+		<!-- 数据持久层 -->
+		<dependency org="javax" name="javax.persistence" rev="2.0.0" conf="common->default" />
+		<dependency org="javax" name="javax.transaction" rev="1.0.0" conf="common->default" />
+		<dependency org="org.apache" name="org.apache.commons.dbcp" rev="1.2.1" conf="common->default" />
+		<dependency org="org.jboss" name="org.jboss.javassist" rev="3.11.0" conf="common->default" />
+		<dependency org="org.jboss" name="org.jboss.logging" rev="3.1.0" conf="common->default" />
+		<dependency org="org.dom4j" name="org.dom4j" rev="1.6.1" conf="common->default" />
+		<dependency org="org.hibernate" name="org.hibernate.annotations.common" rev="4.0.2" conf="common->default" />
+		<dependency org="org.hibernate" name="org.hibernate.cache.ehcache" rev="4.2.4" conf="common->default" />
+		<dependency org="org.hibernate" name="org.hibernate.core" rev="4.2.4" conf="common->default" />
+		<dependency org="org.hibernate" name="org.hibernate.entitymanager" rev="4.2.4" conf="common->default" />
+		<dependency org="org.antlr" name="antlr" rev="2.7.7" conf="common->default" />
+
+		<!-- Broada -->
+		<dependency org="com.broada.platform" name="platform.common.util" rev="2.0.2" conf="common->utils" changing="true" />
+
+
+		<!-- <dependency org="com.broada.platform" name="platform.module.mq" rev="1.4.0" conf="common->default" changing="true"/> 
+			<dependency org="org.apache" name="org.apache.commons.io" rev="1.1.0" conf="common->default"/> <dependency org="org.apache" 
+			name="org.apache.commons.collections" rev="3.1.0" conf="common->default"/> <dependency org="org.apache" name="org.apache.bsf" 
+			rev="3.1.0" conf="common->default"/> <dependency org="org.apache" name="org.apache.commons.jexl" rev="2.1.1" conf="common->default"/> 
+			<dependency org="org.apache" name="org.apache.derby" rev="10.7.1" conf="common->default"/> <dependency org="org.apache" name="org.apache.derby.tools" 
+			rev="10.7.1" conf="common->default"/> <dependency org="org.quartz" name="org.quartz" rev="1.6.2" conf="common->default"/> 
+			<dependency org="org.dom4j" name="org.dom4j" rev="1.6.1" conf="common->default"/> <dependency org="org.apache" name="org.apache.log4j" 
+			rev="1.2.15" conf="full->default"/> <dependency org="com.oracle" name="oracle.jdbc" rev="10.2.0" conf="full->default"/> <dependency 
+			org="org.apache" name="org.apache.commons.digester" rev="1.5.0" conf="full->default" /> <dependency org="org.apache" name="org.apache.commons.beanutils" 
+			rev="1.6.0" conf="full->default" /> <dependency org="org.springframework" name="org.springframework.aop" rev="3.2.0" conf="full->default" 
+			/> <dependency org="org.springframework" name="org.springframework.aspects" rev="3.2.0" conf="full->default" /> <dependency 
+			org="org.springframework" name="org.springframework.beans" rev="3.2.0" conf="full->default" /> <dependency org="org.springframework" 
+			name="org.springframework.context" rev="3.2.0" conf="full->default" /> <dependency org="org.springframework" name="org.springframework.context.support" 
+			rev="3.2.0" conf="full->default" /> <dependency org="org.springframework" name="org.springframework.core" rev="3.2.0" conf="full->default" 
+			/> <dependency org="org.aopalliance" name="org.aopalliance" rev="1.0.0" conf="full->default"/> <dependency org="com.broada.platform" 
+			name="platform.research.classprotect" rev="1.0.4" conf="full->janel" /> full -->
+	</dependencies>
+</ivy-module> 

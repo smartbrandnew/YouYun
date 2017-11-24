@@ -1,0 +1,46 @@
+init_config:
+
+instances:
+    # 10.1.2.242,192.168.0.0/255.255.255.0,192.168.0.0/24,192.168.0.0~192.168.0.255,
+  - network_segment: 10.1.1.0/24,192.168.1.52,
+    # ping parameters
+    ping:
+      - timeout: 1000
+        retries: 4
+    snmp:
+        # SNMP v1\v2c or v3
+      - version: v2c
+        # v1\v2c parameters
+        v1_v2c_parameters:
+          - community: public1
+          - community: public2
+          - community: public2
+        # v3 parameters
+        v3_parameters:
+          - securityLevel:
+            securityUser:
+            authProtocol:
+            authPassword:
+            privProtocol:
+            privPassword:
+        # other SNMP parameters
+        port: 161
+        timeout: 1000
+        retries: 1
+    # net discover interval
+    # hours
+    net_discover_interval: 86400
+    # online status collect interval
+    # seconds
+    online_status_collect_interval: 30  # if 0 this function switched off
+    # performance collect interval
+    # seconds
+    performance_collect_interval: 30  # if 0 this function switched off
+    # port status collect interval
+    # seconds
+    port_status_collect_interval: 30  # if 0 this function switched off
+    # port rate collect interval
+    # seconds
+    port_rate_collect_interval: 120  # if 0 this function switched off
+    thread: 8
+    tags:

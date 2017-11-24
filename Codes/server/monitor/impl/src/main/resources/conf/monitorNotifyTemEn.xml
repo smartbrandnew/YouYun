@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 
+eventTitle:  事件标题   或者   ${keyWords}监测
+eventContent: 收到的事件内容
+ -->
+<modes>
+	<mode id="metric">
+		<title><![CDATA[${metric} monitoring]]></title>
+		<okContent><![CDATA[${hostName}(${ip}) 's ${instance} ${metric} has returned to limit ${value}${threshold_unit}（in the last ${duration}${aggregator}）]]></okContent>
+		<alertContent><![CDATA[${hostName}(${ip}) 's ${instance} ${metric} has reached ${value}${threshold_unit}（in the last ${duration}${aggregator}），${comparison} limit ${threshold}${threshold_unit}]]></alertContent>
+	</mode>
+	<mode id="event">
+		<title><![CDATA[${eventTitle}]]></title>
+		<singleAlertContent><![CDATA[Receive abnormal event：${eventContent}]]></singleAlertContent>
+		<batchAlertContent><![CDATA[in the last ${duration} has received ${threshold} events about “${keyWords}”]]></batchAlertContent>
+		<timeOkContent><![CDATA[in the last ${recoverTime},there is no events about “${keyWords}”]]></timeOkContent>
+		<numOkContent><![CDATA[Received a recovery event:${eventContent}]]></numOkContent>
+	</mode>
+	<mode id="sms">
+		<content><![CDATA[${monitorState} ${hostName}(${ip}) ${occurTime} ${eventContent}]]></content>
+	</mode>
+	<mode id="email">
+		<okTitle><![CDATA[${hostName}(${ip}) ${eventTitle} recover]]></okTitle>
+		<alertTitle><![CDATA[${hostName}(${ip}) ${eventTitle} warning]]></alertTitle>
+		<content><![CDATA[resource：${hostName}(${ip})<br>time：${occurTime}<br>event：${eventTitle}<br>level：${monitorState}<br>content：${eventContent}]]></content>
+	</mode>
+
+	<mode id="host">
+		<alertTitle><![CDATA[resource offline monitor]]></alertTitle>
+		<okTitle><![CDATA[resource online monitor]]></okTitle>
+		<alertContent><![CDATA[there is no data about this resource received  more than ${duration}]]></alertContent>
+		<okContent><![CDATA[begin to receive data about this resource]]></okContent>
+	</mode>
+	<mode id="app">
+		<alertTitle><![CDATA[${app} is unable to work]]></alertTitle>
+		<okTitle><![CDATA[${app} working]]></okTitle>
+		<alertContent><![CDATA[${app} is unable to work more than ${duration}]]></alertContent>
+		<okContent><![CDATA[${app} has recovered]]></okContent>
+	</mode>
+</modes>

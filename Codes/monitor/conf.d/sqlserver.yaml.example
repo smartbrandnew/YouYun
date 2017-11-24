@@ -1,0 +1,21 @@
+init_config:
+  custom_metrics:
+    - name: sqlserver.clr.execution
+      counter_name: CLR Execution
+    - name: sqlserver.exec.in_progress
+      counter_name: OLEDB calls
+      instance_name: Cumulative execution time (ms) per second
+
+    - name: sqlserver.db.commit_table_entries
+      counter_name: Log Flushes/sec
+      instance_name: ALL
+      tag_by: db
+
+instances:
+  - host: HOST,PORT
+    username: my_username
+    password: "******"
+    command_timeout: 30
+    database: my_database
+    tags:
+      - optional_tag

@@ -1,0 +1,297 @@
+<?xml version="1.0" encoding="GBK"?>
+<collection-define>
+  <cliconfiguration sysname="FreeBSD">
+  	<shellInteract>
+  		<shellStart>
+  			<command cliPrompt="? " output="false">
+			  	<![CDATA[
+			  		cat << "EOF" > ${remoteFilePath}
+			  		#!/bin/csh
+					 	if ( "$1" == "check" ) then
+						 echo ${sequence}
+						else 
+						${commands}
+						endif
+			  	]]>
+		  	</command>
+	  	</shellStart>
+	  	<shellEnd>
+	  		<command cliPrompt="default" output="false">
+			  	<![CDATA[
+				  		"EOF"
+				  		chmod +x ${remoteFilePath}
+				  	]]>
+			  </command>
+		  </shellEnd>
+		  <shellExec>
+			   <command cliPrompt="default" output="true">
+			  	<![CDATA[
+			  		 ${remoteFilePath}
+				  	]]>
+			  </command>
+			</shellExec>
+  	</shellInteract>
+    <category name="disk" sysversion="all" description="FreeBSD disk">
+      <commands>
+      	<command output="false">echo "aa"</command>
+        <command>df -k</command>
+      </commands>
+      <parserRule start="1" end="0" datatype="table" delimeter="\s">
+        <parserItem name="blocks" token="1">
+          <bsh>"" + Float.parseFloat(blocks)/1024.0</bsh>
+        </parserItem>
+        <parserItem name="used" token="2">
+          <bsh>"" + Float.parseFloat(used)/1024.0</bsh>
+        </parserItem>
+        <parserItem name="available" token="3">
+          <bsh>"" + Float.parseFloat(available)/1024.0</bsh>
+        </parserItem>
+        <parserItem name="capacity" token="4">
+          <bsh>
+            if(capacity.endsWith("%")){ capacity = capacity.substring(0, capacity.length()-1); } return capacity;
+          </bsh>
+        </parserItem>
+        <parserItem name="diskname" token="5" />
+      </parserRule>
+    </category>
+
+    <category name="cpu" sysversion="all" description="FreeBSD cpu">
+      <commands>
+      	<command output="false">echo "aa"</command>
+        <command>vmstat 1 3</command>
+      </commands>
+      <parserRule start="3" end="0" delimeter="\s" datatype="property">
+        <parserItem line="3" token="15" name="user" />
+        <parserItem line="3" token="16" name="sys" />
+      </parserRule>
+    </category>
+    
+    <category name="cpu" sysversion="5.1-RELEASE" description="FreeBSD cpu">
+      <commands>
+      	<command output="false">echo "aa"</command>
+        <command>vmstat 1 3</command>
+      </commands>
+      <parserRule start="3" end="0" delimeter="\s" datatype="property">
+        <parserItem line="3" token="16" name="user" />
+        <parserItem line="3" token="17" name="sys" />
+      </parserRule>
+    </category>
+    
+    <category name="ls" sysversion="all" description="FreeBSD file">
+      <commands>
+      	<command output="false">echo "aa"</command>
+        <command>ls -dl</command>
+      </commands>
+      <parserRule start="0" end="0" datatype="table" delimeter="\s">
+        <bsh>
+      	<![CDATA[
+      	  import com.broada.carrier.monitor.impl.host.cli.file.CLIFileExecutor;
+      	  import com.broada.carrier.monitor.impl.host.cli.file.CLIFileMonitorCondition;
+      	  
+      	  String[] lines = collectData.split("\n");
+      	  List result = new ArrayList();		
+		  for(int index = 0; index < lines.length; index++){
+			CLIFileMonitorCondition row = CLIFileExecutor.parseFileline(lines[index]);
+			if (row != null)
+			  result.add(row);
+		  }
+		  return result;
+      	]]>
+		</bsh>      
+      </parserRule>
+    </category>
+    
+    <category name="process" sysversion="all" description="FreeBSD process">
+      <commands>
+      	<command output="false">echo "aa"</command>
+        <command>ps -eo comm,pcpu,pmem,vsz,state</command>
+      </commands>
+      <parserRule start="1" end="0" delimeter="\s" datatype="table">
+        <parserItem token="0" name="command" />
+        <parserItem token="1" name="cpu"/>
+        <parserItem token="3" name="memory">
+          <bsh>
+            <![CDATA[
+        import java.text.DecimalFormat;
+        DecimalFormat format = new DecimalFormat("#0.00");
+        format.format(Float.parseFloat(memory)/1024.0);
+        ]]>
+          </bsh>
+        </parserItem>
+        <parserItem token="4" name="status" />
+      </parserRule>
+    </category>
+    
+    <category name="hostinfo" sysversion="all" description="FreeBSD hostinfo" remoteFilePath="/tmp/broadaFreeBSDHostinfo.sh" sequence="1000">
+      <commands>
+        <command output="false">
+      set a=`sysctl -a |grep "hw.ncpu:"|awk '{print ($2)}'`;
+		  set b=`uname -n`;
+		  set c=`uname -r`;
+		  set d=`uname -m`;
+		  set e=`dmesg | grep ^ad0 |tail -n 1| awk '{print $1 $2}'`
+		  set f=`dmesg | grep "real memory" |tail -n 1|awk '{ print ($4)}'`;
+		  set f=`expr $f \/ 1024 \/ 1024 `;
+		  rm -f /tmp/broada.hostinfo.out;
+		  top -n 1 -b >/tmp/broada.hostinfo.out;
+		  set g=`cat /tmp/broada.hostinfo.out | grep processes: | awk '{print $1}'`;
+		  set h=`ifconfig -a|grep ether|awk '{print $2}'`;
+        </command>
+        <command>echo $a $d $b $c $f $g $h $e</command>
+      </commands>
+      <parserRule start="0" end="0" delimeter="\s" datatype="property">
+        <parserItem line="0" token="0" name="processorCount"/>
+        <parserItem line="0" token="1" name="machineType"/>
+        <parserItem line="0" token="2" name="systemName"/>
+        <parserItem line="0" token="3" name="systemVersion"/>
+        <parserItem line="0" token="4" name="memorySize"/>
+        <parserItem line="0" token="5" name="processCount"/>
+        <parserItem line="0" token="6" name="macAddress"/>
+      </parserRule>
+    </category>
+    
+		<category name="totalmemory" sysversion="all" description="FreeBSD totalmemory">
+      <commands>
+        <command output="false">
+         <![CDATA[
+        set f=`dmesg | grep "real memory" |tail -n 1|awk '{ print ($4)}'`;
+		  	set f=`expr $f \/ 1024 \/ 1024 `;
+        ]]>
+        </command>
+        <command>echo $f</command>
+      </commands>
+      <parserRule start="0" end="0" delimeter="\s" datatype="property">
+     		<parserItem name="totalMemory" line="0" token="0"/>
+      </parserRule>
+    </category>
+    
+    <category name="memory" sysversion="all" description="FreeBSD memory" remoteFilePath="/tmp/broadaFreeBSDMemory.sh" sequence="1000">
+      <commands>
+        <command output="false">
+        <![CDATA[
+        rm -f /tmp/broada.top.out;
+        top -d 1 -n 2 >/tmp/broada.top.out;
+        set active=`cat /tmp/broada.top.out | grep Mem: | awk '{print $2}'| sed 's/[k|K|M|m]//'`;
+        set inact=`cat /tmp/broada.top.out | grep Mem: | awk '{print $4}'| sed 's/[k|K|M|m]//'`;
+        set wired=`cat /tmp/broada.top.out | grep Mem: | awk '{print $6}'| sed 's/[k|K|M|m]//'`;
+        set free=`cat /tmp/broada.top.out | grep Mem: | awk '{print $12}'| sed 's/[k|K|M|m]//'`;
+        set real=`expr $active + $inact \* 1024 `;
+        set realTotal=`expr $real + $wired \* 1024 + $free \* 1024`;
+        set realuseutil=`expr $real \* 100 \/ $realTotal`;
+        set swapTotal=`cat /tmp/broada.top.out | grep Swap: | awk '{print $2}'| sed 's/[k|K|M|m]//'`;
+        set swapFree=`cat /tmp/broada.top.out | grep Swap: | awk '{print $4}'| sed 's/[k|K|M|m]//'`;
+        set virtualused=`expr $swapTotal \- $swapFree`;
+        set virtualutil=`expr $virtualused \* 100 \/ $swapTotal`;
+        echo $real $realuseutil $virtualused $virtualutil >/tmp/broada.memory.result;
+        ]]>
+        </command>
+        <command>cat /tmp/broada.memory.result;</command>
+      </commands>
+
+      <parserRule start="0" end="0" delimeter="\s" datatype="property">
+
+        <parserItem line="0" token="0" name="real">
+        	<bsh>"" + Float.parseFloat(real)/1024;</bsh>
+        </parserItem>
+        <parserItem line="0" token="1" name="realuseutil" />
+        <parserItem line="0" token="2" name="virtualused">
+          <bsh>"" + Float.parseFloat(virtualused)/1024;</bsh>
+        </parserItem>
+        <parserItem line="0" token="3" name="virtualutil" />
+      </parserRule>
+    </category>
+		
+		<category name="memory" sysversion="5.1-RELEASE" description="FreeBSD memory" remoteFilePath="/tmp/broadaFreeBSDMemory.sh" sequence="1000">
+      <commands>
+        <command output="false">
+        <![CDATA[
+        rm -f /tmp/broada.top.out;
+        top -d 1 -n 2 >/tmp/broada.top.out;
+        set active=`cat /tmp/broada.top.out | grep Mem: | awk '{print $2}'| sed 's/[k|K|M|m]//'`;
+        set inact=`cat /tmp/broada.top.out | grep Mem: | awk '{print $4}'| sed 's/[k|K|M|m]//'`;
+        set wired=`cat /tmp/broada.top.out | grep Mem: | awk '{print $6}'| sed 's/[k|K|M|m]//'`;
+        set free=`cat /tmp/broada.top.out | grep Mem: | awk '{print $10}'| sed 's/[k|K|M|m]//'`;
+        set real=`expr $active + $inact \* 1024 `;
+        set realTotal=`expr $real + $wired \* 1024 + $free \* 1024`;
+        set realuseutil=`expr $real \* 100 \/ $realTotal`;
+        set swapTotal=`cat /tmp/broada.top.out | grep Swap: | awk '{print $2}'| sed 's/[k|K|M|m]//'`;
+        set swapFree=`cat /tmp/broada.top.out | grep Swap: | awk '{print $4}'| sed 's/[k|K|M|m]//'`;
+        set virtualused=`expr $swapTotal \- $swapFree`;
+        set virtualutil=`expr $virtualused \* 100 \/ $swapTotal`;
+        echo $real $realuseutil $virtualused $virtualutil >/tmp/broada.memory.result;
+        ]]>
+        </command>
+        <command>cat /tmp/broada.memory.result;</command>
+      </commands>
+
+      <parserRule start="0" end="0" delimeter="\s" datatype="property">
+
+        <parserItem line="0" token="0" name="real">
+        	<bsh>"" + Float.parseFloat(real)/1024;</bsh>
+        </parserItem>
+        <parserItem line="0" token="1" name="realuseutil" />
+        <parserItem line="0" token="2" name="virtualused">
+          <bsh>"" + Float.parseFloat(virtualused)/1024;</bsh>
+        </parserItem>
+        <parserItem line="0" token="3" name="virtualutil" />
+      </parserRule>
+    </category>
+		
+    <category name="sysversion" sysversion="all" description="FreeBSD version">
+      <commands>
+      <command output="false">echo "aa"</command>
+      <command>uname -a</command>
+      </commands>
+      <parserRule start="0" end="0" delimeter="\s" datatype="property">
+        <parserItem line="0" token="0" name="os" />
+        <parserItem line="0" token="2" name="sysversion" />
+      </parserRule>
+    </category>
+    
+        <category name="cd" sysversion="all" description="freebsd directory">
+			<commands>
+	       <command>LANG=en_US;ls -dl</command>
+			</commands>
+			<parserRule start="0" end="0" datatype="table" delimeter="\s">
+				 <parserItem token="1" name="linkedcnt"/>
+				 <parserItem token="2" name="user"/>
+				 <parserItem token="3" name="group"/>
+				 <parserItem token="8" name="filepath">
+          <bsh>
+            <![CDATA[
+					if(!filepath.startsWith("/")){
+						int pos = filepath.indexOf("/");
+						if(pos > -1) filepath = filepath.substring(pos);
+					}
+					if(filepath.indexOf("->") != -1){
+						filepath = filepath.substring(0, filepath.indexOf("->")).trim();
+					}
+					return filepath;
+				]]>
+          </bsh>
+        </parserItem>
+				<parserItem name="mmonth" token="5"/>
+				<parserItem name="mday" token="6"/>
+				<parserItem name="mother" token="7"/>
+        <parserItem name="size" token="4">
+          <bsh>
+            <![CDATA[
+					import java.text.DecimalFormat;
+					DecimalFormat format = new DecimalFormat("#0.00");
+					format.format(Float.parseFloat(size)/(1024*1024));
+					]]>
+          </bsh>
+        </parserItem>
+        <bsh>
+          <![CDATA[
+          if(collectData.trim().endsWith("No such file or directory")){
+             collectData = "";
+          }
+          return collectData;
+				]]>
+        </bsh>
+			</parserRule>
+		</category>
+	
+  </cliconfiguration>
+</collection-define>

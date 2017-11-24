@@ -1,0 +1,20 @@
+init_config:
+
+instances:
+  - name: main-vcenter
+    host: vcenter.domain.com
+    username: datamonitor-readonly@vsphere.local
+    password: "******"
+
+    ssl_verify: true
+
+    ssl_capath: "/path/to/directory"
+
+    host_include_only_regex: ".*\.prod.datamonitorhq.com"
+
+    vm_include_only_regex: ".*\.sql\.datamonitorhq\.com"
+
+    all_metrics: false
+
+    event_config:
+      collect_vcenter_alarms: true

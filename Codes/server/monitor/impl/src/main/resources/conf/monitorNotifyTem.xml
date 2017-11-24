@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 
+eventTitle:  事件标题   或者   ${keyWords}监测
+eventContent: 收到的事件内容
+ -->
+<modes>
+	<mode id="metric">
+		<title><![CDATA[${metric}监测]]></title>
+		<okContent><![CDATA[${hostName}(${ip})的指标 ${instance} ${metric}已恢复到${value}${threshold_unit}（最近${duration}${aggregator}）]]></okContent>
+		<alertContent><![CDATA[${hostName}(${ip})的指标 ${instance} ${metric}已达到${value}${threshold_unit}（最近${duration}${aggregator}），${comparison}阈值${threshold}${threshold_unit}]]></alertContent>
+	</mode>
+	<mode id="event">
+		<title><![CDATA[${eventTitle}]]></title>
+		<singleAlertContent><![CDATA[收到异常事件：${eventContent}]]></singleAlertContent>
+		<batchAlertContent><![CDATA[已连续${duration}收到${threshold}条“${keyWords}”事件]]></batchAlertContent>
+		<timeOkContent><![CDATA[最近${recoverTime}内已不再收到“${keyWords}”事件]]></timeOkContent>
+		<numOkContent><![CDATA[收到恢复事件：${eventContent}]]></numOkContent>
+	</mode>
+	<mode id="sms">
+		<content><![CDATA[${monitorState} ${hostName}(${ip}) ${occurTime} ${eventContent}]]></content>
+	</mode>
+	<mode id="email">
+		<okTitle><![CDATA[${hostName}(${ip}) ${eventTitle}恢复]]></okTitle>
+		<alertTitle><![CDATA[${hostName}(${ip}) ${eventTitle}报警]]></alertTitle>
+		<content><![CDATA[资源：${hostName}(${ip})<br>时间：${occurTime}<br>事件：${eventTitle}<br>级别：${monitorState}<br>内容：${eventContent}]]></content>
+	</mode>
+
+	<mode id="host">
+		<alertTitle><![CDATA[资源离线监测]]></alertTitle>
+		<okTitle><![CDATA[资源上线监测]]></okTitle>
+		<alertContent><![CDATA[超过${duration}未接受到该资源相关的数据]]></alertContent>
+		<okContent><![CDATA[开始接收到该资源相关的数据]]></okContent>
+	</mode>
+	<mode id="app">
+		<alertTitle><![CDATA[${app}不可用监测]]></alertTitle>
+		<okTitle><![CDATA[${app}可用监测]]></okTitle>
+		<alertContent><![CDATA[超过${duration}${app}应用处于不可用状态]]></alertContent>
+		<okContent><![CDATA[${app}应用恢复可用状态]]></okContent>
+	</mode>
+</modes>

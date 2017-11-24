@@ -1,0 +1,10 @@
+init_config:
+
+instances:
+  - status_url: http://localhost/status
+    ping_url: http://localhost/ping
+    ping_reply: pong
+    user: bits
+    password: "******"
+    tags:
+      - instance:foo

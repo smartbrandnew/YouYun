@@ -1,0 +1,33 @@
+init_config:
+  docker_root: /host
+  timeout: 10
+  api_version: auto
+  tls: False
+  tls_client_cert: /path/to/client-cert.pem
+  tls_client_key: /path/to/client-key.pem
+  tls_cacert: /path/to/ca.pem
+  tls_verify: True
+
+instances:
+  -
+    url: "unix://var/run/docker.sock"
+    collect_events: false
+    collect_container_size: false
+    collect_images_stats: false
+    collect_image_size: false
+    collect_disk_stats: true
+    exclude: [".*"]
+    tags: []
+    Default: true
+    ecs_tags: false
+    Available:
+      - image_name: Name of the image (example: "nginx")
+      - image_tag: Tag of the image (example: "latest")
+      - docker_image: LEGACY. The full image name:tag string (example: "nginx:latest")
+      - container_name: Name of the container (example: "boring_euclid")
+      - container_command: Command ran by the container (example: "echo 1")
+      - container_id: Id of the container
+    performance_tags: ["container_name", image_name", "image_tag", "docker_image"]
+    Available: ["image_name", "image_tag", "docker_image", "container_command"]
+    container_tags: ["image_name", "image_tag", "docker_image"]
+    collect_labels_as_tags: ["com.docker.compose.service", "com.docker.compose.project"]

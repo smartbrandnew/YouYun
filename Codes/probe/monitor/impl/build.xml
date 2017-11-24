@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<project default="release" xmlns:ivy="antlib:org.apache.ivy.ant" basedir=".">
+	<tstamp>
+		<format property="build.time" pattern="yyyy-MM-dd HH:mm:ss" />
+	</tstamp>
+	<tstamp>
+		<format property="yyyymmdd" pattern="yyyyMMdd" />
+	</tstamp>
+	<property environment="env" />
+	<property file="build.properties" />
+
+	<path id="module.lib">
+		<fileset dir="${ivy.retrieve.lib.dir}"/>		
+	</path>
+
+	<target name="resolve">
+		<ivy:retrieve pattern="${ivy.retrieve.lib.dir}/[conf]/[artifact].[ext]" sync="true" />			
+	</target>
+
+	<target name="publish" depends="release">
+		<copy file="${module.dir}/esdk_fc_neadp_1.5_native_java.jar" todir="..\..\dist\webapp\WEB-INF\lib" preservelastmodified="true"/>
+		<copy file="${module.dir}/esdk_fm_local_local_neadp_1.5_native_java.jar" todir="..\..\dist\webapp\WEB-INF\lib" preservelastmodified="true"/>
+		<copy file="${module.dir}/esdk_fm_neadp_1.5_native_java.jar" todir="..\..\dist\webapp\WEB-INF\lib" preservelastmodified="true"/>
+		<copy file="${module.dir}/esdk_fc_neadp_1.5_native_java.jar" todir="..\..\dist-probe-linux\webapp\WEB-INF\lib" preservelastmodified="true"/>
+		<copy file="${module.dir}/esdk_fm_local_local_neadp_1.5_native_java.jar" todir="..\..\dist-probe-linux\webapp\WEB-INF\lib" preservelastmodified="true"/>
+		<copy file="${module.dir}/esdk_fm_neadp_1.5_native_java.jar" todir="..\..\dist-probe-linux\webapp\WEB-INF\lib" preservelastmodified="true"/>
+		<copy file="${module.dir}/cloudjdbc.jar" todir="..\..\dist-probe-linux\webapp\WEB-INF\lib" preservelastmodified="true"/>
+		<!-- FC需要的一些包 -->
+		<copy file="${module.dir}/commons-io-2.4.jar" todir="..\..\dist-probe-linux\webapp\WEB-INF\lib" preservelastmodified="true"/>
+		<copy file="${module.dir}/gson-2.2.2.jar" todir="..\..\dist-probe-linux\webapp\WEB-INF\lib" preservelastmodified="true"/>
+		<copy file="${module.dir}/httpclient-4.2.3.jar" todir="..\..\dist-probe-linux\webapp\WEB-INF\lib" preservelastmodified="true"/>
+		<copy file="${module.dir}/httpcore-4.2.2.jar" todir="..\..\dist-probe-linux\webapp\WEB-INF\lib" preservelastmodified="true"/>
+		<copy file="${module.dir}/httpmime-4.2.3.jar" todir="..\..\dist-probe-linux\webapp\WEB-INF\lib" preservelastmodified="true"/>
+		<copy file="${module.dir}/log4j-1.2.16.jar" todir="..\..\dist-probe-linux\webapp\WEB-INF\lib" preservelastmodified="true"/>
+		<copy file="${module.dir}/org.restlet-2.2.1.jar" todir="..\..\dist-probe-linux\webapp\WEB-INF\lib" preservelastmodified="true"/>
+		<copy file="${module.dir}/org.restlet.ext.slf4j-2.2.1.jar" todir="..\..\dist-probe-linux\webapp\WEB-INF\lib" preservelastmodified="true"/>
+		<copy file="${module.dir}/slf4j-api-1.7.7.jar" todir="..\..\dist-probe-linux\webapp\WEB-INF\lib" preservelastmodified="true"/>
+		
+		<!-- OC需要的一些包 -->
+		<copy file="${module.dir}/com.huawei.bsp.commonlib.cbb-4.1.7.jar" todir="..\..\dist-probe-linux\webapp\WEB-INF\lib" preservelastmodified="true"/>
+		<copy file="${module.dir}/ezmorph-1.0.6.jar" todir="..\..\dist-probe-linux\webapp\WEB-INF\lib" preservelastmodified="true"/>
+		<copy file="${module.dir}/json-lib-2.4-jdk15.jar" todir="..\..\dist-probe-linux\webapp\WEB-INF\lib" preservelastmodified="true"/>
+		<copy file="${module.dir}/org.apache.commons.lang_2.6.0.v201404270220.jar" todir="..\..\dist-probe-linux\webapp\WEB-INF\lib" preservelastmodified="true"/>
+		
+		<delete file="${module.dist.dir}/ivy.xml"/>
+		<copydir dest="${module.dist.dir}/../../../dist-probe-linux/conf/ipmitool-linux" src="${module.dist.dir}/../conf/ipmitool-linux"/>
+		<ivy:publish artifactspattern="${module.dist.dir}/[artifact].[ext]" pubrevision="${module.version}" resolver="${ivy.publish.dest}" status="release" overwrite="${ivy.publish.overwrite}" update="true"/>
+	</target>
+
+	<target name="clean">
+		<delete dir="${module.target.dir}"/>
+		<delete dir="${module.dist.dir}"/>
+		<delete dir="${module.temp.dir}"/>
+		<delete dir="${module.lib.dir}"/>
+		<delete dir="${ivy.retrieve.lib.dir}"/>
+	</target>
+
+	<target name="compile" depends="resolve">
+		<mkdir dir="${module.target.dir}"/>
+
+		<javac srcdir="${module.src.dir}" destdir="${module.target.dir}" includeantruntime="no" encoding="UTF-8" debug="on">
+			<classpath refid="module.lib" />
+			<classpath location="${module.dir}/esdk_fc_neadp_1.5_native_java.jar" />
+			<classpath location="${module.dir}/esdk_fm_local_local_neadp_1.5_native_java.jar" />
+			<classpath location="${module.dir}/esdk_fm_neadp_1.5_native_java.jar" />
+			<classpath location="${module.dir}/commons-io-2.4.jar" />
+			<classpath location="${module.dir}/gson-2.2.2.jar" />
+			<classpath location="${module.dir}/httpclient-4.2.3.jar" />
+			<classpath location="${module.dir}/httpcore-4.2.2.jar" />
+			<classpath location="${module.dir}/httpmime-4.2.3.jar" />
+			<classpath location="${module.dir}/log4j-1.2.16.jar" />
+			<classpath location="${module.dir}/org.restlet-2.2.1.jar" />
+			<classpath location="${module.dir}/org.restlet.ext.slf4j-2.2.1.jar" />
+			<classpath location="${module.dir}/slf4j-api-1.7.7.jar" />
+			
+			<classpath location="${module.dir}/com.huawei.bsp.commonlib.cbb-4.1.7.jar" />
+			<classpath location="${module.dir}/ezmorph-1.0.6.jar" />
+			<classpath location="${module.dir}/json-lib-2.4-jdk15.jar" />
+			<classpath location="${module.dir}/org.apache.commons.lang_2.6.0.v201404270220.jar" />
+			
+		</javac>
+		
+		<copy todir="${module.target.dir}" preservelastmodified="true">
+			<fileset dir="${module.src.dir}">
+				<exclude name="**/*.java" />
+				<exclude name="**/.svn" />
+			</fileset>
+			<fileset dir="${module.dir}/test">
+				<exclude name="**/*.java" />
+				<exclude name="**/.svn" />
+			</fileset>			
+		</copy>
+	</target>
+	
+	<target name="_release-dev" depends="release">
+		<copy file="${module.dist.dir}/${module.name}.jar" todir="..\..\..\build\dist\monitor\webapp\WEB-INF\lib" preservelastmodified="true"/>
+		<copy file="${module.dist.dir}/${module.name}.jar" todir="..\..\..\build\dist-client\lib" preservelastmodified="true"/>
+		<copy file="${module.dist.dir}/${module.name}.jar" todir="..\..\..\build\dist-probe\webapp\WEB-INF\lib" preservelastmodified="true"/>		
+	</target>
+	
+	<target name="release" depends="compile">	
+		<mkdir dir="${module.dist.dir}" /> 
+        <jar destfile="${module.dist.dir}/${module.name}.jar">
+             <manifest>
+                  <attribute name="Implementation-Version" value="${module.version}" />
+                  <attribute name="Build-Time" value="${build.time}" />
+                  <attribute name="Build-Machine" value="${env.COMPUTERNAME}" />
+             </manifest>
+             <fileset dir="${module.target.dir}" />                               
+        </jar>		
+		
+		<unzip src="${ivy.retrieve.lib.dir}/env/platform.component.jnis-env.zip" dest="${module.temp.dir}/jnis" overwrite="false"/>
+		
+		<zip file="${module.dist.dir}/${module.name}.env.zip">
+			<zipfileset dir="${module.temp.dir}/jnis" prefix="bin">
+				<include name="*nsock*.dll" />
+				<include name="*nsock*.so" />
+			</zipfileset>
+			<zipfileset dir="${basedir}">
+				<include name="bin/**" />
+				<include name="conf/**" />
+				<include name="scripts/**" />
+				<exclude name="**/.svn" />
+			</zipfileset>
+		</zip>
+	</target>
+</project>

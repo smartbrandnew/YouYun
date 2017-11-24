@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:dubbo="http://code.alibabatech.com/schema/dubbo"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans  
+        http://www.springframework.org/schema/beans/spring-beans.xsd  
+        http://code.alibabatech.com/schema/dubbo  
+        http://code.alibabatech.com/schema/dubbo/dubbo.xsd">
+
+	<!-- 用dubbo协议暴露服务 -->
+	<dubbo:protocol id="rest-dd-agent" name="rest"
+		port="${bat.gateway.port}" contextpath="api"
+		extension="uyun.bat.common.rest.ext.RPCExceptionMapper,uyun.bat.common.rest.ext.RestExceptionMapper,uyun.bat.common.rest.ext.AuthFilter,uyun.bat.gateway.dd_agent.service.rest.ext.DeflateReaderInterceptor" />
+
+	<dubbo:annotation package="uyun.bat.gateway.dd_agent.service.rest" />
+</beans>  

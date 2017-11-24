@@ -1,0 +1,10 @@
+init_config:
+
+instances:
+  - server: http://localhost:8091
+    user: Administrator
+    password: "******"
+    timeout: 10
+    tags:
+      - optional_tag1
+      - optional_tag2

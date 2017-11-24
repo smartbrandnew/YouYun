@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:jms="http://www.springframework.org/schema/jms"
+	xsi:schemaLocation="
+            http://www.springframework.org/schema/beans 
+            http://www.springframework.org/schema/beans/spring-beans.xsd   
+            http://www.springframework.org/schema/context
+            http://www.springframework.org/schema/context/spring-context.xsd         
+            http://www.springframework.org/schema/jms 
+            http://www.springframework.org/schema/jms/spring-jms.xsd">
+	<!-- mq连接 -->
+	<bean id="amqConnectionFactory" class="org.apache.activemq.ActiveMQConnectionFactory">
+		<property name="brokerURL" value="${mq.brokerURL}" />
+		<property name="useAsyncSend" value="true" />
+		<property name="clientIDPrefix" value="${jms.clientIDPrefix}-event" />
+	</bean>
+
+	<!-- Pooled Spring connection factory -->
+	<bean id="amqCachingConnectionFactory"
+		class="org.springframework.jms.connection.CachingConnectionFactory">
+		<property name="targetConnectionFactory" ref="amqConnectionFactory" />
+	</bean>
+
+	<bean id="alertQueueJmsTemplate" class="org.springframework.jms.core.JmsTemplate">
+		<property name="connectionFactory" ref="amqCachingConnectionFactory" />
+		<property name="defaultDestination" ref="alertQueue" />
+		<property name="messageConverter">
+			<bean
+					class="org.springframework.jms.support.converter.SimpleMessageConverter" />
+		</property>
+	</bean>
+
+	<!-- 修改名称 -->
+	<bean id="alertQueue" class="org.apache.activemq.command.ActiveMQQueue">
+		<constructor-arg index="0" value="${jms.alert.queue}" />
+	</bean>
+
+	<bean class="org.springframework.jms.listener.SimpleMessageListenerContainer">
+		<property name="connectionFactory" ref="amqCachingConnectionFactory" />
+		<property name="destination" ref="alertQueue" />
+		<property name="concurrentConsumers" value="2" />
+		<property name="messageListener">
+			<bean class="uyun.bat.event.impl.mq.AlertMQListener" />
+		</property>
+	</bean>
+
+	<!-- 事件通知队列 -->
+	<bean id="eventQueue" class="org.apache.activemq.command.ActiveMQQueue">
+		<constructor-arg index="0" value="${jms.event.queue}" />
+	</bean>
+
+	<bean id="eventQueueJmsTemplate" class="org.springframework.jms.core.JmsTemplate">
+		<property name="connectionFactory" ref="amqCachingConnectionFactory" />
+		<property name="defaultDestination" ref="eventQueue" />
+		<property name="messageConverter">
+			<bean
+				class="org.springframework.jms.support.converter.SimpleMessageConverter" />
+		</property>
+	</bean>
+
+	<!--接收到监测器的恢复事件队列 -->
+	<bean id="monitorQueue" class="org.apache.activemq.command.ActiveMQQueue">
+		<constructor-arg index="0" value="${jms.monitor.event.queue}" />
+	</bean>
+
+	<bean class="org.springframework.jms.listener.SimpleMessageListenerContainer">
+		<property name="connectionFactory" ref="amqCachingConnectionFactory" />
+		<property name="destination" ref="monitorQueue" />
+		<property name="concurrentConsumers" value="3" />
+		<property name="messageListener">
+			<bean class="uyun.bat.event.impl.mq.MonitorMQListener" />
+		</property>
+	</bean>
+
+	<bean class="uyun.bat.event.impl.mq.MQManager" factory-method="getInstance">
+		<property name="eventMQService">
+			<bean class="uyun.bat.event.impl.mq.EventMQService">
+				<property name="eventJMSTemplate" ref="eventQueueJmsTemplate" />
+				<property name="alertTemplate" ref="alertQueueJmsTemplate" />
+ 			</bean>
+		</property>
+	</bean>
+
+	<!-- 消息订阅模式 -->
+	<bean id="topicResource" class="org.apache.activemq.command.ActiveMQTopic">
+		<!-- 订阅消息的名字 -->
+		<constructor-arg index="0" value="${jms.topic.resource.modify}"/>
+	</bean>
+
+	<bean id="topicCachingConnectionFactory" class="org.springframework.jms.connection.CachingConnectionFactory">
+		<!-- 目标ConnectionFactory对应真实的可以产生JMS Connection的ConnectionFactory -->
+		<property name="targetConnectionFactory" ref="amqConnectionFactory"/>
+		<property name="clientId" value="bat-event" />
+	</bean>
+
+	<bean id="topicMessageListener" class="uyun.bat.event.impl.mq.TopicMessageListener" init-method="init"/>
+
+	<!-- 资源删除topic 消息监听 -->
+	<bean id="resourceModifyListenerContainer" class="uyun.bat.common.mq.MQTopicListenerContainer">
+		<property name="connectionFactory" ref="topicCachingConnectionFactory" />
+		<property name="destination" ref="topicResource" />
+		<property name="messageListener" ref="topicMessageListener" />
+		<!-- 持久化消息 -->
+		<property name="subscriptionDurable" value="true"/>
+		<property name="clientId" value="bat-event" />
+	</bean>
+</beans>

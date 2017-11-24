@@ -1,0 +1,15 @@
+init_config:
+
+instances:
+
+  - lighttpd_status_url: http://localhost/server-status?auto
+    tags:
+       - instance:foo
+
+  - lighttpd_status_url: http://example2.com:1234/server-status?auto
+    tags:
+       - instance:bar
+
+  - lighttpd_status_url: http://example.com/server-status?format=plain
+    tags:
+       - instance:l2

@@ -1,0 +1,8 @@
+-r production.txt
+
+pre-commit==0.14.2
+pyflakes==1.5.0
+pytest==3.1.2
+pytest-watch==4.1.0
+python-libnmap==0.6.1
+yapf==0.16.2

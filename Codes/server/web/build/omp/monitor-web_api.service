@@ -1,0 +1,12 @@
+[Unit]  
+Description=monitor-web_api
+After=network.target  
+   
+[Service]  
+Type=oneshot
+RemainAfterExit=yes
+ExecStart=/usr/bin/su -l root /opt/uyun/monitor/web_api/bin/bat-web-api.sh start
+ExecStop=/usr/bin/su -l root /opt/uyun/monitor/web_api/bin/bat-web-api.sh stop
+   
+[Install]  
+WantedBy=multi-user.target

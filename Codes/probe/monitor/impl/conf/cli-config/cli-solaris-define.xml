@@ -1,0 +1,477 @@
+<?xml version="1.0" encoding="GBK"?>
+ 
+<collection-define> 
+<cliconfiguration sysname="Solaris" >
+	<shellInteract>
+  		<shellStart>
+  			<command cliPrompt=">" output="false">
+			  	<![CDATA[
+			  		cat << "EOF" > ${remoteFilePath}
+			  		#!/bin/sh
+					 	if [ "$1" = "check" ];
+						then echo ${sequence}
+						else 
+						${commands}
+						fi
+			  	]]>
+		  	</command>
+	  	</shellStart>
+	  	<shellEnd>
+	  		<command cliPrompt="default" output="false">
+			  	<![CDATA[
+				  		EOF
+				  		chmod +x ${remoteFilePath}
+				  	]]>
+			  </command>
+		  </shellEnd>
+		  <shellExec>
+			   <command cliPrompt="default" output="true">
+			  	<![CDATA[
+			  		 LANG=en_US;${remoteFilePath}
+				  	]]>
+			  </command>
+			</shellExec>
+  	</shellInteract>
+	<category name="disk" sysversion="all" description="Sun Solaris Disk">
+		<commands>
+			<command>
+				df -F ufs -k | grep %; df -F tmpfs -k | grep %
+			</command>
+		</commands>
+		<parserRule start="0" end="0" datatype="table" delimeter="\s">
+			<parserItem name="blocks" token="1">
+				<bsh>
+					"" + Float.parseFloat(blocks)/1024.0
+				</bsh>
+			</parserItem>
+			<parserItem name="used" token="2">
+				<bsh>
+					"" + Float.parseFloat(used)/1024.0
+				</bsh>
+			</parserItem>
+			<parserItem name="available" token="3">
+				<bsh>
+					"" + Float.parseFloat(available)/1024.0
+				</bsh>
+			</parserItem>
+			<parserItem name="capacity" token="4">
+				<bsh>
+					if(capacity.endsWith("%")){
+						capacity = capacity.substring(0, capacity.length()-1); 
+					}
+					return capacity;
+				</bsh>
+			</parserItem>
+			<parserItem name="diskname" token="5"/>
+      <bsh>
+        <![CDATA[
+          String[] splitter = collectData.split("\n");
+          StringBuffer buffer = new StringBuffer();
+          for(int index = 0; index < splitter.length; index++){
+            String s = splitter[index];
+            String[] s1 = s.split("\\s");
+            if(s1.length < 6){
+              index++;
+              if(index < splitter.length){
+                buffer.append(s.replaceAll("\\s+"," "));
+                buffer.append(splitter[index]);
+              }
+            }else{
+              buffer.append(s);
+            }
+            buffer.append("\n");
+          }
+          return buffer.toString();
+        ]]>
+      </bsh>
+		</parserRule>
+	</category>
+	<category name="totalmemory" sysversion="all" description="Solaris totalmemory">
+		<commands>
+			<command>
+				/usr/sbin/prtconf|grep Mem
+			</command>
+		</commands>
+			<parserRule start="0" end="0" delimeter="\s" datatype="property" >
+				<parserItem name="totalMemory" line="0" token="2"/>
+			</parserRule>
+	</category>
+	
+	<category name="io" sysversion="all" description="solaris device io">
+      <commands>
+        <command>
+          sar -d 1 1
+        </command>
+      </commands>
+      <parserRule start="0" end="0" delimeter="\s" datatype="table">
+        <parserItem name="device" token="0" />
+        <parserItem name="busy" token="1" />
+        <parserItem name="avque" token="2" />
+        <parserItem name="r+w/s" token="3" />
+        <parserItem name="blks/s" token="4" />
+        <parserItem name="avwait" token="5" />
+        <parserItem name="avserv" token="6" />
+         <bsh>
+	      <![CDATA[
+	      	int pos = collectData.indexOf("avserv");
+	      	collectData = collectData.substring(pos + 6).trim();
+	      	pos = collectData.indexOf(" ");
+	      	return collectData.substring(pos).trim();
+	      ]]>
+	     </bsh>
+      </parserRule>
+    </category>
+    
+	<category name="process" sysversion="all" description="Solaris process">
+		<commands>
+			<command>
+				ps -eo fname,pcpu,pmem,s,vsz,args
+			</command>
+		</commands>
+		
+		<parserRule start="1" end="0" delimeter="\s" datatype="table" >
+			<parserItem token="5" name="command"/>
+			<parserItem token="1" name="cpu">
+				<bsh>
+					<![CDATA[
+						import java.text.DecimalFormat;
+						DecimalFormat format = new DecimalFormat("#0.00");
+						format.format(Float.parseFloat(cpu));
+					]]>
+				</bsh>
+			</parserItem>
+			<parserItem token="4" name="memory">
+				<bsh>
+					<![CDATA[
+					import java.text.DecimalFormat;
+					DecimalFormat format = new DecimalFormat("#0.00");
+					format.format(Float.parseFloat(memory)/1024.0);
+					]]>
+				</bsh>
+			</parserItem>
+			<parserItem token="3" name="status"/>
+		</parserRule>
+	</category>
+	<category name="hostinfo" sysversion="all" description="solaris hostinfo">
+		<commands>
+			<command  output="false">
+			<![CDATA[
+				a=`/usr/sbin/psrinfo -vp|head -n 1|awk '{print $2}'`;
+				b=`uname -n`;
+				c=`uname -r`;
+				d=`uname -m`;
+				e=`df -h | awk '!(NR==1)' | awk '{print $1}'`;
+				f=`/usr/sbin/prtconf|grep Mem|awk '{print $3}'`;
+				g=`prstat 1 1|tail -1|awk '{print $2}'`;
+				h=`ifconfig -a |awk '{printf("%s,%s;",$1,$2);}'`;
+				echo $a $d $b $c $f $g 'solaris;'$h $e>/tmp/broada.hostinfo.out
+			]]>
+			</command>
+			
+			<command>
+				cat /tmp/broada.hostinfo.out
+			</command>
+			
+		</commands>
+			<parserRule start="0" end="0" delimeter="\s" datatype="property">
+        <parserItem line="0" token="0" name="processorCount"/>
+        <parserItem line="0" token="1" name="machineType"/>
+        <parserItem line="0" token="2" name="systemName"/>
+        <parserItem line="0" token="3" name="systemVersion"/>
+        <parserItem line="0" token="4" name="memorySize"/>
+        <parserItem line="0" token="5" name="processCount"/>
+        <parserItem line="0" token="6" name="macAddress"/>
+        <parserItem line="0" token="7" name="diskInfo"/>
+      </parserRule>
+	</category>
+	
+	<category name="hostinfo" sysversion="5.11" description="solaris hostinfo">
+		<commands>
+			<command  output="false">
+			<![CDATA[
+				a=`/usr/sbin/psrinfo -vp|head -n 1|awk '{print $5}'`;
+				b=`uname -n`;
+				c=`uname -r`;
+				d=`uname -m`;
+				e=`df -h | awk '!(NR==1)' | awk '{print $1}'`;
+				f=`/usr/sbin/prtconf|grep Mem|awk '{print $3}'`;
+				g=`prstat 1 1|tail -1|awk '{print $2}'`;
+				h=`ifconfig -a |awk '{printf("%s,%s;",$1,$2);}'`;
+				echo $a $d $b $c $f $g 'solaris;'$h $e> /tmp/broada.hostinfo.out
+			]]>
+			</command>
+			
+			<command>
+				cat /tmp/broada.hostinfo.out
+			</command>
+			
+		</commands>
+			<parserRule start="0" end="0" delimeter="\s" datatype="property">
+        <parserItem line="0" token="0" name="processorCount"/>
+        <parserItem line="0" token="1" name="machineType"/>
+        <parserItem line="0" token="2" name="systemName"/>
+        <parserItem line="0" token="3" name="systemVersion"/>
+        <parserItem line="0" token="4" name="memorySize"/>
+        <parserItem line="0" token="5" name="processCount"/>
+        <parserItem line="0" token="6" name="macAddress"/>
+        <parserItem line="0" token="7" name="diskInfo"/>
+      </parserRule>
+	</category>
+	
+	<category name="memory" sysversion="all" description="Solaris Memory">
+		<commands>
+			<command output="false">
+				<![CDATA[
+				LANG=en;
+				export LANG;
+				total=`/usr/sbin/prtconf|grep "Mem" |awk '{print $3}'`;
+				vmstat_output=`/bin/vmstat 1 2|tail -1`;
+				free=`echo $vmstat_output|awk '{print $5;}'`;
+				free=`expr $free \/ 1024`;
+				real=`expr $total - $free`;
+				realuseutil=`expr $real \* 100 \/ $total`;
+				virused=`/usr/sbin/swap -s|awk '{print $9}'|awk '{FS="k";print $1}'`;
+				pgsp_total=`/usr/sbin/swap -s|awk '{print $11}'|awk '{FS="k";print $1}'`;
+				virutil=`expr $virused  \* 100 \/ $pgsp_total`;
+				virused=`expr $virused \/ 1024`;
+				echo $real $realuseutil $virused $virutil>/tmp/broada.memory.out;
+				]]>
+			</command>
+			<command>
+				cat /tmp/broada.memory.out;
+			</command>
+		</commands>
+		<parserRule start="0" end="0" delimeter="\s" datatype="property" >
+			
+			<parserItem line="0" token="0" name="real"/>
+			<parserItem line="0" token="1" name="realuseutil"/>
+			<parserItem line="0" token="2" name="virtualused"/>
+			<parserItem line="0" token="3" name="virtualutil"/>
+		</parserRule>
+	</category>
+	<category name="cpu" sysversion="all" description="solaris cpu">
+		<commands><command>vmstat 1 3|tail -1</command></commands>
+		<parserRule start="0" end="0" delimeter="\s" datatype="property" >
+			<parserItem line="0" token="19" name="user"/>
+			<parserItem line="0" token="20" name="sys"/>
+		</parserRule>
+	</category>
+	<category name="ls" sysversion="all" description="solaris file">
+		<commands>
+			<command>ls -dl</command>
+		</commands>
+		<parserRule start="0" end="0" datatype="table" delimeter="\s">
+			<bsh>
+	      	<![CDATA[
+	      	  import com.broada.carrier.monitor.impl.host.cli.file.CLIFileExecutor;
+	      	  import com.broada.carrier.monitor.impl.host.cli.file.CLIFileMonitorCondition;
+	      	  
+	      	  String[] lines = collectData.split("\n");
+	      	  List result = new ArrayList();		
+			  for(int index = 0; index < lines.length; index++){
+				CLIFileMonitorCondition row = CLIFileExecutor.parseFileline(lines[index]);
+				if (row != null)
+				  result.add(row);
+			  }
+			  return result;
+	      	]]>
+			</bsh>
+		</parserRule>
+	</category>
+	<category name="sysversion" sysversion="all" description="Sun Solaris version">
+		<commands><command>uname -a</command></commands>
+		<parserRule start="0" end="0" delimeter="\s" datatype="property" >
+			<parserItem line="0" token="1" name="os"/>
+			<parserItem line="0" token="2" name="sysversion"/>
+		</parserRule>
+	</category>
+	
+    <category name="userinfo" sysversion="all" description="Solaris current login users">
+      <commands>
+        <command>who -H</command>
+      </commands>
+      <parserRule start="1" end="0" delimeter="\s" datatype="table">
+        <parserItem line="0" token="0" name="user" />
+        <parserItem line="0" token="1" name="tty" />
+        <parserItem start="24" end="36" name="logintime" />
+        <parserItem line="0" token="2" name="loginfrom"/>
+      </parserRule>
+      
+      <parserRule start="1" end="0" delimeter="\s" datatype="table">
+          <bsh>
+               <![CDATA[
+               List result = new ArrayList();
+               String[] lines = collectData.split("\n");
+               for (String line : lines) {
+                    if (!(line.contains("(") && line.contains(")")))
+                        continue;
+
+                    String[] fields = com.broada.numen.agent.script.util.TextUtil.splitWord(line);
+                    if (fields.length < 4)
+                    	continue;
+                    	
+                    Properties row = new Properties();                   
+                    row.put("user", fields[0]);
+                    row.put("tty", fields[1]);
+                    String logintime = fields[2];
+                    for (int i = 3; i < fields.length - 1; i++)
+                    	logintime += " " + fields[i];
+                    row.put("logintime", logintime);
+                    row.put("loginfrom", fields[fields.length - 1]);
+                    result.add(row);
+               }
+               return result;
+               ]]>
+          </bsh>
+      </parserRule>      
+   </category>
+    
+   <category name="hisuserinfo" sysversion="all" description="Solaris login users's history">
+      <commands>
+        <command>last</command>
+      </commands>
+      <parserRule start="0" end="0" delimeter="\s" datatype="table">
+        <parserItem line="0" token="0" name="user" />
+        <parserItem line="0" token="1" name="tty" />
+        <parserItem start="40" end="-1" name="logintime" />
+        <parserItem line="0" token="2" name="loginfrom"/>
+      </parserRule>
+   </category>
+    
+   <category name="useraccounts" sysversion="all" description="Solaris user accounts">
+      <commands>
+        <command>cat /etc/passwd</command>
+      </commands>
+      <parserRule start="0" end="0" delimeter=":" datatype="table">
+        <parserItem line="0" token="0" name="user" />
+        <parserItem line="0" token="1" name="passwd"/>
+        <parserItem line="0" token="2" name="uid" />
+        <parserItem line="0" token="3" name="gid"/>
+        <parserItem line="0" token="4" name="comment"/>
+        <parserItem line="0" token="5" name="home"/>        
+      </parserRule>
+   </category>
+   
+   <category name="cd" sysversion="all" description="solaris directory">
+			<commands>
+	       <command>LANG=en_US;ls -dl</command>
+			</commands>
+			<parserRule start="0" end="0" datatype="table" delimeter="\s">
+				 <parserItem token="1" name="linkedcnt"/>
+				 <parserItem token="2" name="user"/>
+				 <parserItem token="3" name="group"/>
+				 <parserItem token="8" name="filepath">
+          <bsh>
+            <![CDATA[
+					if(!filepath.startsWith("/")){
+						int pos = filepath.indexOf("/");
+						if(pos > -1) filepath = filepath.substring(pos);
+					}
+					if(filepath.indexOf("->") != -1){
+						filepath = filepath.substring(0, filepath.indexOf("->")).trim();
+					}
+					return filepath;
+				]]>
+          </bsh>
+        </parserItem>
+				<parserItem name="mmonth" token="5"/>
+				<parserItem name="mday" token="6"/>
+				<parserItem name="mother" token="7"/>
+        <parserItem name="size" token="4">
+          <bsh>
+            <![CDATA[
+					import java.text.DecimalFormat;
+					DecimalFormat format = new DecimalFormat("#0.00");
+					format.format(Float.parseFloat(size)/(1024*1024));
+					]]>
+          </bsh>
+        </parserItem>
+        <bsh>
+          <![CDATA[
+          if(collectData.trim().endsWith("No such file or directory")){
+             collectData = "";
+          }
+          return collectData;
+				]]>
+        </bsh>
+			</parserRule>
+	</category>
+	
+	<category name="netstat" sysversion="all" delimeter="solaris netstat">
+    	<commands>
+    		<command>netstat -in</command>
+    	</commands>
+    	<parserRule start="1" end="0" datatype="table" delimeter="\s">
+    		<parserItem name="name" token="0"/>
+			<parserItem name="mtu" token="1"/>
+			<parserItem name="network" token="2"/>
+			<parserItem name="address" token="3"/>
+			<parserItem name="ipkts" token="4"/>
+			<parserItem name="ierrs" token="5"/>
+			<parserItem name="opkts" token="6"/>
+			<parserItem name="oerrs" token="7"/>
+			<parserItem name="coll" token="8"/>
+			<bsh>
+			<![CDATA[
+				String[] lines = collectData.split("\n");
+				String result = "";
+				for(int index = 0; index < lines.length; index++){
+					System.out.println(lines[index]);
+					String[] s = lines[index].split("(\\s)+");
+					for(int n = 0; n < s.length; n++){
+						if(s.length == 8 && n == 3){
+							result += "- ";
+						}
+						result += s[n] + " ";
+					}
+					result += "\n";
+				}
+				return result;
+			]]>
+			</bsh>
+    	</parserRule>
+    </category>
+	
+		<category name="systemtime" sysversion="all" description="systemtime">
+		  <commands>
+			<command>date '+%Y-%m-%d %H:%M:%S'</command>
+		  </commands>
+		  <parserRule start="0" end="0" delimeter="\|" datatype="block">
+			<parserItem token="0" name="systemtime" />
+		  </parserRule>
+		</category>		
+		
+		<category name="processstate" sysversion="all" description="hpux processstate">
+		  <commands>
+			<command>ps -el</command>
+		  </commands>
+		  <parserRule start="1" end="0" datatype="table" delimeter="\s">
+			<bsh>
+               <![CDATA[
+               List result = new ArrayList();
+               String[] lines = collectData.split("\n");
+               for (int i = 1; i < lines.length; i++) {                   
+					String line = lines[i].trim();
+                    String[] fields = com.broada.numen.agent.script.util.TextUtil.splitWord(line);
+					int offset;
+					if (fields.length == 14) 
+						offset = 0;
+					else if (fields.length == 13) 
+						offset = 1;
+					else
+						continue;
+						
+					Properties row = new Properties();      
+					row.put("proname", fields[13 - offset]);
+					row.put("proetime", fields[12 - offset]);						
+					row.put("provsize", fields[9]);         
+					System.out.println(row);
+                    result.add(row);
+               }
+               return result;
+               ]]>
+          </bsh>			
+		  </parserRule>		  
+		</category>	
+</cliconfiguration>
+</collection-define>

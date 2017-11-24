@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+	<appender name="stdout" class="ch.qos.logback.core.ConsoleAppender">
+		<encoder>
+			<pattern>
+				%d{yy-MM-dd HH:mm:ss.SSS} %-5level [%logger{36}] %msg%n
+			</pattern>
+		</encoder>
+	</appender>
+
+	<appender name="file" class="ch.qos.logback.core.rolling.RollingFileAppender">
+		<file>${monitor.logs.dir}/monitor.log</file>
+		<rollingPolicy class="ch.qos.logback.core.rolling.FixedWindowRollingPolicy">
+			<FileNamePattern>${monitor.logs.dir}/monitor.%i.log</FileNamePattern>
+			<minIndex>1</minIndex>
+			<maxIndex>1</maxIndex>
+		</rollingPolicy>
+		<triggeringPolicy class="ch.qos.logback.core.rolling.SizeBasedTriggeringPolicy">
+			<maxFileSize>30MB</maxFileSize>
+		</triggeringPolicy>
+		<encoder>
+			<charset>UTF-8</charset>
+			<Pattern>
+				%d{yy-MM-dd HH:mm:ss.SSS} %-5level [%logger{36}] %msg%n
+			</Pattern>
+		</encoder>
+	</appender>
+
+	<!-- 默认 -->
+	<root>
+		<level value="WARN" />
+		<appender-ref ref="stdout" />
+		<appender-ref ref="file" />
+	</root>
+	<logger name="org.apache.coyote" level="INFO" />
+	<logger name="org.apache.catalina.startup.Catalina" level="INFO" />
+	<logger name="com.broada" level="INFO" />	
+	<logger name="com.broada.carrier.monitor.common.spring.FailShutdownDispatcherServlet" level="INFO" />
+		
+	<!-- 常用：如果需要进行一些特别的日志输出，可以将以下相应内容复制到注释外
+	1. 调试dao sql
+	   <logger name="org.hibernate.SQL" level="DEBUG" />
+	2. 调试rpc调用错误
+	   <logger name="org.springframework.web.servlet.mvc.support.DefaultHandlerExceptionResolver" level="DEBUG" />
+	   <logger name="com.broada.carrier.monitor.common.restful.BaseController" level="DEBUG" />
+	3. PMDB映射日志
+	   <logger name="com.broada.carrier.monitor.server.impl.pmdb.map.PMDBMapper" level="DEBUG" />
+	   <logger name="com.broada.carrier.monitor.server.impl.logic.trans.LocalRemoteMapperTrans" level="DEBUG" />
+	4. 监测结果接收日志
+	   <logger name="com.broada.carrier.monitor.server.impl.logic.ServerTaskServiceImpl" level="DEBUG" />
+	 -->
+	 
+	<!-- 屏蔽 -->
+	<logger name="org.hibernate.cache.ehcache.AbstractEhcacheRegionFactory" level="ERROR" />	 
+</configuration>

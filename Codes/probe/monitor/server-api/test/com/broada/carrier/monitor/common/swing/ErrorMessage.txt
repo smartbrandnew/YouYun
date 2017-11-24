@@ -1,0 +1,356 @@
+错误消息：
+服务请求失败[URL：http://localhost:8890/api/v1/pmdb/ciGroups/rootDomain_PMDB_BizAppSystem/instances?dataRegion=global 返回码：500]，返回内容：
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<title>系统提示</title>
+<meta name="Generator" content="EditPlus">
+<meta name="Author" content="">
+<meta name="Keywords" content="">
+<meta name="Description" content="">
+
+<style>
+body * {
+	font-family: Tahoma, '宋体';
+	margin: auto;
+}
+
+a.action_link {
+	color: #333;
+	text-decoration: underline;
+	line-height: 26px;
+}
+
+.action_link_p {
+	text-align: right;
+	margin: 0px;
+	padding: 0 15px 0 0;
+}
+
+.box_wrapper {
+	margin-top: 50px;
+	width: 600px;
+	background: url(/cmdb/images/error/error_content_bg.png
+		) bottom left no-repeat;
+}
+
+.box_title_right {
+	background: url(/cmdb/images/error/error_hearder_title_right.png
+		) top right no-repeat;
+	height: 32px;
+}
+
+.box_title_left {
+	background: url(/cmdb/images/error/error_hearder_title_left.png
+		) top left no-repeat;
+	font: 12px normal;
+	color: #fff;
+	line-height: 32px;
+	padding-left: 16px;
+}
+
+.box_content {
+	margin-left: 15px;
+	background: url(/cmdb/images/error/error_content_bg.png
+		) bottom right no-repeat;
+	padding: 5px;
+	font-size: 12px;
+}
+
+.box_content_icon {
+	background: url(/cmdb/images/error/symbol.png
+		) center left no-repeat;
+	padding-left: 50px;
+	margin: 10px;
+}
+
+.box_content_icon h2 {
+	margin: 2px;
+	font-family: '微软雅黑'
+}
+
+.box_content_icon p {
+	margin: 2px;
+}
+
+.box_detail {
+	margin: 0;
+	padding: 0px;
+	list-style: none;
+	width: 98%;
+	border: 1px #d7d7d7 solid;
+}
+
+.ul_div_expand {
+	background: url(/cmdb/images/error/exp_bar.png
+		) top right no-repeat;
+	line-height: 25px;
+	margin: 1px;
+	padding-left: 8px;
+}
+
+.ul_div {
+	background: url(/cmdb/images/error/col_bar.png
+		) top right no-repeat;
+	line-height: 25px;
+	margin: 1px;
+	padding-left: 8px;
+	cursor: hand;
+}
+
+.display_detail {
+	visibility: visible;
+}
+
+.hidden_detail {
+	visibility: hidden;
+	height: 0px;
+}
+
+.display_pre {
+	visibility: visible;
+	overflow-y: scroll;
+	over-flow-x: scroll;
+	max-height:300px;
+	padding: 5px;
+	padding-left: 8px;
+}
+
+.hidden_pre {
+	visibility: hidden;
+	height: 0px;
+	padding: 0px;
+}
+</style>
+
+<script>
+	function adjustInfo() {
+		var div = document.getElementById("box");
+		if (div.className == "hidden_detail") {
+			div.className = "display_detail";
+		} else {
+			div.className = "hidden_detail";
+			for ( var i = 0; i < 3; i++) {
+				hiddenItem(i);
+			}
+		}
+	}
+
+	function adjustItem(itemIndex) {
+		var li = document.getElementById("li_" + itemIndex);
+		var pre = document.getElementById("pre_" + itemIndex);
+		if (li.className == "ul_div_expand") {
+			li.className = "ul_div";
+		} else {
+			for ( var i = 0; i < 3; i++) {
+				var _li = document.getElementById("li_" + i);
+				var _pre = document.getElementById("pre_" + i);
+				_li.className = "ul_div";
+				_pre.className = "hidden_pre";
+			}
+			li.className = "ul_div_expand";
+		}
+		if (pre.className == "display_pre") {
+			pre.className = "hidden_pre";
+		} else {
+			pre.className = "display_pre";
+		}
+
+	}
+
+	function hiddenItem(itemIndex) {
+		var li = document.getElementById("li_" + itemIndex);
+		var pre = document.getElementById("pre_" + itemIndex);
+		li.className = "";
+		pre.className = "hidden_pre";
+	}
+	function copy() {
+		var text = "";
+		for ( var i = 0; i < 3; i++) {
+			var li = document.getElementById("li_" + i);
+			var pre = document.getElementById("pre_" + i);
+			text = text + li.innerHTML + "\n\n"
+			text = text + pre.innerHTML + "\n\n"
+		}
+
+		window.clipboardData.setData("Text", text);
+	}
+
+	var isDialog = typeof (window.dialogArguments) != 'undefined';
+</script>
+<TITLE>系统提示</TITLE>
+<META http-equiv=Content-Type content="text/html; charset=UTF-8">
+
+</HEAD>
+<body>
+	<div class="box_wrapper">
+		<div class="box_title_right">
+			<div class="box_title_left">
+				系统提示
+			</div>
+		</div>
+		
+		<div class="box_content">
+			<div class="box_content_icon">
+				<h2>500错误</h2>
+				<p>未知错误</p>
+			</div>
+			<p class="action_link_p">
+				<a href="javascript:void(0)" class="action_link"
+					onclick="adjustInfo()">详细信息</a>
+			</p>
+			<div id="box" class="hidden_detail">
+				<ul class="box_detail">
+					<div id="li_0" onclick="adjustItem(0)" class="ul_div">请求链接</div>
+					<div id="pre_0" class="hidden_pre">
+						<pre>http://127.0.0.1:9116/cmdb/common/error.jsp</pre>
+					</div>
+					<div id="li_1" onclick="adjustItem(1)" class="ul_div">异常堆栈</div>
+					<div id="pre_1" class="hidden_pre">
+						<pre>com.broada.carrier.cmdb.common.ApplicationInformUncheckedException
+	at com.broada.carrier.cmdb.common.web.filter.ObtainWebBaseUrlFilter.doFilter(ObtainWebBaseUrlFilter.java:71)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:243)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:210)
+	at com.broada.sso.cas.client.filter.CASFilterProxy.doFilter(CASFilterProxy.java:346)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:243)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:210)
+	at org.apache.catalina.core.StandardWrapperValve.invoke(StandardWrapperValve.java:222)
+	at org.apache.catalina.core.StandardContextValve.invoke(StandardContextValve.java:123)
+	at org.apache.catalina.core.StandardHostValve.invoke(StandardHostValve.java:171)
+	at org.apache.catalina.valves.ErrorReportValve.invoke(ErrorReportValve.java:99)
+	at org.apache.catalina.valves.AccessLogValve.invoke(AccessLogValve.java:953)
+	at org.apache.catalina.core.StandardEngineValve.invoke(StandardEngineValve.java:118)
+	at org.apache.catalina.connector.CoyoteAdapter.service(CoyoteAdapter.java:408)
+	at org.apache.coyote.http11.AbstractHttp11Processor.process(AbstractHttp11Processor.java:1008)
+	at org.apache.coyote.AbstractProtocol$AbstractConnectionHandler.process(AbstractProtocol.java:589)
+	at org.apache.tomcat.util.net.JIoEndpoint$SocketProcessor.run(JIoEndpoint.java:310)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.runTask(ThreadPoolExecutor.java:886)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:908)
+	at java.lang.Thread.run(Thread.java:662)
+Caused by: java.lang.NullPointerException
+	at com.broada.carrier.cmdb.impl.cigroup.logic.impl.CIGroupFacadeImpl.getNodeInstanceCount(CIGroupFacadeImpl.java:235)
+	at sun.reflect.GeneratedMethodAccessor307.invoke(Unknown Source)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:25)
+	at java.lang.reflect.Method.invoke(Method.java:597)
+	at org.springframework.aop.support.AopUtils.invokeJoinpointUsingReflection(AopUtils.java:317)
+	at org.springframework.aop.framework.JdkDynamicAopProxy.invoke(JdkDynamicAopProxy.java:198)
+	at $Proxy81.getNodeInstanceCount(Unknown Source)
+	at sun.reflect.GeneratedMethodAccessor307.invoke(Unknown Source)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:25)
+	at java.lang.reflect.Method.invoke(Method.java:597)
+	at org.springframework.aop.support.AopUtils.invokeJoinpointUsingReflection(AopUtils.java:317)
+	at org.springframework.aop.framework.ReflectiveMethodInvocation.invokeJoinpoint(ReflectiveMethodInvocation.java:183)
+	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:150)
+	at org.springframework.transaction.interceptor.TransactionInterceptor.invoke(TransactionInterceptor.java:110)
+	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:172)
+	at org.springframework.aop.framework.JdkDynamicAopProxy.invoke(JdkDynamicAopProxy.java:204)
+	at $Proxy99.getNodeInstanceCount(Unknown Source)
+	at com.broada.carrier.pmdb.impl.service.rest.PMDBGroupServiceImpl.getGroupInstances(PMDBGroupServiceImpl.java:68)
+	at sun.reflect.GeneratedMethodAccessor342.invoke(Unknown Source)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:25)
+	at java.lang.reflect.Method.invoke(Method.java:597)
+	at com.broada.bsp.gene.service.BspInvoker.doInvoke(BspInvoker.java:89)
+	at com.broada.bsp.gene.service.BspInvoker.invoke(BspInvoker.java:98)
+	at org.apache.tuscany.sca.core.invocation.RuntimeInvoker.invoke(RuntimeInvoker.java:125)
+	at org.apache.tuscany.sca.core.invocation.RuntimeInvoker.invoke(RuntimeInvoker.java:108)
+	at org.apache.tuscany.sca.core.invocation.RuntimeInvoker.invoke(RuntimeInvoker.java:91)
+	at org.apache.tuscany.sca.core.invocation.impl.JDKInvocationHandler.invoke(JDKInvocationHandler.java:329)
+	at org.apache.tuscany.sca.core.invocation.impl.JDKInvocationHandler.invoke(JDKInvocationHandler.java:272)
+	at org.apache.tuscany.sca.core.invocation.impl.JDKInvocationHandler.invoke(JDKInvocationHandler.java:125)
+	at org.apache.tuscany.sca.core.invocation.impl.AsyncJDKInvocationHandler.doInvokeSync(AsyncJDKInvocationHandler.java:241)
+	at org.apache.tuscany.sca.core.invocation.impl.AsyncJDKInvocationHandler.invoke(AsyncJDKInvocationHandler.java:163)
+	at $Proxy69.getGroupInstances(Unknown Source)
+	at com.broada.carrier.pmdb.impl.service.rest.GeneratedPMDBGroupServiceImpl.getGroupInstances(Unknown Source)
+	at sun.reflect.GeneratedMethodAccessor341.invoke(Unknown Source)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:25)
+	at java.lang.reflect.Method.invoke(Method.java:597)
+	at org.apache.wink.server.internal.handlers.InvokeMethodHandler.handleRequest(InvokeMethodHandler.java:63)
+	at org.apache.wink.server.handlers.AbstractHandler.handleRequest(AbstractHandler.java:33)
+	at org.apache.wink.server.handlers.RequestHandlersChain.handle(RequestHandlersChain.java:26)
+	at org.apache.wink.server.handlers.RequestHandlersChain.handle(RequestHandlersChain.java:22)
+	at org.apache.wink.server.handlers.AbstractHandlersChain.doChain(AbstractHandlersChain.java:63)
+	at org.apache.wink.server.internal.handlers.CreateInvocationParametersHandler.handleRequest(CreateInvocationParametersHandler.java:54)
+	at org.apache.wink.server.handlers.RequestHandlersChain.handle(RequestHandlersChain.java:26)
+	at org.apache.wink.server.handlers.RequestHandlersChain.handle(RequestHandlersChain.java:22)
+	at org.apache.wink.server.handlers.AbstractHandlersChain.doChain(AbstractHandlersChain.java:63)
+	at org.apache.wink.server.internal.handlers.FindResourceMethodHandler.handleSubResourceMethod(FindResourceMethodHandler.java:183)
+	at org.apache.wink.server.internal.handlers.FindResourceMethodHandler.handleRequest(FindResourceMethodHandler.java:110)
+	at org.apache.wink.server.handlers.RequestHandlersChain.handle(RequestHandlersChain.java:26)
+	at org.apache.wink.server.handlers.RequestHandlersChain.handle(RequestHandlersChain.java:22)
+	at org.apache.wink.server.handlers.AbstractHandlersChain.doChain(AbstractHandlersChain.java:63)
+	at org.apache.wink.server.internal.handlers.FindRootResourceHandler.handleRequest(FindRootResourceHandler.java:95)
+	at org.apache.wink.server.handlers.RequestHandlersChain.handle(RequestHandlersChain.java:26)
+	at org.apache.wink.server.handlers.RequestHandlersChain.handle(RequestHandlersChain.java:22)
+	at org.apache.wink.server.handlers.AbstractHandlersChain.doChain(AbstractHandlersChain.java:63)
+	at org.apache.wink.server.internal.handlers.HeadMethodHandler.handleRequest(HeadMethodHandler.java:53)
+	at org.apache.wink.server.handlers.RequestHandlersChain.handle(RequestHandlersChain.java:26)
+	at org.apache.wink.server.handlers.RequestHandlersChain.handle(RequestHandlersChain.java:22)
+	at org.apache.wink.server.handlers.AbstractHandlersChain.doChain(AbstractHandlersChain.java:63)
+	at org.apache.wink.server.internal.handlers.OptionsMethodHandler.handleRequest(OptionsMethodHandler.java:46)
+	at org.apache.wink.server.handlers.RequestHandlersChain.handle(RequestHandlersChain.java:26)
+	at org.apache.wink.server.handlers.RequestHandlersChain.handle(RequestHandlersChain.java:22)
+	at org.apache.wink.server.handlers.AbstractHandlersChain.doChain(AbstractHandlersChain.java:63)
+	at org.apache.wink.server.internal.handlers.SearchResultHandler.handleRequest(SearchResultHandler.java:33)
+	at org.apache.wink.server.handlers.RequestHandlersChain.handle(RequestHandlersChain.java:26)
+	at org.apache.wink.server.handlers.RequestHandlersChain.handle(RequestHandlersChain.java:22)
+	at org.apache.wink.server.handlers.AbstractHandlersChain.doChain(AbstractHandlersChain.java:63)
+	at org.apache.wink.server.internal.log.ResourceInvocation.handleRequest(ResourceInvocation.java:92)
+	at org.apache.wink.server.handlers.RequestHandlersChain.handle(RequestHandlersChain.java:26)
+	at org.apache.wink.server.handlers.RequestHandlersChain.handle(RequestHandlersChain.java:22)
+	at org.apache.wink.server.handlers.AbstractHandlersChain.doChain(AbstractHandlersChain.java:63)
+	at org.apache.wink.server.internal.log.Requests.handleRequest(Requests.java:76)
+	at org.apache.wink.server.handlers.RequestHandlersChain.handle(RequestHandlersChain.java:26)
+	at org.apache.wink.server.handlers.RequestHandlersChain.handle(RequestHandlersChain.java:22)
+	at org.apache.wink.server.handlers.AbstractHandlersChain.doChain(AbstractHandlersChain.java:63)
+	at org.apache.wink.server.handlers.AbstractHandlersChain.run(AbstractHandlersChain.java:48)
+	at org.apache.wink.server.internal.RequestProcessor.handleRequestWithoutFaultBarrier(RequestProcessor.java:207)
+	at org.apache.wink.server.internal.RequestProcessor.handleRequest(RequestProcessor.java:154)
+	at org.apache.wink.server.internal.servlet.RestServlet.service(RestServlet.java:119)
+	at org.apache.tuscany.sca.binding.rest.provider.TuscanyRESTServlet.service(TuscanyRESTServlet.java:81)
+	at javax.servlet.http.HttpServlet.service(HttpServlet.java:728)
+	at org.apache.tuscany.sca.host.webapp.WebAppRequestDispatcher.forward(WebAppRequestDispatcher.java:110)
+	at com.broada.bsp.gene.launch.GeneServletFilter.doFilter(GeneServletFilter.java:91)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:243)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:210)
+	at org.apache.struts2.dispatcher.ng.filter.StrutsExecuteFilter.doFilter(StrutsExecuteFilter.java:90)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:243)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:210)
+	at org.apache.struts2.dispatcher.ng.filter.StrutsPrepareFilter.doFilter(StrutsPrepareFilter.java:91)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:243)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:210)
+	at com.broada.acm.session.util.ObtainRequestFilter.doFilter(ObtainRequestFilter.java:31)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:243)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:210)
+	at com.broada.carrier.cmdb.common.web.filter.ObtainWebBaseUrlFilter.doFilter(ObtainWebBaseUrlFilter.java:60)
+	... 18 more
+</pre>
+					</div>
+					<div id="li_2" onclick="adjustItem(2)" class="ul_div">JVM信息</div>
+					<div id="pre_2" class="hidden_pre">
+						<pre>堆情况：118.7M/910.2M
+非堆情况：86.0M/304.0M
+当前线程数：119</pre>
+					</div>
+				</ul>
+				<p class="action_link_p">
+					<a href="javascript:void(0)" class="action_link" onclick="copy()">复制到剪贴板</a>
+				</p>
+			</div>
+		</div>
+	</div>
+</body>
+</html>
+

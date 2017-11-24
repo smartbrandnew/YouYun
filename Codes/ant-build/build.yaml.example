@@ -1,0 +1,9 @@
+"Linux, Windows":
+  name: agent-{SYSTEM}-{CPU}
+  steps:
+    - cp ./a1 to ./b except *.pyc
+    - cp "./a2 a/a" to ./b/c
+    - mv ./a3 to b
+    - download http://asdfasd to .
+    - ./abc/pip install -r requirements
+    - compress tgz

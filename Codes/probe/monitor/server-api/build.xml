@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<project default="release" xmlns:ivy="antlib:org.apache.ivy.ant" basedir=".">
+	<tstamp>
+		<format property="build.time" pattern="yyyy-MM-dd HH:mm:ss" />
+	</tstamp>
+	<tstamp>
+		<format property="yyyymmdd" pattern="yyyyMMdd" />
+	</tstamp>
+	<property environment="env" />
+	<property file="build.properties" />
+
+	<path id="module.lib">
+		<fileset dir="${ivy.retrieve.lib.dir}"/>
+	</path>
+
+	<target name="resolve">
+		<ivy:retrieve pattern="${ivy.retrieve.lib.dir}/[conf]/[artifact].[ext]" sync="true" />
+	</target>
+
+	<target name="publish" depends="release">
+		<delete file="${module.dist.dir}/ivy.xml"/>
+		<ivy:publish artifactspattern="${module.dist.dir}/[artifact].[ext]" pubrevision="${module.version}" resolver="${ivy.publish.dest}" status="release" overwrite="${ivy.publish.overwrite}" update="true"/>
+	</target>
+
+	<target name="clean">
+		<delete dir="${module.target.dir}"/>
+		<delete dir="${module.dist.dir}"/>
+		<delete dir="${module.temp.dir}"/>
+		<delete dir="${module.lib.dir}"/>
+		<delete dir="${ivy.retrieve.lib.dir}"/>
+	</target>
+
+	<target name="compile" depends="resolve">
+		<mkdir dir="${module.target.dir}"/>
+
+		<javac srcdir="${module.src.dir}" destdir="${module.target.dir}" includeantruntime="no" encoding="UTF-8" debug="on">
+			<classpath refid="module.lib" />
+		</javac>
+
+		<copy todir="${module.target.dir}" preservelastmodified="true">
+			<fileset dir="${module.src.dir}">
+				<exclude name="**/*.java" />
+				<exclude name="**/.svn" />
+			</fileset>
+			<fileset dir="${module.dir}/test">
+				<exclude name="**/*.java" />
+				<exclude name="**/.svn" />
+			</fileset>
+		</copy>
+	</target>
+
+	<target name="release" depends="compile">
+		<mkdir dir="${module.dist.dir}" />
+		<jar destfile="${module.dist.dir}/${module.name}.jar">
+			<manifest>
+				<attribute name="Implementation-Version" value="${module.version}" />
+				<attribute name="Build-Time" value="${build.time}" />
+				<attribute name="Build-Machine" value="${env.COMPUTERNAME}" />
+			</manifest>
+			<fileset dir="${module.target.dir}">
+				<exclude name="com/broada/carrier/monitor/common/patchloader/**"/>
+				<exclude name="org/apache/catalina/loader/**"/>
+			</fileset>
+		</jar>
+		<jar destfile="${module.dist.dir}/carrier.monitor.common.patchloader.jar">
+			<manifest>
+				<attribute name="Implementation-Version" value="${module.version}" />
+				<attribute name="Build-Time" value="${build.time}" />
+				<attribute name="Build-Machine" value="${env.COMPUTERNAME}" />
+			</manifest>
+			<fileset dir="${module.target.dir}">
+				<include name="com/broada/carrier/monitor/common/patchloader/**"/>
+				<include name="org/apache/catalina/loader/**"/>
+			</fileset>
+		</jar>
+	</target>
+
+	<target name="_release-patch" depends="release">		
+		<jar destfile="${module.dist.dir}/carrier.${yyyymmdd}.temp.jar">
+			<manifest>
+				<attribute name="Implementation-Version" value="${module.version}" />
+				<attribute name="Build-Time" value="${build.time}" />
+				<attribute name="Build-Machine" value="${env.COMPUTERNAME}" />
+				<attribute name="Description" value="临时补丁包" />
+			</manifest>
+			<fileset dir="${module.target.dir}">
+				<include name="com/broada/carrier/monitor/common/restful/BaseController*" />					
+			</fileset>
+			<fileset dir="${basedir}/../server/classes">
+				<include name="com/broada/carrier/monitor/server/impl/logic/ServerMethodServiceImpl*" />
+			</fileset>
+		</jar>
+	</target>
+
+	<target name="_release-dev" depends="release">
+		<copy file="${module.dist.dir}/${module.name}.jar" todir="..\..\..\build\dist\monitor\webapp\WEB-INF\lib" preservelastmodified="true" />
+		<copy file="${module.dist.dir}/${module.name}.jar" todir="..\..\..\build\dist-client\lib" preservelastmodified="true" />
+		<copy file="${module.dist.dir}/${module.name}.jar" todir="..\..\..\build\dist-probe\webapp\WEB-INF\lib" preservelastmodified="true" />
+		<copy file="${module.dist.dir}/carrier.monitor.common.patchloader.jar" todir="..\..\..\build\dist\monitor\webapp\WEB-INF\lib" preservelastmodified="true"/>
+		<copy file="${module.dist.dir}/carrier.monitor.common.patchloader.jar" todir="..\..\..\build\dist-client\lib" preservelastmodified="true"/>
+		<copy file="${module.dist.dir}/carrier.monitor.common.patchloader.jar" todir="..\..\..\build\dist-probe\webapp\WEB-INF\lib" preservelastmodified="true"/>
+	</target>
+</project>

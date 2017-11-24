@@ -1,0 +1,27 @@
+init_config:
+
+instances:
+  - expvar_url: http://localhost:8080/debug/vars
+    namespace: examplenamespace
+    tags:
+      - "application_name:myapp"
+      - "optionaltag2"
+    metrics:
+      - path: memstats/PauseTotalNs
+        alias: go_expvar.gc.pause_time_in_ns
+        type: rate
+        tags:
+          - "metric_tag1:tag_value1"
+          - "metric_tag2:tag_value2"
+      - path: memstats/Alloc
+      - path: memstats/Lookups
+        type: rate
+      - path: memstats/Mallocs
+        type: counter
+      - path: memstats/Frees
+        type: rate
+      - path: memstats/BySize/1/Mallocs
+      - path: myvariable
+        alias: go_expvar.my_custom_name
+        type: gauge
+      - path: routes/get_.*/count      

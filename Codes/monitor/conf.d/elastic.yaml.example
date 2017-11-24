@@ -1,0 +1,12 @@
+init_config:
+
+instances:
+  - url: http://localhost:9200
+    username: username
+    password: "******"
+    cluster_stats: false
+    pshard_stats: false
+    pending_task_stats: true
+    tags:
+      - 'tag1:key1'
+      - 'tag2:key2'

@@ -1,0 +1,13 @@
+#!/bin/bash
+
+# 脚本元信息
+# name=采集日志文件数量与大小
+# interval=600
+
+# 采集过程
+NUM=`ls -lR /var/log | grep "^-" | wc -l`
+SIZE=`du -s /var/log | awk '{print $1}'`
+
+# 输出结果
+echo "metric=system.logfile.number|value=$NUM|type=count|tags=app:WebPortal"
+echo "metric=system.logfile.size|value=$SIZE|tags=app:WebPortal"

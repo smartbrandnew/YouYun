@@ -1,0 +1,13 @@
+init_config:
+
+instances:
+  - name: My Website
+    server: teamcity.mycompany.com
+    build_configuration: MyWebsite_Deploy
+    host_affected: msicalweb6
+    is_deployment: true
+    ssl_validation: false
+    tags:
+      - test
+
+

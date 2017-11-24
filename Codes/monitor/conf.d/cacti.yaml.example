@@ -1,0 +1,8 @@
+init_config:
+
+instances:
+  - mysql_host: localhost
+    mysql_user: MYSQL_USER
+    mysql_password: "******"
+    rrd_path: /path/to/cacti/rra
+

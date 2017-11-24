@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:jms="http://www.springframework.org/schema/jms" xmlns:aop="http://www.springframework.org/schema/aop"
+	xsi:schemaLocation="
+            http://www.springframework.org/schema/beans 
+            http://www.springframework.org/schema/beans/spring-beans.xsd   
+            http://www.springframework.org/schema/context
+            http://www.springframework.org/schema/context/spring-context.xsd         
+            http://www.springframework.org/schema/jms 
+            http://www.springframework.org/schema/jms/spring-jms.xsd
+            http://www.springframework.org/schema/aop 
+            http://www.springframework.org/schema/aop/spring-aop-4.0.xsd">
+
+	<bean id="amqCachingConnectionFactory"
+		class="org.springframework.jms.connection.CachingConnectionFactory">
+		<property name="targetConnectionFactory">
+			<bean class="org.apache.activemq.ActiveMQConnectionFactory">
+				<property name="brokerURL" value="${mq.brokerURL}" />
+				<property name="useAsyncSend" value="true" />
+				<property name="clientIDPrefix" value="${jms.clientIDPrefix}-monitor" />
+			</bean>
+		</property>
+	</bean>
+
+	<bean id="metricQueue" class="org.apache.activemq.command.ActiveMQQueue">
+		<constructor-arg index="0" value="${jms.metric.queue}" />
+	</bean>
+	<bean class="org.springframework.jms.listener.SimpleMessageListenerContainer">
+		<property name="connectionFactory" ref="amqCachingConnectionFactory" />
+		<property name="destination" ref="metricQueue" />
+		<property name="concurrentConsumers" value="4" />
+		<property name="messageListener" ref="metricMQService" />
+	</bean>
+	<!-- [从mq获取数据] [本地消费获取的数据] 采用生产者和消费者模式 -->
+	<bean id="metricMQService" class="uyun.bat.monitor.core.mq.MetricMQService"
+		init-method="init">
+		<!-- 本地保存mq数据的数目上限 -->
+		<property name="maxLength" value="1000" />
+		<!-- 异步消费mq数据的线程数 -->
+		<property name="concurrentConsumers" value="3" />
+	</bean>
+
+	<bean id="eventQueue" class="org.apache.activemq.command.ActiveMQQueue">
+		<constructor-arg index="0" value="${jms.event.queue}" />
+	</bean>
+	<bean class="org.springframework.jms.listener.SimpleMessageListenerContainer">
+		<property name="connectionFactory" ref="amqCachingConnectionFactory" />
+		<property name="destination" ref="eventQueue" />
+		<!-- mq消费者数目 -->
+		<property name="concurrentConsumers" value="2" />
+		<property name="messageListener" ref="eventMQService" />
+	</bean>
+	<!-- [从mq获取数据] [本地消费获取的数据] 采用生产者和消费者模式 -->
+	<bean id="eventMQService" class="uyun.bat.monitor.core.mq.EventMQService"
+		init-method="init">
+		<!-- 本地保存mq数据的数目上限 -->
+		<property name="maxLength" value="300" />
+		<!-- 异步消费mq数据的线程数 -->
+		<property name="concurrentConsumers" value="2" />
+	</bean>
+
+	<bean id="stateMetricQueue" class="org.apache.activemq.command.ActiveMQQueue">
+		<constructor-arg index="0" value="${jms.state.metric.queue}" />
+	</bean>
+	<bean class="org.springframework.jms.listener.SimpleMessageListenerContainer">
+		<property name="connectionFactory" ref="amqCachingConnectionFactory" />
+		<property name="destination" ref="stateMetricQueue" />
+		<!-- mq消费者数目 -->
+		<property name="concurrentConsumers" value="2" />
+		<property name="messageListener" ref="stateMetricMQService" />
+	</bean>
+	<!-- [从mq获取数据] [本地消费获取的数据] 采用生产者和消费者模式 -->
+	<bean id="stateMetricMQService" class="uyun.bat.monitor.core.mq.StateMetricMQService"
+		  init-method="init">
+		<!-- 本地保存mq数据的数目上限 -->
+		<property name="maxLength" value="1000" />
+		<!-- 异步消费mq数据的线程数 -->
+		<property name="concurrentConsumers" value="2" />
+	</bean>
+
+	<bean id="resourceQueue" class="org.apache.activemq.command.ActiveMQQueue">
+		<constructor-arg index="0" value="${jms.resource.queue}" />
+	</bean>
+	<bean class="org.springframework.jms.listener.SimpleMessageListenerContainer">
+		<property name="connectionFactory" ref="amqCachingConnectionFactory" />
+		<property name="destination" ref="resourceQueue" />
+		<!-- mq消费者数目 -->
+		<property name="concurrentConsumers" value="2" />
+		<property name="messageListener" ref="resourceMQService" />
+	</bean>
+	<!-- [从mq获取数据] [本地消费获取的数据] 采用生产者和消费者模式 -->
+	<bean id="resourceMQService" class="uyun.bat.monitor.core.mq.ResourceMQService">
+	</bean>
+
+	<!--发送到monitor资源下线队列-->
+	<bean id="resourceDataQueue" class="org.apache.activemq.command.ActiveMQQueue">
+		<constructor-arg index="0" value="${jms.resource.queue}" />
+	</bean>
+
+	<bean id="jmsTemplate" class="org.springframework.jms.core.JmsTemplate">
+		<property name="connectionFactory" ref="amqCachingConnectionFactory" />
+		<property name="defaultDestination" ref="resourceDataQueue" />
+		<property name="messageConverter">
+			<bean
+					class="org.springframework.jms.support.converter.SimpleMessageConverter" />
+		</property>
+	</bean>
+
+	<!--发送监测器到事件队列 -->
+	<bean id="monitorQueue" class="org.apache.activemq.command.ActiveMQQueue">
+		<constructor-arg index="0" value="${jms.monitor.event.queue}" />
+	</bean>
+
+	<bean id="monitorQueueJmsTemplate" class="org.springframework.jms.core.JmsTemplate">
+		<property name="connectionFactory" ref="amqCachingConnectionFactory" />
+		<property name="defaultDestination" ref="monitorQueue" />
+		<property name="messageConverter">
+			<bean
+					class="org.springframework.jms.support.converter.SimpleMessageConverter" />
+		</property>
+	</bean>
+
+	<bean class="uyun.bat.monitor.core.mq.MQManager" factory-method="getInstance">
+		<property name="stateMQService">
+			<bean class="uyun.bat.monitor.core.mq.StateMQService">
+				<property name="jmsTemplate" ref="jmsTemplate" />
+			</bean>
+		</property>
+		<property name="monitorMQService">
+			<bean class="uyun.bat.monitor.core.mq.MonitorMQService">
+				<property name="monitorQueueJmsTemplate" ref="monitorQueueJmsTemplate" />
+			</bean>
+		</property>
+	</bean>
+
+	<!-- [上面部分的逻辑将匹配上的监测器放入队列] [由此处的消费者挨个进行监测器是否触发逻辑] 采用生产者和消费者模式 -->
+	<bean class="uyun.bat.monitor.core.calculate.CalculatorManager"
+		factory-method="getInstance" init-method="init">
+		<!-- 具体执行监测器逻辑线程数 -->
+		<property name="metricConsumers" value="2" />
+		<property name="eventConsumers" value="1" />
+		<property name="resourceConsumers" value="1"/>
+	</bean>
+</beans>

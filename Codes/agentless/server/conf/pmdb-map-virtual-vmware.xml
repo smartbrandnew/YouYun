@@ -1,0 +1,323 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<pmdb-map>
+	<monitor type="VCENTER-HYPERVISOR-INFO" >
+		<!-- 
+		VCENTER-HYPERVISOR-INFO-1	主机IP	
+		VCENTER-HYPERVISOR-INFO-2	产品	
+		VCENTER-HYPERVISOR-INFO-3	CPU个数	个
+		VCENTER-HYPERVISOR-INFO-4	CPU总容量	MHz
+		VCENTER-HYPERVISOR-INFO-5	CPU预留量	MHz
+		VCENTER-HYPERVISOR-INFO-6	内存总容量	MB
+		VCENTER-HYPERVISOR-INFO-7	内存授权量	MB
+		VCENTER-HYPERVISOR-INFO-8	内存预留量	MB
+		VCENTER-HYPERVISOR-INFO-9	网卡个数	个
+		VCENTER-HYPERVISOR-INFO-10	存储总容量	MB
+		VCENTER-HYPERVISOR-INFO-11	运行状态	
+		VCENTER-HYPERVISOR-INFO-12	运行虚拟机数	个
+		VCENTER-HYPERVISOR-INFO-13      所在集群
+		VCENTER-HYPERVISOR-INFO-13    虚拟数据中心
+		 -->
+		<object local="instance" remote="Server">
+			<![CDATA[
+			output.localKey = "vcenter.server." + input.getValue("instance.code");
+			output.setValue(input, "attr.ipAddr", input.instance.getIndicator("VCENTER-HYPERVISOR-INFO-1"));
+			output.setValue(input, "attr.name", input.instance.getIndicator("VCENTER-HYPERVISOR-INFO-2"));	
+			output.setValue(input, "attr.cpuNum", input.instance.getIndicator("VCENTER-HYPERVISOR-INFO-3"));
+			output.setValue(input, "attr.cpuFrequency", input.instance.getIndicator("VCENTER-HYPERVISOR-INFO-4"));
+			output.setValue(input, "attr.memCapacity", input.instance.getIndicator("VCENTER-HYPERVISOR-INFO-6"));
+			output.setValue(input, "attr.portNum", input.instance.getIndicator("VCENTER-HYPERVISOR-INFO-9"));
+			output.setValue(input, "attr.physicalDiskCapacity", input.instance.getIndicator("VCENTER-HYPERVISOR-INFO-10"));
+			String red = "red";					
+			output.setValue(input, "state.available_status", red.equals(input.instance.getIndicator("VCENTER-HYPERVISOR-INFO-11")) ? 0 : 1);		
+			]]>
+		</object>
+		<object local="instance" remote="Hypervisor">
+			<![CDATA[
+			String serverId = util.getFirstRemoteKeyByLocalKey("vcenter.server." + input.getValue("instance.code"));
+			if (serverId != null)
+				output.setValue(input, "rs.RunningOn", serverId); 		
+			output.localKey = "vcenter.hypervisor." + input.getValue("instance.code");
+			output.setValue(input, "attr.code", input.getValue("instance.code"));
+			output.setValue(input, "attr.name", input.instance.getIndicator("VCENTER-HYPERVISOR-INFO-1"));			
+			output.setValue(input, "attr.ipAddr", input.instance.getIndicator("VCENTER-HYPERVISOR-INFO-1"));
+			output.setValue(input, "attr.edition", input.instance.getIndicator("VCENTER-HYPERVISOR-INFO-2"));
+			output.setValue(input, "attr.cpuNumber", input.instance.getIndicator("VCENTER-HYPERVISOR-INFO-3"));
+			output.setValue(input, "attr.cpuCapacity", input.instance.getIndicator("VCENTER-HYPERVISOR-INFO-4"));
+			output.setValue(input, "attr.cpuReserved", input.instance.getIndicator("VCENTER-HYPERVISOR-INFO-5"));
+			output.setValue(input, "attr.memoryCapacity", input.instance.getIndicator("VCENTER-HYPERVISOR-INFO-6"));
+			output.setValue(input, "attr.memoryGrant", input.instance.getIndicator("VCENTER-HYPERVISOR-INFO-7"));
+			output.setValue(input, "attr.memoryReserved", input.instance.getIndicator("VCENTER-HYPERVISOR-INFO-8"));
+			output.setValue(input, "attr.nicNumber", input.instance.getIndicator("VCENTER-HYPERVISOR-INFO-9"));
+			output.setValue(input, "attr.storageCapacity", input.instance.getIndicator("VCENTER-HYPERVISOR-INFO-10"));			
+			output.setValue(input, "attr.virtualType", "Vmware");	
+			String red = "red";		
+			output.setValue(input, "state.hv_state", red.equals(input.instance.getIndicator("VCENTER-HYPERVISOR-INFO-11")) ? 0 : 1);			
+			]]>
+		</object>
+		<script name="cluster">
+			def outputs = [];
+			def existsIds = [:];			
+			for (instance in input.result.rows) {
+				name = instance.getIndicator("VCENTER-HYPERVISOR-INFO-13");
+				if (name == null || name.isEmpty())
+					continue;
+					
+				hypervisorId = util.getFirstRemoteKeyByLocalKey("vcenter.hypervisor." + instance.instCode);
+				if (hypervisorId == null)
+					continue;									
+					
+				id = "vm.cluster." + name;
+				output = existsIds.get(id);
+				if (output == null) {
+					output = context.createOutput(id, "VirtualCluster");
+					output.setValue(input, "attr.name", name);
+					output.setValue(input, "attr.clusterType", "虚拟化集群");
+					output.setValue(input, "rs.HasMember", hypervisorId);						
+					existsIds.put(id, output);
+				} else
+					output.setValue(input, "rs.HasMember", hypervisorId);	
+			}
+		</script>	
+		
+			<script name="VirtualDC">
+			def outputs = [];
+			def existsIds = [:];			
+			for (instance in input.result.rows) {
+				name = instance.getIndicator("VCENTER-HYPERVISOR-INFO-14");
+				if (name == null || name.isEmpty())
+					continue;
+				clusterName=instance.getIndicator("VCENTER-HYPERVISOR-INFO-13");
+				virtualId = util.getFirstRemoteKeyByLocalKey("vcenter.hypervisor." + instance.instCode);
+				if (virtualId == null)
+					continue;									
+				cid = "vm.cluster." + clusterName;
+				clusterId = util.getFirstRemoteKeyByLocalKey(cid);	
+				id = "vcenter." + name;
+				output = existsIds.get(id);
+				if (output == null) {
+					output = context.createOutput(id, "VirtualDC");
+					if(clusterName==null||clusterName.isEmpty()){
+					output.setValue(input, "attr.name", name);
+					output.setValue(input, "rs.HasMember", virtualId);
+					}else{
+					output.setValue(input, "attr.name", name);
+					output.setValue(input, "rs.HasMember", clusterId);
+					}					
+					existsIds.put(id, output);
+				}else{
+					if(clusterName==null||clusterName.isEmpty())
+					output.setValue(input, "rs.HasMember", virtualId);	
+					else
+					output.setValue(input, "rs.HasMember", clusterId);
+					}
+				}
+		</script>		 		 	 		 
+	</monitor>	
+	
+	<monitor type="VCENTER-HYPERVISOR-CPU" >
+		<!-- 
+		VCENTER-HYPERVISOR-CPU-1	主机IP	
+		VCENTER-HYPERVISOR-CPU-2	利用率	%
+		VCENTER-HYPERVISOR-CPU-3	使用量	MHz
+		 -->
+		
+		<object local="instance" remote="Hypervisor">
+		<![CDATA[		
+			output.localKey = "vcenter.hypervisor." + input.getValue("instance.code");
+			output.setValue(input, "attr.name", input.instance.getIndicator("VCENTER-HYPERVISOR-CPU-1"));			
+			output.setValue(input, "attr.ipAddr", input.instance.getIndicator("VCENTER-HYPERVISOR-CPU-1"));
+			output.setValue(input, "perf.hv-cpu-use.cpu_usage", input.instance.getIndicator("VCENTER-HYPERVISOR-CPU-2"));
+			output.setValue(input, "perf.hv-cpu-use.cpu_used", input.instance.getIndicator("VCENTER-HYPERVISOR-CPU-3"));
+		]]>
+		</object>
+		
+		<object local="instance" remote="Server">
+		<![CDATA[		
+			output.localKey = "vcenter.hypervisor." + input.getValue("instance.code");
+			output.setValue(input, "attr.ipAddr", input.instance.getIndicator("VCENTER-HYPERVISOR-CPU-1"));
+			output.setValue(input, "perf.cpu-use.cpu_usage", input.instance.getIndicator("VCENTER-HYPERVISOR-CPU-2"));
+		]]>
+		</object>
+		
+	</monitor>
+	
+	<monitor type="VCENTER-HYPERVISOR-RAM" >
+		<!-- 
+		VCENTER-HYPERVISOR-RAM-1	主机IP	
+		VCENTER-HYPERVISOR-RAM-2	利用率	%
+		VCENTER-HYPERVISOR-RAM-3	使用量	MB
+		VCENTER-HYPERVISOR-RAM-4	虚拟机内存使用量	MB
+		 -->
+		<object local="instance" remote="Hypervisor">			
+		<![CDATA[		
+			output.localKey = "vcenter.hypervisor." + input.getValue("instance.code");
+			output.setValue(input, "attr.name", input.instance.getIndicator("VCENTER-HYPERVISOR-RAM-1"));
+			output.setValue(input, "attr.ipAddr", input.instance.getIndicator("VCENTER-HYPERVISOR-RAM-1"));
+			output.setValue(input, "perf.hv-ram-use.mem_usage", input.instance.getIndicator("VCENTER-HYPERVISOR-RAM-2"));
+			output.setValue(input, "perf.hv-ram-use.mem_used", input.instance.getIndicator("VCENTER-HYPERVISOR-RAM-3"));
+			output.setValue(input, "perf.hv-ram-use.virtual_mem_used", input.instance.getIndicator("VCENTER-HYPERVISOR-RAM-4"));			
+		]]>					
+		</object>
+		
+		<object local="instance" remote="Server">
+		<![CDATA[		
+			output.localKey = "vcenter.hypervisor." + input.getValue("instance.code");
+			output.setValue(input, "attr.ipAddr", input.instance.getIndicator("VCENTER-HYPERVISOR-RAM-1"));
+			output.setValue(input, "perf.ram-use.mem_usage", input.instance.getIndicator("VCENTER-HYPERVISOR-RAM-2"));
+			output.setValue(input, "perf.ram-use.mem_used", input.instance.getIndicator("VCENTER-HYPERVISOR-RAM-3"));
+		]]>
+		</object>
+	</monitor>
+	
+	<monitor type="VCENTER-VM" >
+		<!-- 
+		esx-vm-compute-resource-name	VM所在计算资源名称	
+		esx-vm-compute-resource-path	VM所在计算资源路径	
+		esx-vm-compute-resource-type	VM所在计算资源类型	
+		esx-vm-guest-full-name	VM配置操作系统	
+		esx-vm-hyper-uuid	主机UUID	
+		esx-vm-over-all-status	VM告警状态	
+		esx-vm-path	VM路径	
+		esx-vm-path-name	VM文件路径	
+		esx-vm-power-state	VM电源状态	
+		 -->
+		<script name="cluster">
+			def outputs = [];
+			def existsIds = [];
+			for (instance in input.result.rows) {
+				resType = instance.getIndicator("esx-vm-compute-resource-type");
+				if (!resType.equals("集群"))
+					continue;
+					
+				id = "vp." + instance.getIndicator("esx-vm-compute-resource-path");
+				if (existsIds.contains(id))
+					continue;
+				existsIds.add(id);
+				output = context.createOutput(id, "VirtualCluster");
+				output.setValue(input, "rs.runningOn", input.node.id);
+				output.setValue(input, "attr.name", instance.getIndicator("esx-vm-compute-resource-name"));
+				output.setValue(input, "attr.clusterType", "虚拟化集群");		
+			}
+		</script>
+	<object local="instance" remote="VM">
+		<![CDATA[
+			String isTemplate=input.instance.getIndicator("esx-vm-is-template");
+			if(isTemplate.equals("否")){
+			resType = input.instance.getIndicator("esx-vm-compute-resource-type");
+			if (resType.equals("集群")) {
+				clusterLocalKey = "vp." + input.instance.getIndicator("esx-vm-compute-resource-path");
+				clusterId = util.getFirstRemoteKeyByLocalKey(clusterLocalKey);
+				if (clusterId != null)
+					output.setValue(input, "rs.virtualizedBy", clusterId);
+			}else if(resType.equals("主机")){
+				hypervisorLocalKey =  "vcenter.hypervisor." + input.instance.getIndicator("esx-vm-hyper-uuid");
+				hypervisorId = util.getFirstRemoteKeyByLocalKey(hypervisorLocalKey);
+				if (hypervisorId != null)
+					output.setValue(input, "rs.virtualizedBy", hypervisorId);
+			}
+		
+			output.localKey = "vcenter.vm." + input.getValue("instance.code");
+			output.setValue(input, "attr.name", input.getValue("instance.name"));
+			output.setValue(input, "attr.path", input.getValue("esx-vm-path"));
+			output.setValue(input, "attr.guid", input.getValue("instance.code"));
+			
+			String ipaddrs = input.getValue("esx-vm-net-ip-address");
+			if (ipaddrs != null && ipaddrs.contains(".")) {
+				String[] items = ipaddrs.split(";");
+				if (items.length > 0)
+					output.setValue(input, "attr.ipAddr", items[0]);
+			}
+						
+			state = input.instance.getIndicator("esx-vm-power-state");
+			output.setValue(input, "state.power_status", state == null ? null : state.id);
+			}	
+		]]>
+		</object>
+
+		<object local="instance" remote="Template">
+		<![CDATA[
+			String isTemplate=input.instance.getIndicator("esx-vm-is-template");
+			if(isTemplate.equals("是")){
+			output.localKey = "vcenter.vm." + input.getValue("instance.code");
+			output.setValue(input, "attr.name", input.getValue("instance.name"));
+			output.setValue(input, "attr.guid", input.getValue("instance.code"));
+			}
+		]]>
+		</object>
+	</monitor>
+
+	<monitor type="VCENTER-VM-CPU" >
+		<!-- 
+		ESX-VM-CPU-1	名称	
+		ESX-VM-CPU-2	CPU数量	个
+		ESX-VM-CPU-3	CPU频率	Hz
+		ESX-VM-CPU-4	CPU使用率	%
+		 -->
+		<object local="instance" remote="VM">
+		<![CDATA[
+			output.localKey = "vcenter.vm." + input.getValue("instance.code");			
+			output.setValue(input, "perf.vm_load.cpu_usage", input.instance.getIndicator("ESX-VM-CPU-4"));			
+		]]>
+		</object>
+	</monitor>
+	
+	<monitor type="VCENTER-VM-DISK" >
+		<!-- 
+		ESX-VM-DISK-1	名称	
+		ESX-VM-DISK-2	存储置备	MB
+		ESX-VM-DISK-3	已分配	MB
+		ESX-VM-DISK-4	未共享	MB
+		ESX-VM-DISK-5	使用率	%
+		 -->
+		<object local="instance" remote="VM">
+		<![CDATA[
+			output.localKey = "vcenter.vm." + input.getValue("instance.code");			
+			output.setValue(input, "perf.vm_load.disk_used", input.instance.getIndicator("ESX-VM-DISK-3") / 1024);
+			output.setValue(input, "perf.vm_load.disk_usage", input.instance.getIndicator("ESX-VM-DISK-5"));
+		]]>
+		</object>
+	</monitor>
+	
+	<monitor type="VCENTER-VM-RAM" >
+		<!-- 
+		ESX-VM-RAM-1	名称	
+		ESX-VM-RAM-2	已使用	MB
+		ESX-VM-RAM-3	总量	MB
+		ESX-VM-RAM-4	内存使用率	%
+		 -->
+		<object local="instance" remote="VM">
+		<![CDATA[
+			output.localKey = "vcenter.vm." + input.getValue("instance.code");			
+			output.setValue(input, "perf.vm_load.mem_used", input.instance.getIndicator("ESX-VM-RAM-2"));
+			output.setValue(input, "perf.vm_load.mem_usage", input.instance.getIndicator("ESX-VM-RAM-4"));
+		]]>
+		</object>
+	</monitor>
+	
+	<monitor type="VCENTER-VM-NET" >
+		<!-- 
+		ESX-VM-NET-1	接受速率
+		ESX-VM-NET-2	发送速率
+		ESX-VM-NET-3	接受包转发率
+		ESX-VM-NET-4	发送包转发率
+		ESX-VM-NET-5	接受丢包率
+		ESX-VM-NET-6	发送丢包率
+		ESX-VM-NET-7	接受误包率
+		ESX-VM-NET-8	发送误包率
+		 -->
+		<object local="instance" remote="VM">
+		<![CDATA[
+			output.localKey = "vcenter.vm." + input.getValue("instance.code");			
+			output.setValue(input, "perf.vm_net.receive_rate", input.instance.getIndicator("ESX-VM-NET-1"));
+			output.setValue(input, "perf.vm_net.sent_rate", input.instance.getIndicator("ESX-VM-NET-2"));
+			output.setValue(input, "perf.vm_net.rec_packets_rate", input.instance.getIndicator("ESX-VM-NET-3"));
+			output.setValue(input, "perf.vm_net.sent_packets_rate", input.instance.getIndicator("ESX-VM-NET-4"));
+			output.setValue(input, "perf.vm_net.rec_disc_pkts_rate", input.instance.getIndicator("ESX-VM-NET-5"));
+			output.setValue(input, "perf.vm_net.sent_disc_pkts_rate", input.instance.getIndicator("ESX-VM-NET-6"));
+			output.setValue(input, "perf.vm_net.rec_err_pkts_rate", input.instance.getIndicator("ESX-VM-NET-7"));
+			output.setValue(input, "perf.vm_net.sent_err_pkts_rate", input.instance.getIndicator("ESX-VM-NET-8"));
+		]]>
+		</object>
+	</monitor>
+		
+</pmdb-map>

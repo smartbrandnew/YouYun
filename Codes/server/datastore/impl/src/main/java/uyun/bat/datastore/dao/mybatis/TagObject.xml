@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="uyun.bat.datastore.dao.TagObjectDao">
+	<select id="getObjectIdByTagIds" resultType="string" parameterType="uyun.bat.datastore.entity.ListWrapper">
+		select lower(hex(o.id))
+		<foreach collection="list" item="item" index="index">
+			<if test="index == 0">
+				from (select * from tag_object where tag_id = #{item, jdbcType=BINARY}) t0
+			</if>
+			<if test="index > 0">
+				inner join tag_object t${index} on t${index}.tag_id = #{item, jdbcType=BINARY} and t${index}.object_id = t0.object_id
+			</if>
+		</foreach>
+		inner join object o on o.id = t0.object_id and o.tag_count = #{size}
+	</select>
+
+	<select id="getObjectIdByTagIdsColumn" resultType="string" parameterType="uyun.bat.datastore.entity.Binary">
+		select lower(hex(id)) from object where tag_ids = #{value, jdbcType=BINARY}
+	</select>
+
+	<select id="queryObjectIdsByTagIds" resultType="string">
+		select lower(hex(t0.object_id))
+		<foreach collection="list" item="item" index="index">
+			<if test="index == 0">
+				from (select * from tag_object where tag_id = #{item, jdbcType=BINARY}) t0
+			</if>
+			<if test="index > 0">
+				inner join tag_object t${index} on t${index}.tag_id = #{item, jdbcType=BINARY} and t${index}.object_id = t0.object_id
+			</if>
+		</foreach>
+	</select>
+
+	<select id="getTagIdsByObjectId" resultType="string">
+		select lower(hex(tag_id)) from tag_object where object_id = #{value, jdbcType=BINARY}
+	</select>
+
+	<insert id="createObject">
+		insert into object (id, tag_count, tag_ids) values (#{id, jdbcType=BINARY}, #{tagCount}, #{tagIds, jdbcType=BINARY})
+	</insert>
+
+	<insert id="createMap">
+		insert into tag_object (tag_id, object_id) values (#{0, jdbcType=BINARY}, #{1, jdbcType=BINARY})
+	</insert>
+
+	<delete id="deleteObject">
+		delete from object where id = #{value, jdbcType=BINARY}
+	</delete>
+
+	<delete id="deleteMapByTagId">
+		delete from tag_object where tag_id = #{value, jdbcType=BINARY}
+	</delete>
+
+	<delete id="deleteMapByObjectId">
+		delete from tag_object where object_id = #{value, jdbcType=BINARY}
+	</delete>
+</mapper>

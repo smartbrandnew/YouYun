@@ -1,0 +1,28 @@
+init_config:
+
+instances:
+  - url: http://localhost/admin?stats
+    username: username
+    password: "******"
+    
+    status_check: False
+    
+    collect_aggregates_only: True
+
+    collect_status_metrics: False
+
+    collect_status_metrics_by_host: False
+
+    count_status_by_service: True
+    tag_service_check_by_host: False
+
+    services_include:
+      - "backend"
+      - "test"
+    services_exclude:
+      - ".*"
+
+    services_include: []
+    services_exclude:
+      - "thisone"
+

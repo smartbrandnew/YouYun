@@ -1,0 +1,20 @@
+init_config:
+      tags:
+        - optional_tag1
+        - optional_tag2
+
+instances:
+   host: localhost
+   port: 4194
+   method: http
+
+   use_histogram: True
+   enable_kubelet_checks: true
+   kubelet_port: 10255
+
+   enabled_rates:
+     - cpu.*
+     - network.*
+
+   enabled_gauges:
+     - filesystem.*

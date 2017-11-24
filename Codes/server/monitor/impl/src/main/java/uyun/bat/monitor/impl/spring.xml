@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:websocket="http://www.springframework.org/schema/websocket"
+	xmlns:mvc="http://www.springframework.org/schema/mvc"
+	xsi:schemaLocation="
+        http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd  
+        http://www.springframework.org/schema/websocket http://www.springframework.org/schema/websocket/spring-websocket.xsd
+        http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc-3.2.xsd">
+	<import resource="classpath:/uyun/bat/common/config/spring-conf.xml" />
+	<import resource="classpath:uyun/bat/monitor/impl/spring-dao.xml" />
+	<import resource="classpath:uyun/bat/monitor/impl/spring-dubbo.xml" />
+
+	<bean class="uyun.bat.monitor.impl.facade.FacadeManager"
+		factory-method="getInstance">
+		<property name="monitorFacade">
+			<bean class="uyun.bat.monitor.impl.facade.MonitorFacade" />
+		</property>
+	</bean>
+
+	<bean class="uyun.bat.monitor.impl.common.RedisConnectionPool"
+		factory-method="getInstance" init-method="init" destroy-method="dispose">
+		<property name="ipList" value="${redis.sentinel.nodes}" />
+		<property name="masterName" value="${redis.master}" />
+		<property name="password" value="${redis.password}" />
+		<property name="timeout" value="${redis.timeout}" />
+		<property name="database" value="${redis.database}" />
+		<property name="jedisPoolConfig">
+			<bean class="redis.clients.jedis.JedisPoolConfig">
+				<!-- 总数由如下方式确定：指标监测器mq的客户端连接数+指标监测器mq数据消费线程数 其他类型检测器也同样相加 -->
+				<property name="maxTotal" value="40" />
+				<property name="maxWaitMillis" value="5000" />
+				<property name="maxIdle" value="12" />
+				<property name="minIdle" value="6" />
+			</bean>
+		</property>
+	</bean>
+	
+	<bean class="uyun.bat.monitor.impl.logic.LogicManager"
+		factory-method="getInstance">
+		<property name="monitorLogic">
+			<bean class="uyun.bat.monitor.impl.logic.MonitorLogic"
+				init-method="init" />
+		</property>
+		<property name="notifyRecordLogic">
+			<bean class="uyun.bat.monitor.impl.logic.NotifyRecordLogic" />
+		</property>
+		<property name="autoRecoverRecordLogic">
+			<bean class="uyun.bat.monitor.impl.logic.AutoRecoverRecordLogic" />
+		</property>
+	</bean>
+
+	<bean class="org.mortbay.jetty.Server" init-method="start"
+		destroy-method="stop">
+	</bean>
+
+	<bean class="uyun.bat.monitor.impl.logic.CheckEventMonitorTask"
+		init-method="init">
+	</bean>
+	
+	<bean class="uyun.bat.monitor.impl.logic.CheckResourceStateTask"
+		init-method="init">
+	</bean>
+
+	
+	<bean class="uyun.bat.monitor.impl.logic.AutoRecoverTask">
+	</bean>
+	<!-- <bean class="uyun.bat.monitor.selfmonitor.ScheduleTask"
+		init-method="init"/> -->
+	<import resource="classpath:uyun/bat/common/proxy/spring-dubbo.xml" />
+	<import resource="classpath:uyun/bat/monitor/impl/spring-mq.xml" />
+</beans>

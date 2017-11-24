@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="uyun.bat.datastore.overview.dao.OTagResourceDao">
+	<resultMap type="uyun.bat.datastore.overview.entity.OTagResource"
+		id="tagResourceResultMap">
+		<result property="resourceId" column="resource_id" jdbcType="BINARY"
+			typeHandler="uyun.whale.common.mybatis.type.UUIDTypeHandler" />
+		<result property="tagId" column="tag_id" jdbcType="BINARY"
+			typeHandler="uyun.whale.common.mybatis.type.UUIDTypeHandler" />
+		<result property="tenantId" column="tenant_id" jdbcType="BINARY"
+			typeHandler="uyun.whale.common.mybatis.type.UUIDTypeHandler" />
+	</resultMap>
+	
+	<insert id="create">
+		insert IGNORE into overview_tag_resource (`tenant_id`, `tag_id`,
+		`resource_id`)
+		values
+		<foreach collection="list" item="item" index="index"
+			separator=",">
+			(#{item.tenantId,typeHandler=uyun.whale.common.mybatis.type.UUIDTypeHandler},
+			#{item.tagId,typeHandler=uyun.whale.common.mybatis.type.UUIDTypeHandler},
+			#{item.resourceId,typeHandler=uyun.whale.common.mybatis.type.UUIDTypeHandler})
+		</foreach>
+	</insert>
+
+	<delete id="delete">
+		delete from overview_tag_resource where tenant_id =
+		#{tenantId,typeHandler=uyun.whale.common.mybatis.type.UUIDTypeHandler}
+		<if test="tagId != null">
+			and tag_id =
+			#{tagId,typeHandler=uyun.whale.common.mybatis.type.UUIDTypeHandler}
+		</if>
+		<if test="resourceId != null">
+			and resource_id =
+			#{resourceId,typeHandler=uyun.whale.common.mybatis.type.UUIDTypeHandler}
+		</if>
+	</delete>
+
+	<select id="queryTenantList" resultType="string">
+		select temp.tenant_id
+		from (select hex(r.tenant_id)
+		as tenant_id, min(r.create_time) from
+		resource r group by r.tenant_id)
+		temp
+	</select>
+
+	<select id="queryTenantResourceIdList" resultType="string">
+		select
+		distinct
+		hex(otr.resource_id) from
+		overview_tag_resource otr
+		where
+		otr.tenant_id =
+		#{tenantId,typeHandler=uyun.whale.common.mybatis.type.UUIDTypeHandler}
+	</select>
+
+	<select id="queryNoResourceTagId" resultType="string">
+		select hex(ot.id) from
+		overview_tag ot left join
+		overview_tag_resource otr on ot.tenant_id =
+		otr.tenant_id and
+		ot.id =
+		otr.tag_id
+		where ot.tenant_id =
+		#{tenantId,typeHandler=uyun.whale.common.mybatis.type.UUIDTypeHandler}
+		and otr.tag_id is null
+	</select>
+	
+	<select id="queryNoTagList" resultMap="tagResourceResultMap">
+		select otr.resource_id,otr.tag_id,otr.tenant_id from
+		overview_tag_resource otr left join
+		overview_tag ot on ot.tenant_id =
+		otr.tenant_id and
+		ot.id =
+		otr.tag_id
+		where otr.tenant_id =
+		#{tenantId,typeHandler=uyun.whale.common.mybatis.type.UUIDTypeHandler}
+		and ot.id is null
+	</select>
+</mapper>

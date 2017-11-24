@@ -1,0 +1,32 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:dubbo="http://code.alibabatech.com/schema/dubbo"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans  
+        http://www.springframework.org/schema/beans/spring-beans.xsd  
+        http://code.alibabatech.com/schema/dubbo  
+        http://code.alibabatech.com/schema/dubbo/dubbo.xsd">
+
+	<!-- 集成租户 -->
+	<dubbo:reference id="_proxy_product_service_" interface="uyun.bird.tenant.api.ProductService"
+					 check="false" protocol="dubbo" timeout="10000"/>
+	<dubbo:reference id="_proxy_user_service_" interface="uyun.bird.tenant.api.UserService"
+					 check="false" protocol="dubbo" timeout="10000"/>
+	<dubbo:reference id="_proxy_tenant_service_" interface="uyun.bird.tenant.api.TenantService"
+					 check="false" protocol="dubbo" timeout="10000"/>
+	<!-- 集成通知中心 -->
+	<dubbo:reference id="_proxy_notify_service_" interface="uyun.bird.notify.api.NotifyService"
+					 check="false" protocol="dubbo" timeout="10000"/>
+	<!-- 集成站内信 -->
+	<dubbo:reference id="_proxy_imessage_service_" interface="uyun.bird.notify.api.imsg.IMessageService"
+					 check="false" protocol="dubbo" timeout="10000"/>
+
+	<!-- 初始化对应的工厂类 -->
+	<bean class="uyun.bat.common.proxy.ProxyBeanProcessor">
+		<property name="factorys">
+			<list>
+				<bean class="uyun.bat.common.proxy.tenant.TenantFactory" />
+				<bean class="uyun.bat.common.proxy.notify.NotifyFactory" />
+			</list>
+		</property>
+	</bean>
+</beans>  

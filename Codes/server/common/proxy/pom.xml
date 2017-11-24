@@ -1,0 +1,64 @@
+<?xml version="1.0"?>
+<project
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"
+	xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>uyun.bat</groupId>
+		<artifactId>bat-common</artifactId>
+		<version>2.0.0-SNAPSHOT</version>
+	</parent>
+
+	<artifactId>bat-common-proxy</artifactId>
+
+	<dependencies>
+		<!-- 集成租户 start -->
+		<dependency>
+			<groupId>org.hibernate</groupId>
+			<artifactId>hibernate-validator</artifactId>
+			<version>5.2.4.Final</version>
+		</dependency>
+		<dependency>
+			<groupId>javax.el</groupId>
+			<artifactId>javax.el-api</artifactId>
+			<version>2.2.4</version>
+		</dependency>
+		<dependency>
+			<groupId>org.glassfish.web</groupId>
+			<artifactId>javax.el</artifactId>
+			<version>2.2.4</version>
+		</dependency>
+		<dependency>
+			<groupId>uyun.bird.tenant</groupId>
+			<artifactId>tenant-api</artifactId>
+			<version>2.0.0-SNAPSHOT</version>
+			<exclusions>
+				<exclusion>
+					<groupId>de.javakaffee</groupId>
+					<artifactId>kryo-serializers</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+		<!-- 集成租户 end -->
+
+		<!-- 集成通知中心 start -->
+		<dependency>
+			<groupId>uyun.bird.notify</groupId>
+			<artifactId>notify-api</artifactId>
+			<version>2.0.0-SNAPSHOT</version>
+		</dependency>
+		<!-- 集成通知中心 end -->
+
+		<dependency>
+			<groupId>uyun.bat</groupId>
+			<artifactId>bat-common-util</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>uyun.bat</groupId>
+			<artifactId>bat-common-lib</artifactId>
+			<version>${project.version}</version>
+			<type>pom</type>
+		</dependency>
+	</dependencies>
+</project>

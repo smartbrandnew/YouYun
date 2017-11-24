@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:dubbo="http://code.alibabatech.com/schema/dubbo"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans  
+        http://www.springframework.org/schema/beans/spring-beans.xsd  
+        http://code.alibabatech.com/schema/dubbo  
+        http://code.alibabatech.com/schema/dubbo/dubbo.xsd">
+
+	<!-- 提供方应用信息，用于计算依赖关系 -->
+	<dubbo:application name="bat-favourite-provider" />
+
+	<!-- 使用注册中心暴露服务地址 -->
+	<dubbo:registry address="${zk.url}" client="curator" timeout="30000"/>
+	
+	<!-- 监控服务 -->
+	<dubbo:monitor protocol="${dubbo.monitor.protocol}" />	
+	
+	<!-- 用dubbo协议暴露服务 -->
+	<dubbo:protocol name="dubbo" port="${bat.favourite.port}"
+		serialization="kryo" />
+
+	<dubbo:annotation package="uyun.bat" />
+
+</beans>  

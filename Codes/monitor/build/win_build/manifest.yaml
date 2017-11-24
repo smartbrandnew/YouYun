@@ -1,0 +1,17 @@
+name: local-monitor
+version: 2.6.2
+author: uyun
+description: monitor-agent
+platforms:
+    Windows: [64, 32]
+run:
+  - .\embedded\python -m win32.agent
+priority: 999
+backups:
+    - conf.d
+    - datamonitor.conf
+scripts:
+    post_install: .\embedded\python install.py
+env:
+    LD_LIBRARY_PATH: $LD_LIBRARY_PATH:./embedded/lib
+    PATH: $PATH:./embedded/bin:./bin

@@ -1,0 +1,15 @@
+*.pyc
+.idea
+.vscode/.ropeproject
+venv/
+logs/
+repo/
+cache/
+modules/
+.mypy_cache/
+htmlcov/
+.cache/
+*.cache
+config.yaml
+.coverage*
+!.coveragerc

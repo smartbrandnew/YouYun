@@ -1,0 +1,241 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="uyun.bat.datastore.overview.dao.ResourceMonitorRecordDao">
+	<resultMap type="uyun.bat.datastore.api.overview.entity.TagResourceData"
+		id="tagResourceDataResultMap">
+		<result property="key" column="key" />
+		<result property="value" column="value" />
+		<result property="resourceCount" column="resource_count" jdbcType="BIGINT" />
+		<result property="warnCount" column="warn_count" jdbcType="BIGINT" />
+		<result property="errorCount" column="error_count" jdbcType="BIGINT" />
+		<result property="infoCount" column="info_count" jdbcType="BIGINT" />
+	</resultMap>
+	
+	<resultMap type="uyun.bat.datastore.api.overview.entity.ResourceMonitorRecord"
+		id="resourceMonitorRecordResultMap">
+		<result property="tenantId" column="tenant_id" jdbcType="BINARY"
+			typeHandler="uyun.whale.common.mybatis.type.UUIDTypeHandler" />
+		<result property="resourceId" column="resource_id" jdbcType="BINARY"
+			typeHandler="uyun.whale.common.mybatis.type.UUIDTypeHandler" />
+		<result property="monitorId" column="monitor_id" jdbcType="BINARY"
+			typeHandler="uyun.whale.common.mybatis.type.UUIDTypeHandler" />
+		<result property="ok" column="ok" />
+		<result property="warn" column="warn" />
+		<result property="error" column="error" />
+		<result property="info" column="info" />
+		<result property="timestamp" column="timestamp" jdbcType="BIGINT" />
+	</resultMap>
+
+	<insert id="save">
+		insert into resource_monitor_record
+		(`tenant_id`,
+		`resource_id`,
+		`monitor_id`,
+		`ok`,
+		`warn`,
+		`error`,
+		`info`,
+		`timestamp`) values
+		<foreach collection="list" item="item" index="index"
+			separator=",">
+			(#{item.tenantId,typeHandler=uyun.whale.common.mybatis.type.UUIDTypeHandler},
+			#{item.resourceId,typeHandler=uyun.whale.common.mybatis.type.UUIDTypeHandler},
+			#{item.monitorId,typeHandler=uyun.whale.common.mybatis.type.UUIDTypeHandler},
+			#{item.ok}, #{item.warn}, #{item.error}, #{item.info},#{item.timestamp})
+		</foreach>
+		on duplicate key update
+		`ok`=if(VALUES(`timestamp`) > `timestamp`,
+		VALUES(`ok`),`ok`),
+		`warn`=if(VALUES(`timestamp`) > `timestamp`,
+		VALUES(`warn`),`warn`),
+		`error`=if(VALUES(`timestamp`) > `timestamp`,
+		VALUES(`error`),`error`),
+		`info`=if(VALUES(`timestamp`) > `timestamp`,
+		VALUES(`info`),`info`),
+		`timestamp`=if(VALUES(`timestamp`) >
+		`timestamp`, VALUES(`timestamp`),`timestamp`)
+	</insert>
+
+	<delete id="delete">
+		delete from resource_monitor_record where tenant_id =
+		#{tenantId,typeHandler=uyun.whale.common.mybatis.type.UUIDTypeHandler}
+		<if test="resourceId != null and monitorId != null">
+			and resource_id =
+			#{resourceId,typeHandler=uyun.whale.common.mybatis.type.UUIDTypeHandler}
+			and monitor_id =
+			#{monitorId,typeHandler=uyun.whale.common.mybatis.type.UUIDTypeHandler}
+		</if>
+		<if test="resourceId != null">
+			and resource_id =
+			#{resourceId,typeHandler=uyun.whale.common.mybatis.type.UUIDTypeHandler}
+		</if>
+		<if test="monitorId != null">
+			and monitor_id =
+			#{monitorId,typeHandler=uyun.whale.common.mybatis.type.UUIDTypeHandler}
+		</if>
+	</delete>
+
+	<delete id="deleteDeletedMonitorData">
+		delete from resource_monitor_record where tenant_id =
+		#{tenantId,typeHandler=uyun.whale.common.mybatis.type.UUIDTypeHandler}
+		and monitor_id not in
+		<foreach collection="monitorIdList" item="item" index="index"
+			open="(" close=")" separator=",">
+			#{item}
+		</foreach>
+	</delete>
+
+	<select id="getOverviewData" resultMap="tagResourceDataResultMap">
+		select null as `key`, null as value, count(distinct otr.resource_id) as
+		resource_count, 0 as 'warn_count', 0 as 'error_count',0 as 'info_count'
+		from
+		overview_tag_resource otr
+		where otr.tenant_id =
+		#{tenantId,typeHandler=uyun.whale.common.mybatis.type.UUIDTypeHandler}
+		union all
+		select null as `key`, null as value, 0 as resource_count,
+		ifnull(sum(rmr.warn),0) as warn_count ,ifnull(sum(rmr.error),0) as
+		error_count,ifnull(sum(rmr.info),0) as info_count
+		from resource_monitor_record rmr
+		where rmr.tenant_id =
+		#{tenantId,typeHandler=uyun.whale.common.mybatis.type.UUIDTypeHandler}
+		and rmr.timestamp >= #{beginTime}
+		union all
+		select ot.`key`,null as value, count(distinct otr.resource_id) as resource_count,
+		ifnull(sum(rmr.warn),0) as warn_count, ifnull(sum(rmr.error),0) as
+		error_count,ifnull(sum(rmr.info),0) as info_count 
+		from overview_tag ot join overview_tag_resource otr
+		on
+		ot.tenant_id = otr.tenant_id and ot.id = otr.tag_id
+		left join (
+		select tenant_id,resource_id,monitor_id,ok,warn,error,info,timestamp from
+		resource_monitor_record
+		where tenant_id =
+		#{tenantId,typeHandler=uyun.whale.common.mybatis.type.UUIDTypeHandler}
+		and timestamp >= #{beginTime}
+		) rmr
+		on otr.tenant_id = rmr.tenant_id and otr.resource_id = rmr.resource_id
+		where ot.tenant_id =
+		#{tenantId,typeHandler=uyun.whale.common.mybatis.type.UUIDTypeHandler}
+		group by ot.`key`
+		union all
+		select ot.`key`,ot.value,count(distinct otr.resource_id) as resource_count,
+		ifnull(sum(rmr.warn),0) as warn_count ,ifnull(sum(rmr.error),0) as
+		error_count,ifnull(sum(rmr.info),0) as info_count
+		from overview_tag ot join overview_tag_resource otr
+		on
+		ot.tenant_id = otr.tenant_id and ot.id = otr.tag_id
+		left join (
+		select tenant_id,resource_id,monitor_id,ok,warn,error,info,timestamp from
+		resource_monitor_record
+		where tenant_id =
+		#{tenantId,typeHandler=uyun.whale.common.mybatis.type.UUIDTypeHandler}
+		and timestamp >= #{beginTime}
+		) rmr
+		on otr.tenant_id = rmr.tenant_id and otr.resource_id = rmr.resource_id
+		where ot.tenant_id =
+		#{tenantId,typeHandler=uyun.whale.common.mybatis.type.UUIDTypeHandler}
+		group by ot.`key`,ot.value
+	</select>
+
+	<select id="getTagResourceDataList" resultMap="tagResourceDataResultMap">
+		select ot.`key`,ot.value,count(distinct otr.resource_id) as
+		resource_count, ifnull(sum(rmr.warn),0) as warn_count
+		,ifnull(sum(rmr.error),0) as error_count
+		,ifnull(sum(rmr.info),0) as info_count
+		from overview_tag ot
+		join
+		overview_tag_resource otr
+		on ot.tenant_id = otr.tenant_id and ot.id =
+		otr.tag_id
+		left join (
+		select tenant_id,resource_id,monitor_id,ok,warn,error,info,timestamp from
+		resource_monitor_record
+		where tenant_id =
+		#{tenantId,typeHandler=uyun.whale.common.mybatis.type.UUIDTypeHandler}
+		and timestamp >= #{beginTime}
+		) rmr
+		on otr.tenant_id =
+		rmr.tenant_id and otr.resource_id = rmr.resource_id
+		where
+		ot.tenant_id =
+		#{tenantId,typeHandler=uyun.whale.common.mybatis.type.UUIDTypeHandler}
+		<if test="key != null">
+			and ot.`key` = #{key}
+		</if>
+		group by ot.`key`,ot.value
+	</select>
+
+	<select id="getTagResourceData" resultMap="tagResourceDataResultMap">
+		select null as `key`, null as value, count(distinct otr.resource_id)
+		as
+		resource_count, 0 as 'warn_count', 0 as 'error_count',0 as 'info_count'
+		from
+		overview_tag ot
+		join
+		overview_tag_resource otr
+		on ot.tenant_id =
+		otr.tenant_id and ot.id =
+		otr.tag_id
+		where otr.tenant_id =
+		#{tenantId,typeHandler=uyun.whale.common.mybatis.type.UUIDTypeHandler}
+		<if test="key != null">
+			and ot.`key` = #{key}
+		</if>
+		<if test="value != null">
+			and ot.`value` = #{value}
+		</if>
+		union all
+		select null as `key`, null as value, 0 as resource_count,
+		ifnull(sum(rmr.warn),0) as warn_count
+		,ifnull(sum(rmr.error),0) as
+		error_count,ifnull(sum(rmr.info),0) as info_count
+		from (select
+		distinct otr.resource_id, otr.tenant_id from
+		overview_tag ot
+		join
+		overview_tag_resource otr
+		on
+		ot.tenant_id =
+		otr.tenant_id and
+		ot.id =
+		otr.tag_id
+		where otr.tenant_id =
+		#{tenantId,typeHandler=uyun.whale.common.mybatis.type.UUIDTypeHandler}
+		<if test="key != null">
+			and ot.`key` = #{key}
+		</if>
+		<if test="value != null">
+			and ot.`value` = #{value}
+		</if>
+		) temp
+		join
+		resource_monitor_record rmr
+		on
+		temp.tenant_id = rmr.tenant_id
+		and temp.resource_id = rmr.resource_id
+		where rmr.timestamp >= #{beginTime}
+	</select>
+
+	<select id="queryTenantResourceIdList" resultType="string">
+		select distinct
+		hex(rmr.resource_id) from
+		resource_monitor_record rmr
+		where rmr.tenant_id =
+		#{tenantId,typeHandler=uyun.whale.common.mybatis.type.UUIDTypeHandler}
+	</select>
+	
+	<select id="queryResourceMonitorRecord" resultMap="resourceMonitorRecordResultMap">
+		select rmr.tenant_id,rmr.resource_id,rmr.monitor_id,rmr.ok,rmr.warn,rmr.error,rmr.info,rmr.timestamp from
+		resource_monitor_record rmr
+		where rmr.tenant_id =
+		#{tenantId,typeHandler=uyun.whale.common.mybatis.type.UUIDTypeHandler}
+		<if test="resourceId != null">
+			and rmr.`resource_id` = #{resourceId,typeHandler=uyun.whale.common.mybatis.type.UUIDTypeHandler}
+		</if>
+		<if test="monitorId != null">
+			and rmr.`monitor_id` = #{monitorId,typeHandler=uyun.whale.common.mybatis.type.UUIDTypeHandler}
+		</if>
+	</select>
+
+</mapper>

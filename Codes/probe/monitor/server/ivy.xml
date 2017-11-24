@@ -1,0 +1,43 @@
+<ivy-module version="2.0">
+	<info organisation="com.broada.carrier" module="carrier.monitor.server" />
+	
+	<configurations>    	
+		<conf name="api"/>
+		<conf name="default"/>		
+		<conf name="inner"/>
+		<conf name="full"/>
+	</configurations>
+
+	<dependencies>
+		<!-- 缓存 -->
+		<dependency org="net.sf" name="net.sf.ehcache" rev="2.4.0" conf="default->default"/>
+		
+		<!-- 数据持久层 -->
+		<dependency org="com.oracle" name="oracle.jdbc" rev="11.2.0" conf="default->default" force="true"/>
+		<dependency org="com.mysql" name="com.mysql.jdbc" rev="5.1.26" conf="default->default"/>
+		
+		<!-- groovy -->
+		<dependency org="org.codehaus" name="org.codehaus.groovy" rev="1.6.9" conf="default->default"/>
+		<dependency org="org.objectweb" name="org.objectweb.asm" rev="2.2.3" conf="default->default"/>
+	
+		<!-- Broada -->
+		<dependency org="com.broada.platform" name="platform.module.coredb" rev="4.3.8" conf="default->api" changing="true"/>
+		<dependency org="com.broada.platform" name="platform.module.mq" rev="1.4.1" conf="default->default" changing="true"/>
+		<dependency org="com.broada.platform" name="platform.module.acm" rev="3.1.5" conf="default->core;default->common" transitive="false" changing="true"/>
+		<dependency org="com.broada.platform" name="platform.module.config" rev="1.0.1" conf="default->api" transitive="false" changing="true"/>
+		<dependency org="com.broada.platform" name="platform.component.license.carrier" rev="2.0.1" conf="default->default" transitive="false" changing="true"/>
+		<dependency org="com.broada.platform" name="platform.module.autosync" rev="1.1.0" conf="default->server;default->client" changing="true">
+			<exclude module="org.springframework.core"/>
+		</dependency>
+		<dependency org="com.broada.carrier" name="carrier.common" rev="6.3.0" conf="default->spr-api" changing="true" />
+		<dependency org="com.broada.carrier" name="carrier.monitor.server.api" rev="2.0.12" conf="default->default;default->common" changing="true"/>		
+		<dependency org="com.broada.carrier" name="carrier.monitor.probe.api" rev="2.0.3" conf="default->default" changing="true"/>
+		<dependency org="com.broada.carrier" name="carrier.monitor.impl" rev="2.0.17" conf="default->default;full->env" changing="true" />
+		<dependency org="com.broada.carrier" name="carrier.monitor.base" rev="2.0.5" conf="default->default" changing="true" />
+		<dependency org="com.broada.carrier" name="carrier.cmdb" rev="4.1.5" conf="default->api" changing="true" />
+		<dependency org="com.broada.platform" name="platform.common.util" rev="2.0.2" conf="default->default" changing="true" transitive="false" />
+		
+		<!-- 进程包装 -->
+		<dependency org="com.broada.platform" name="platform.research.classprotect" rev="1.0.4" conf="full->janel" changing="true"/>
+	</dependencies>
+</ivy-module> 

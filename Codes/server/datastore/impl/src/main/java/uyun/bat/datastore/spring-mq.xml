@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:jms="http://www.springframework.org/schema/jms"
+	xsi:schemaLocation="
+            http://www.springframework.org/schema/beans 
+            http://www.springframework.org/schema/beans/spring-beans.xsd   
+            http://www.springframework.org/schema/context
+            http://www.springframework.org/schema/context/spring-context.xsd         
+            http://www.springframework.org/schema/jms 
+            http://www.springframework.org/schema/jms/spring-jms.xsd">
+
+	<bean id="amqConnectionFactory" class="org.apache.activemq.ActiveMQConnectionFactory">
+		<property name="brokerURL" value="${mq.brokerURL}" />
+		<property name="useAsyncSend" value="true" />
+		<property name="clientIDPrefix" value="${jms.clientIDPrefix}-datastore" />
+	</bean>
+
+	<!-- Pooled Spring connection factory -->
+	<bean id="amqCachingConnectionFactory"
+		class="org.springframework.jms.connection.CachingConnectionFactory">
+		<property name="targetConnectionFactory" ref="amqConnectionFactory" />
+		<!-- Session缓存数量 -->
+		<property name="sessionCacheSize" value="100" />
+	</bean>
+
+	<!-- 消息订阅模式 -->
+	<bean id="topicDestination" class="org.apache.activemq.command.ActiveMQTopic">
+		<!-- 订阅消息的名字 -->
+		<constructor-arg index="0" value="${jms.topic.resource.modify}" />
+	</bean>
+
+	<!-- 资源删除消息订阅模板 -->
+	<bean id="resourceModifyjmsTemplate" class="org.springframework.jms.core.JmsTemplate">
+		<!-- 链接工长 -->
+		<property name="connectionFactory" ref="amqCachingConnectionFactory" />
+		<!-- 进行持久化 -->
+		<property name="deliveryMode" value="2" />
+		<!--订阅 发布模式 -->
+		<property name="pubSubDomain" value="true" />
+		<property name="defaultDestination" ref="topicDestination" />
+		<property name="messageConverter">
+			<bean
+				class="org.springframework.jms.support.converter.SimpleMessageConverter" />
+		</property>
+	</bean>
+
+	<bean id="topicCachingConnectionFactory" class="org.springframework.jms.connection.CachingConnectionFactory">
+		<!-- 目标ConnectionFactory对应真实的可以产生JMS Connection的ConnectionFactory -->
+		<property name="targetConnectionFactory" ref="amqConnectionFactory" />
+		<property name="clientId" value="bat-datastore" />
+	</bean>
+	<bean id="topicMessageListener" class="uyun.bat.datastore.mq.TopicMessageListener" />
+	<!-- 资源删除topic 消息监听 -->
+	<bean id="resourceModifyListenerContainer" class="uyun.bat.common.mq.MQTopicListenerContainer">
+		<property name="connectionFactory" ref="topicCachingConnectionFactory" />
+		<property name="destination" ref="topicDestination" />
+		<property name="messageListener" ref="topicMessageListener" />
+
+		<!-- 持久化消息 -->
+		<property name="subscriptionDurable" value="true" />
+		<property name="clientId" value="bat-datastore" />
+	</bean>
+
+	<bean id="metricQueue" class="org.apache.activemq.command.ActiveMQQueue">
+		<constructor-arg index="0" value="${jms.metric.queue}" />
+	</bean>
+
+	<bean id="metricDataBufferQueue" class="org.apache.activemq.command.ActiveMQQueue">
+		<constructor-arg index="0"
+			value="${jms.datastore.metric.buffer.queue}" />
+	</bean>
+
+	<bean class="org.springframework.jms.listener.SimpleMessageListenerContainer">
+		<property name="connectionFactory" ref="amqCachingConnectionFactory" />
+		<property name="destination" ref="metricDataBufferQueue" />
+		<property name="concurrentConsumers" value="3" />
+		<property name="messageListener">
+			<bean class="uyun.bat.datastore.mq.MetricMQListener" />
+		</property>
+	</bean>
+	<bean id="metricQueueJmsTemplate" class="org.springframework.jms.core.JmsTemplate">
+		<property name="connectionFactory" ref="amqCachingConnectionFactory" />
+		<property name="defaultDestination" ref="metricQueue" />
+		<property name="messageConverter">
+			<bean
+				class="org.springframework.jms.support.converter.SimpleMessageConverter" />
+		</property>
+	</bean>
+
+	<!--接收到gateway的状态指标队列 -->
+	<bean id="stateMetricDataBufferQueue" class="org.apache.activemq.command.ActiveMQQueue">
+		<constructor-arg index="0"
+			value="${jms.datastore.state.metric.buffer.queue}" />
+	</bean>
+
+	<bean class="org.springframework.jms.listener.SimpleMessageListenerContainer">
+		<property name="connectionFactory" ref="amqCachingConnectionFactory" />
+		<property name="destination" ref="stateMetricDataBufferQueue" />
+		<property name="concurrentConsumers" value="3" />
+		<property name="messageListener">
+			<bean class="uyun.bat.datastore.mq.StateMetricMQListener" />
+		</property>
+	</bean>
+
+	<!--发送到monitor状态指标队列 -->
+	<bean id="stateMetricQueue" class="org.apache.activemq.command.ActiveMQQueue">
+		<constructor-arg index="0" value="${jms.state.metric.queue}" />
+	</bean>
+
+	<bean id="stateMetricQueueJmsTemplate" class="org.springframework.jms.core.JmsTemplate">
+		<property name="connectionFactory" ref="amqCachingConnectionFactory" />
+		<property name="defaultDestination" ref="stateMetricQueue" />
+		<property name="messageConverter">
+			<bean
+				class="org.springframework.jms.support.converter.SimpleMessageConverter" />
+		</property>
+	</bean>
+
+	<!--发送到monitor资源上线队列 -->
+	<bean id="resourceQueue" class="org.apache.activemq.command.ActiveMQQueue">
+		<constructor-arg index="0" value="${jms.resource.queue}" />
+	</bean>
+
+	<bean id="resourceQueueJmsTemplate" class="org.springframework.jms.core.JmsTemplate">
+		<property name="connectionFactory" ref="amqCachingConnectionFactory" />
+		<property name="defaultDestination" ref="resourceQueue" />
+		<property name="messageConverter">
+			<bean
+				class="org.springframework.jms.support.converter.SimpleMessageConverter" />
+		</property>
+	</bean>
+
+	<bean class="uyun.bat.datastore.mq.MQManager" factory-method="getInstance">
+		<property name="metricMQService">
+			<bean class="uyun.bat.datastore.mq.MetricMQService">
+				<property name="jmsTemplate" ref="metricQueueJmsTemplate" />
+				<property name="stateMetricJmsTemplate" ref="stateMetricQueueJmsTemplate" />
+				<property name="resourceJmsTemplate" ref="resourceQueueJmsTemplate" />
+				<property name="resourceModifyjmsTemplate" ref="resourceModifyjmsTemplate" />
+			</bean>
+		</property>
+	</bean>
+</beans>

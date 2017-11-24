@@ -1,0 +1,608 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<pmdb-map>
+		<monitor type="HW-ARRAY-INFO">
+	<script name="dynamic">
+	<![CDATA[
+			objectType = null;
+			for (instance in input.result.rows) {
+				for (kv in instance) {	
+					if (kv.key.startsWith("rs.")) {
+						objectType = "instance";
+						break;
+					}					
+				}
+				if (instance != null)
+					break;
+			}
+			if (objectType == null) {
+				if (input.resource != null)
+					objectType = "resource";
+				else
+					objectType = "node"
+			}			
+			if (!objectType.equals("node"))
+				return;
+		
+			ownerId = input.node.id;
+			if (input.resource != null)
+				ownerId = input.resource.id;				
+		
+			for (instance in input.result.rows) {
+				for (kv in instance) {										
+					if (kv.value == null)
+						continue;
+						
+					key = kv.key;
+					if (key.equals("class")
+						|| key.equals("instCode")
+						|| key.equals("instName")
+						|| key.equals("instExtra")
+						|| key.equals("instMonitor"))
+						continue;
+					else if (key.startsWith("rs.")) {						
+						rsId = input.node.id;
+						if (input.resource != null && "resource".equals(kv.value))
+							rsId = input.resource.id;
+						output.setValue(input, key, rsId);
+					} else if (key.startsWith("perf.")) {
+						output.setValue(input, key, kv.value);
+					} else if (key.startsWith("state.")) {
+						output.setValue(input, key, kv.value);
+					} else if (key.startsWith("attr.")) {
+						output.setValue(input, key, kv.value);
+					} else {
+						output.setValue(input, "attr." + key, kv.value);
+					}
+				}
+			}
+		]]>
+		</script>	
+	</monitor>
+	
+	<monitor type="HW-DISKDRIVER-INFO">
+		<script name="dynamic">
+		<![CDATA[
+			objectType = null;
+			for (instance in input.result.rows) {				
+				for (kv in instance) {	
+					if (kv.key.startsWith("rs.")) {
+						objectType = "instance";
+						break;
+					}					
+				}
+				if (instance != null)
+					break;
+			}
+			if (objectType == null) {
+				if (input.resource != null)
+					objectType = "resource";
+				else
+					objectType = "node"
+			}			
+				
+			ownerId = input.node.id;
+			if (input.resource != null)
+				ownerId = input.resource.id;				
+		
+			for (instance in input.result.rows) {				
+				cls = instance.getIndicator("class");
+				if (cls == null)
+					continue;
+									
+				code = instance.getInstCode();
+				name = instance.getInstName(); 
+				
+				output = context.createOutput("dyna." + ownerId + "." + code, cls);			
+				output.setValue(input, "attr.name", name);				
+								
+				for (kv in instance) {										
+					if (kv.value == null)
+						continue;
+						
+					key = kv.key;
+					
+					if (key.equals("attr.storResCode")) {
+						lunId = util.getFirstRemoteKeyByLocalKey("raidgroup." + kv.value.split("/")[0]);
+						output.localKey = kv.value.split("/")[0] + "-" + kv.value.split("/")[1] ;
+						if (lunId != null)
+							output.setValue(input, "rs.componentOf", lunId);
+					}
+					
+					if (key.equals("class")
+						|| key.equals("instCode")
+						|| key.equals("instName")
+						|| key.equals("instExtra")
+						|| key.equals("instMonitor"))
+						continue;
+					else if (key.startsWith("rs.")) {						
+						rsId = input.node.id;
+						if (input.resource != null && "resource".equals(kv.value))
+							rsId = input.resource.id;
+						output.setValue(input, key, rsId);
+					} else if (key.startsWith("perf.")) {
+						output.setValue(input, key, kv.value);
+					} else if (key.startsWith("state.")) {
+						output.setValue(input, key, kv.value);
+					} else if (key.startsWith("attr.")) {
+						output.setValue(input, key, kv.value);
+					} else {
+						output.setValue(input, "attr." + key, kv.value);
+					}
+				}
+			}
+		]]>
+		</script>	
+	</monitor>
+	
+	<monitor type="HW-STORAGECONTROLLER-INFO">
+		<script name="dynamic">
+		<![CDATA[
+			objectType = null;
+			for (instance in input.result.rows) {				
+				for (kv in instance) {	
+					if (kv.key.startsWith("rs.")) {
+						objectType = "instance";
+						break;
+					}					
+				}
+				if (instance != null)
+					break;
+			}
+			if (objectType == null) {
+				if (input.resource != null)
+					objectType = "resource";
+				else
+					objectType = "node"
+			}			
+			if (!objectType.equals("instance"))
+				return;
+				
+			ownerId = input.node.id;
+			if (input.resource != null)
+				ownerId = input.resource.id;				
+		
+			for (instance in input.result.rows) {				
+				cls = instance.getIndicator("class");
+				if (cls == null)
+					continue;
+									
+				code = instance.getInstCode();
+				name = instance.getInstName(); 
+				
+				output = context.createOutput("dyna." + ownerId + "." + code, cls);			
+				output.setValue(input, "attr.name", name);				
+								
+				for (kv in instance) {										
+					if (kv.value == null)
+						continue;
+						
+					key = kv.key;
+					if (key.equals("class")
+						|| key.equals("instCode")
+						|| key.equals("instName")
+						|| key.equals("instExtra")
+						|| key.equals("instMonitor"))
+						continue;
+					else if (key.startsWith("rs.")) {						
+						rsId = input.node.id;
+						if (input.resource != null && "resource".equals(kv.value))
+							rsId = input.resource.id;
+						output.setValue(input, key, rsId);
+					} else if (key.startsWith("perf.")) {
+						output.setValue(input, key, kv.value);
+					} else if (key.startsWith("state.")) {
+						output.setValue(input, key, kv.value);
+					} else if (key.startsWith("attr.")) {
+						output.setValue(input, key, kv.value);
+					} else {
+						output.setValue(input, "attr." + key, kv.value);
+					}
+				}
+			}
+		]]>
+		</script>	
+		<object local="node" remote="RAIDController">
+		<![CDATA[
+			objectType = null;
+			for (instance in input.result.rows) {
+				for (kv in instance) {	
+					if (kv.key.startsWith("rs.")) {
+						objectType = "instance";
+						break;
+					}					
+				}
+				if (instance != null)
+					break;
+			}
+			if (objectType == null) {
+				if (input.resource != null)
+					objectType = "resource";
+				else
+					objectType = "node"
+			}			
+			if (!objectType.equals("node"))
+				return;
+		
+			ownerId = input.node.id;
+			if (input.resource != null)
+				ownerId = input.resource.id;				
+		
+			for (instance in input.result.rows) {
+				for (kv in instance) {										
+					if (kv.value == null)
+						continue;
+						
+					key = kv.key;
+					if (key.equals("class")
+						|| key.equals("instCode")
+						|| key.equals("instName")
+						|| key.equals("instExtra")
+						|| key.equals("instMonitor"))
+						continue;
+					else if (key.startsWith("rs.")) {						
+						rsId = input.node.id;
+						if (input.resource != null && "resource".equals(kv.value))
+							rsId = input.resource.id;
+						output.setValue(input, key, rsId);
+					} else if (key.startsWith("perf.")) {
+						output.setValue(input, key, kv.value);
+					} else if (key.startsWith("state.")) {
+						output.setValue(input, key, kv.value);
+					} else if (key.startsWith("attr.")) {
+						output.setValue(input, key, kv.value);
+					} else {
+						output.setValue(input, "attr." + key, kv.value);
+					}
+				}
+			}
+		]]>
+		</object>							
+	</monitor>
+	<monitor type="HW-STORAGEVOLUME-INFO">
+		<script name="dynamic">
+		<![CDATA[
+			objectType = null;
+			for (instance in input.result.rows) {				
+				for (kv in instance) {	
+					if (kv.key.startsWith("rs.")) {
+						objectType = "instance";
+						break;
+					}					
+				}
+				if (instance != null)
+					break;
+			}
+			if (objectType == null) {
+				if (input.resource != null)
+					objectType = "resource";
+				else
+					objectType = "node"
+			}			
+				
+			ownerId = input.node.id;
+			if (input.resource != null)
+				ownerId = input.resource.id;				
+		
+			for (instance in input.result.rows) {				
+				cls = instance.getIndicator("class");
+				if (cls == null)
+					continue;
+									
+				code = instance.getInstCode();
+				name = instance.getInstName(); 
+				
+				output = context.createOutput("dyna." + ownerId + "." + code, cls);			
+				output.setValue(input, "attr.name", name);				
+								
+				for (kv in instance) {										
+					if (kv.value == null)
+						continue;
+						
+					key = kv.key;
+					
+					if (key.equals("attr.storResCode")) {
+						poolId = util.getFirstRemoteKeyByLocalKey("pool." + kv.value.split("/")[0]);
+						output.localKey = kv.value ;
+						if (poolId != null)
+							output.setValue(input, "rs.HasMember", poolId);
+					}
+					
+					if (key.equals("class")
+						|| key.equals("instCode")
+						|| key.equals("instName")
+						|| key.equals("instExtra")
+						|| key.equals("instMonitor"))
+						continue;
+					else if (key.startsWith("rs.")) {						
+						rsId = input.node.id;
+						if (input.resource != null && "resource".equals(kv.value))
+							rsId = input.resource.id;
+						output.setValue(input, key, rsId);
+					} else if (key.startsWith("perf.")) {
+						output.setValue(input, key, kv.value);
+					} else if (key.startsWith("state.")) {
+						output.setValue(input, key, kv.value);
+					} else if (key.startsWith("attr.")) {
+						output.setValue(input, key, kv.value);
+					} else {
+						output.setValue(input, "attr." + key, kv.value);
+					}
+				}
+			}
+		]]>
+		</script>
+	</monitor>
+	
+	<monitor type="HW-STORAGEPOOL-INFO">
+		<script name="dynamic">
+		<![CDATA[
+			objectType = null;
+			for (instance in input.result.rows) {				
+				for (kv in instance) {	
+					if (kv.key.startsWith("rs.")) {
+						objectType = "instance";
+						break;
+					}					
+				}
+				if (instance != null)
+					break;
+			}
+			if (objectType == null) {
+				if (input.resource != null)
+					objectType = "resource";
+				else
+					objectType = "node"
+			}			
+				
+			ownerId = input.node.id;
+			if (input.resource != null)
+				ownerId = input.resource.id;				
+		
+			for (instance in input.result.rows) {				
+				cls = instance.getIndicator("class");
+				if (cls == null)
+					continue;
+									
+				code = instance.getInstCode();
+				name = instance.getInstName(); 
+				
+				output = context.createOutput("dyna." + ownerId + "." + code, cls);			
+				output.setValue(input, "attr.name", name);				
+								
+				for (kv in instance) {										
+					if (kv.value == null)
+						continue;
+						
+					key = kv.key;
+					
+					if (key.equals("attr.storResCode")) {
+						output.localKey = "pool." + kv.value;
+					}
+					
+					if (key.equals("class")
+						|| key.equals("instCode")
+						|| key.equals("instName")
+						|| key.equals("instExtra")
+						|| key.equals("instMonitor"))
+						continue;
+					else if (key.startsWith("rs.")) {						
+						rsId = input.node.id;
+						if (input.resource != null && "resource".equals(kv.value))
+							rsId = input.resource.id;
+						output.setValue(input, key, rsId);
+					} else if (key.startsWith("perf.")) {
+						output.setValue(input, key, kv.value);
+					} else if (key.startsWith("state.")) {
+						output.setValue(input, key, kv.value);
+					} else if (key.startsWith("attr.")) {
+						output.setValue(input, key, kv.value);
+					} else {
+						output.setValue(input, "attr." + key, kv.value);
+					}
+				}
+			}
+		]]>
+		</script>	
+	</monitor>
+	
+	<monitor type="HW-FCPORT-INFO">
+		<script name="dynamic">
+		<![CDATA[
+			objectType = null;
+			for (instance in input.result.rows) {				
+				for (kv in instance) {	
+					if (kv.key.startsWith("rs.")) {
+						objectType = "instance";
+						break;
+					}					
+				}
+				if (instance != null)
+					break;
+			}
+			if (objectType == null) {
+				if (input.resource != null)
+					objectType = "resource";
+				else
+					objectType = "node"
+			}			
+				
+			ownerId = input.node.id;
+			if (input.resource != null)
+				ownerId = input.resource.id;				
+		
+			for (instance in input.result.rows) {				
+				cls = instance.getIndicator("class");
+				if (cls == null)
+					continue;
+									
+				code = instance.getInstCode();
+				name = instance.getInstName(); 
+				
+				output = context.createOutput("dyna." + ownerId + "." + code, cls);			
+				output.setValue(input, "attr.name", name);				
+								
+				for (kv in instance) {										
+					if (kv.value == null)
+						continue;
+						
+					key = kv.key;
+					if (key.equals("class")
+						|| key.equals("instCode")
+						|| key.equals("instName")
+						|| key.equals("instExtra")
+						|| key.equals("instMonitor"))
+						continue;
+					else if (key.startsWith("rs.")) {						
+						rsId = input.node.id;
+						if (input.resource != null && "resource".equals(kv.value))
+							rsId = input.resource.id;
+						output.setValue(input, key, rsId);
+					} else if (key.startsWith("perf.")) {
+						output.setValue(input, key, kv.value);
+					} else if (key.startsWith("state.")) {
+						output.setValue(input, key, kv.value);
+					} else if (key.startsWith("attr.")) {
+						output.setValue(input, key, kv.value);
+					} else {
+						output.setValue(input, "attr." + key, kv.value);
+					}
+				}
+			}
+		]]>
+		</script>				
+	</monitor>
+	
+	<monitor type="HW-NETWORKPORT-INFO">
+		<script name="dynamic">
+		<![CDATA[
+			objectType = null;
+			for (instance in input.result.rows) {				
+				for (kv in instance) {	
+					if (kv.key.startsWith("rs.")) {
+						objectType = "instance";
+						break;
+					}					
+				}
+				if (instance != null)
+					break;
+			}
+			if (objectType == null) {
+				if (input.resource != null)
+					objectType = "resource";
+				else
+					objectType = "node"
+			}			
+				
+			ownerId = input.node.id;
+			if (input.resource != null)
+				ownerId = input.resource.id;				
+		
+			for (instance in input.result.rows) {				
+				cls = instance.getIndicator("class");
+				if (cls == null)
+					continue;
+									
+				code = instance.getInstCode();
+				name = instance.getInstName(); 
+				
+				output = context.createOutput("dyna." + ownerId + "." + code, cls);			
+				output.setValue(input, "attr.name", name);				
+								
+				for (kv in instance) {										
+					if (kv.value == null)
+						continue;
+						
+					key = kv.key;
+					if (key.equals("class")
+						|| key.equals("instCode")
+						|| key.equals("instName")
+						|| key.equals("instExtra")
+						|| key.equals("instMonitor"))
+						continue;
+					else if (key.startsWith("rs.")) {						
+						rsId = input.node.id;
+						if (input.resource != null && "resource".equals(kv.value))
+							rsId = input.resource.id;
+						output.setValue(input, key, rsId);
+					} else if (key.startsWith("perf.")) {
+						output.setValue(input, key, kv.value);
+					} else if (key.startsWith("state.")) {
+						output.setValue(input, key, kv.value);
+					} else if (key.startsWith("attr.")) {
+						output.setValue(input, key, kv.value);
+					} else {
+						output.setValue(input, "attr." + key, kv.value);
+					}
+				}
+			}
+		]]>
+		</script>				
+	</monitor>
+	
+	<monitor type="HW-LOGICALDISK-INFO">
+		<script name="dynamic">
+		<![CDATA[
+			objectType = null;
+			for (instance in input.result.rows) {				
+				for (kv in instance) {	
+					if (kv.key.startsWith("rs.")) {
+						objectType = "instance";
+						break;
+					}					
+				}
+				if (instance != null)
+					break;
+			}
+			if (objectType == null) {
+				if (input.resource != null)
+					objectType = "resource";
+				else
+					objectType = "node"
+			}			
+				
+			ownerId = input.node.id;
+			if (input.resource != null)
+				ownerId = input.resource.id;				
+		
+			for (instance in input.result.rows) {				
+				cls = instance.getIndicator("class");
+				if (cls == null)
+					continue;
+									
+				code = instance.getInstCode();
+				name = instance.getInstName(); 
+				
+				output = context.createOutput("dyna." + ownerId + "." + code, cls);			
+				output.setValue(input, "attr.name", name);				
+								
+				for (kv in instance) {										
+					if (kv.value == null)
+						continue;
+						
+					key = kv.key;
+					if (key.equals("class")
+						|| key.equals("instCode")
+						|| key.equals("instName")
+						|| key.equals("instExtra")
+						|| key.equals("instMonitor"))
+						continue;
+					else if (key.startsWith("rs.")) {						
+						rsId = input.node.id;
+						if (input.resource != null && "resource".equals(kv.value))
+							rsId = input.resource.id;
+						output.setValue(input, key, rsId);
+					} else if (key.startsWith("perf.")) {
+						output.setValue(input, key, kv.value);
+					} else if (key.startsWith("state.")) {
+						output.setValue(input, key, kv.value);
+					} else if (key.startsWith("attr.")) {
+						output.setValue(input, key, kv.value);
+					} else {
+						output.setValue(input, "attr." + key, kv.value);
+					}
+				}
+			}
+		]]>
+		</script>				
+	</monitor>
+</pmdb-map>

@@ -1,0 +1,9 @@
+@ echo off
+:: Define Variables
+Set ANT_BIN_DIR=%~dp0
+Set ANT_BIN_DIR=%ANT_BIN_DIR:~0,-1%
+Set ANT_ROOT_DIR=%ANT_BIN_DIR%\..
+Set ANT_PYTHON=%ANT_ROOT_DIR%\.embedded\python.exe
+
+cd "%ANT_ROOT_DIR%"
+"%ANT_PYTHON%" -m upgrade

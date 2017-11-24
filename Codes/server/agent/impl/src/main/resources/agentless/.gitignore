@@ -1,0 +1,5 @@
+# Ignore everything in this directory 
+# 相关的文件从https://git.uyunsoft.cn/zhaoyn/probe.git 项目的 monitor\probe\conf\conf.d下拿
+* 
+# Except this file 
+!.gitignore 

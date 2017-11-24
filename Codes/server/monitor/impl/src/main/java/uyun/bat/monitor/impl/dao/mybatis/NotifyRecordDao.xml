@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="uyun.bat.monitor.impl.dao.NotifyRecordDao">
+	<resultMap type="uyun.bat.monitor.api.entity.NotifyRecord"
+		id="notifyRecordResultMap">
+		<result property="id" column="id"
+			typeHandler="uyun.whale.common.mybatis.type.UUIDTypeHandler" />
+		<result property="name" column="name" jdbcType="VARCHAR" />
+		<result property="content" column="content" jdbcType="LONGVARCHAR" />
+		<result property="time" column="time" jdbcType="TIMESTAMP" />
+		<result property="monitorId" column="monitor_id"
+			typeHandler="uyun.whale.common.mybatis.type.UUIDTypeHandler" />
+		<result property="tenantId" column="tenant_id"
+			typeHandler="uyun.whale.common.mybatis.type.UUIDTypeHandler" />
+	</resultMap>
+
+	<sql id="notifyRecord_column">
+		id, name, content, time, monitor_id,tenant_id
+	</sql>
+
+	<insert id="createNotifyRecord" parameterType="uyun.bat.monitor.api.entity.NotifyRecord">
+		insert into
+		monitor_notify_record
+		values(
+		#{id,typeHandler=uyun.whale.common.mybatis.type.UUIDTypeHandler},
+		#{name},
+		#{content},
+		#{time},
+		#{monitorId,typeHandler=uyun.whale.common.mybatis.type.UUIDTypeHandler},
+		#{tenantId,typeHandler=uyun.whale.common.mybatis.type.UUIDTypeHandler}
+		)
+	</insert>
+
+	<select id="getNotifyRecordList" resultMap="notifyRecordResultMap">
+		select
+		<include refid="notifyRecord_column" />
+		from monitor_notify_record
+		where monitor_id =
+		#{1,typeHandler=uyun.whale.common.mybatis.type.UUIDTypeHandler}
+		and
+		tenant_id =
+		#{0,typeHandler=uyun.whale.common.mybatis.type.UUIDTypeHandler}
+		<![CDATA[and time>=#{2} and time<=#{3}]]>
+		ORDER BY time DESC
+	</select>
+
+	<delete id="deleteByMonitorId">
+		delete from monitor_notify_record where monitor_id =
+		#{1,typeHandler=uyun.whale.common.mybatis.type.UUIDTypeHandler}
+		and
+		tenant_id =
+		#{0,typeHandler=uyun.whale.common.mybatis.type.UUIDTypeHandler}
+	</delete>
+
+</mapper>

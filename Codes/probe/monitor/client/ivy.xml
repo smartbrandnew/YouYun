@@ -1,0 +1,45 @@
+<ivy-module version="2.0">
+	<info organisation="com.broada.carrier" module="carrier.monitor.client" />
+
+	<configurations>		
+		<conf name="default" />
+		<conf name="test" />
+		<conf name="full" />
+	</configurations>
+
+	<dependencies>
+		<!-- 日志 -->
+		<dependency org="org.slf4j" name="org.slf4j.log4j.over.slf4j" rev="1.6.4" conf="test->default" />
+		<dependency org="ch.qos" name="ch.qos.logback.core" rev="1.0.7" conf="test->default" />
+		<dependency org="ch.qos" name="ch.qos.logback.classic" rev="1.0.7" conf="test->default" />	
+	 
+		<!-- 基础第3方 -->
+		<dependency org="org.jdom" name="org.jdom" rev="1.0.0" conf="default->default" />
+		<dependency org="net.sf" name="net.sf.ehcache" rev="2.4.0" conf="default->default"/>
+		
+		<!-- 监测器需要 -->
+		
+		
+		<!-- 界面 -->
+		<dependency org="com.broada-discard" name="swing.laf" rev="1.0.0"  conf="default->default" />
+	
+		<!-- 产品内 -->
+		<dependency org="com.broada.numen" name="numen.common.api" rev="6.1.11"  conf="default->default" changing="true" transitive="false" />
+		<dependency org="com.broada.platform" name="platform.module.autosync" rev="1.1.0" conf="default->client" changing="true">
+			<exclude module="org.springframework.core"/>
+		</dependency>
+		<dependency org="com.broada.carrier" name="carrier.monitor.server.api" rev="2.0.12"  conf="default->default;default->common" changing="true"/>
+		<dependency org="com.broada.carrier" name="carrier.monitor.base" rev="2.0.5"  conf="default->default" transitive="false" changing="true"/>
+		<dependency org="com.broada.carrier" name="carrier.monitor.impl" rev="2.0.17"  conf="default->default" changing="true"/>
+		<dependency org="com.broada.platform" name="platform.common.util" rev="2.0.2" conf="default->default" changing="true" transitive="true" />
+		 
+		<!-- 进程包装 -->
+		<dependency org="com.broada.platform" name="platform.research.classprotect" rev="1.0.4" conf="full->janel" changing="true"/>
+		<dependency org="com.sun" name="jdk" rev="1.6.0_35" conf="full->default"/>
+		<dependency org="com.sun" name="jdk.redhat6.x64" rev="1.6.0_45" conf="full->default"/>
+		
+		<!-- 导入导出工具需要 -->
+		<dependency org="org.jexcelapi" name="jxl" rev="2.6.8" conf="default->default"/>
+		<dependency org="org.gnu" name="gnu.getopt" rev="1.0.13" conf="default->default"/>		
+	</dependencies>
+</ivy-module> 

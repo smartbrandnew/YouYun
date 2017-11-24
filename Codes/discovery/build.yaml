@@ -1,0 +1,8 @@
+"linux64":
+  name: discovery-{SYSTEM}-{CPU}
+  steps:
+    - copy {s}/discovery/discovery {t}/
+    - copy {s}/discovery/requirements {t}/disvovery
+    - copy {s}/discovery/manifest.yaml {t}/discovery/manifest.yaml
+    - compress {t}/discovery .tar.gz
+    - remove {t}/discovery

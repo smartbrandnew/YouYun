@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:cassandra="http://www.springframework.org/schema/data/cassandra"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xsi:schemaLocation="http://www.springframework.org/schema/cql http://www.springframework.org/schema/cql/spring-cql-1.0.xsd
+http://www.springframework.org/schema/data/cassandra http://www.springframework.org/schema/data/cassandra/spring-cassandra-1.0.xsd
+http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.0.xsd">
+
+	<import resource="classpath:/uyun/bat/common/config/spring-conf.xml" />
+
+	<import resource="classpath:/uyun/bat/dashboard/impl/spring-dao.xml" />
+	<import resource="classpath:/uyun/bat/dashboard/impl/spring-dubbo.xml" />
+	<import resource="classpath*:uyun/bat/favourite/impl/spring-favourite.xml" />
+	<bean class="org.mortbay.jetty.Server" init-method="start"
+		destroy-method="stop" />
+		
+	<bean class="uyun.bat.dashboard.impl.facade.FacadeManager"
+		factory-method="getInstance">
+		<property name="dashboardFacade">
+			<bean class="uyun.bat.dashboard.impl.facade.DashboardFacade" />
+		</property>
+		<property name="dashwindowFacade">
+			<bean class="uyun.bat.dashboard.impl.facade.DashwindowFacade" />
+		</property>
+		<property name="tenantResTemplateFacade">
+			<bean class="uyun.bat.dashboard.impl.facade.TenantResTemplateFacade" />
+		</property>
+	</bean>
+
+	<bean class="uyun.bat.dashboard.impl.logic.LogicManager"
+		factory-method="getInstance">
+		<property name="dashboardLogic">
+			<bean class="uyun.bat.dashboard.impl.logic.DashboardLogic" />
+		</property>
+		<property name="dashwindowLogic">
+			<bean class="uyun.bat.dashboard.impl.logic.DashwindowLogic" />
+		</property>
+		<property name="tenantResTemplateLogic">
+			<bean class="uyun.bat.dashboard.impl.logic.TenantResTemplateLogic" />
+		</property>
+	</bean>
+</beans>

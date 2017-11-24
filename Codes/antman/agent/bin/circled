@@ -1,0 +1,19 @@
+# coding: utf-8
+"exec" "./embedded/bin/python" "./bin/circled" "$@"
+
+
+if __name__ == '__main__':
+    import sys, os
+    from os.path import dirname, abspath, join
+
+    # Set module path
+    root_dir = dirname(dirname(abspath(__file__)))
+    sys.path.insert(0, root_dir)
+
+    os.environ.setdefault('ANT_PYTHON', sys.executable)
+    os.environ.setdefault('ANT_ROOT_DIR', root_dir)
+    os.environ.setdefault('ANT_AGENT_DIR', root_dir)
+
+    # Handle CLI
+    from circle.circled import handle_cli
+    handle_cli()

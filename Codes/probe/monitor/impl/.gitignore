@@ -1,0 +1,6 @@
+/.lib/
+/classes/
+/dist/
+/.settings/
+.classpath
+.project

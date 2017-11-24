@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+	<groupId>uyun.bat</groupId>
+	<artifactId>bat-parent</artifactId>
+	<version>2.0.0-SNAPSHOT</version>
+	<packaging>pom</packaging>
+
+	<modules>
+		<module>common</module>
+		<module>console</module>
+		<module>dashboard</module>
+		<module>datastore</module>
+		<module>gateway</module>
+		<module>monitor</module>
+		<module>event</module>
+		<module>favourite</module>
+		<module>web</module>
+		<module>agent</module>
+		<module>syndatabase</module>
+		<module>report</module>
+		<module>build</module>
+	</modules>
+
+	<distributionManagement>
+		<repository>
+			<id>uyun-release</id>
+			<url>http://www.uyunsoft.cn/nexus/content/repositories/releases/</url>
+		</repository>
+		<snapshotRepository>
+			<id>uyun-snapshot</id>
+			<url>http://www.uyunsoft.cn/nexus/content/repositories/snapshot/</url>
+		</snapshotRepository>
+	</distributionManagement>
+</project>

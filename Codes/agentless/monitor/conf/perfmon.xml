@@ -1,0 +1,466 @@
+<?xml version="1.0" encoding="gbk"?>
+<perfmon>
+  <perfexp>
+    <producer name="cisco思科" code="9">
+      <expgroup id="grp-def-cpu" type="cpu">
+        <exp id="default-cpu-5m" name="最后5分钟CPU使用率" value=".1.3.6.1.4.1.9.9.109.1.1.1.1.5" />
+        <exp id="default-cpu-1m" name="最后1分钟CPU使用率" value=".1.3.6.1.4.1.9.9.109.1.1.1.1.3" />
+        <exp id="default-cpu-5s" name="最后5秒钟CPU使用率" value=".1.3.6.1.4.1.9.9.109.1.1.1.1.4" />
+
+        <exp id="old-cpu-5m" name="最后5分钟CPU使用率(old)" value=".1.3.6.1.4.1.9.2.1.58" />
+        <exp id="old-cpu-1m" name="最后5分钟CPU使用率(old)" value=".1.3.6.1.4.1.9.2.1.57" />
+        <exp id="old-cpu-5s" name="最后5分钟CPU使用率(old)" value=".1.3.6.1.4.1.9.2.1.56" />
+      </expgroup>
+      <expgroup id="grp-def-mem" type="mem">
+        <exp id="default-mem" name="内存使用率"
+          value="(.1.3.6.1.4.1.9.9.48.1.1.1.5 / (.1.3.6.1.4.1.9.9.48.1.1.1.5 + .1.3.6.1.4.1.9.9.48.1.1.1.6)) * 100"
+          instance=".1.3.6.1.4.1.9.9.48.1.1.1.5" />
+      </expgroup>
+      <expgroup id="grp-def-temp" type="temp">
+        <exp id="default-temp" name="底盘温度" value=".1.3.6.1.4.1.9.9.13.1.3.1.3" />
+      </expgroup>
+      <product name="4232" sysObjectId=".1.3.6.1.4.1.9.1.300">
+        <perf type="cpu" expgroup="grp-def-cpu" exp="old-cpu-5m" />
+      </product>
+    </producer>
+	
+	<producer name="synoptics北电" code="45">
+		<expgroup id="grp-def-cpu" type="cpu">
+        <exp id="default-cpu-10s" name="最后10秒钟CPU使用率" value=".1.3.6.1.4.1.45.1.6.3.8.1.1.11" />
+        <exp id="default-cpu-1m" name="最后1分钟CPU使用率" value=".1.3.6.1.4.1.45.1.6.3.8.1.1.5" />
+        <exp id="default-cpu-10m" name="最后10分钟CPU使用率" value=".1.3.6.1.4.1.45.1.6.3.8.1.1.6" />
+      </expgroup>
+      <expgroup id="grp-def-mem" type="mem">
+        <exp id="default-mem" value="(100 - .1.3.6.1.4.1.45.1.6.3.8.1.1.9)" instance=".1.3.6.1.4.1.45.1.6.3.8.1.1.9" />
+      </expgroup>
+	</producer>
+
+    <producer name="netscreen" code="3224">
+      <expgroup id="grp-def-cpu" type="cpu">
+        <exp id="default-cpu" name="最后5分钟CPU使用率" value=".1.3.6.1.4.1.3224.16.1.4" />
+        <exp id="default-cpu-1m" name="最后1分钟CPU使用率" value=".1.3.6.1.4.1.3224.16.1.2"  />
+        <exp id="default-cpu-5s" name="最后5秒钟CPU使用率" value=".1.3.6.1.4.1.3224.16.1.3"  />
+      </expgroup>
+      <expgroup id="grp-def-mem" type="mem">
+        <exp id="default-mem" name="内存使用率"
+          value="(.1.3.6.1.4.1.3224.16.2.1 / (.1.3.6.1.4.1.3224.16.2.1 + .1.3.6.1.4.1.3224.16.2.2)) * 100"
+          instance=".1.3.6.1.4.1.3224.16.2.1"  />
+      </expgroup>
+    </producer>
+    
+    <producer name="bdcom博达" code="3320">
+      <expgroup id="grp-def-cpu" type="cpu">
+        <exp id="default-cpu-5s" value=".1.3.6.1.4.1.3320.2.1.56" />
+        <exp id="default-cpu-1m" value=".1.3.6.1.4.1.3320.2.1.57" />
+        <exp id="default-cpu-5m" value=".1.3.6.1.4.1.3320.2.1.58" />
+        <exp id="old-cpu-5s" value=".1.3.6.1.4.1.3320.9.109.1.1.1.1.3" />
+        <exp id="old-cpu-1m" value=".1.3.6.1.4.1.3320.9.109.1.1.1.1.4" />
+        <exp id="old-cpu-5m" value=".1.3.6.1.4.1.3320.9.109.1.1.1.1.5" />
+        <exp id="new-cpu-5s" value=".1.3.6.1.4.1.3320.9.109.3.2.4.2" />
+        <exp id="new-cpu-1m" value=".1.3.6.1.4.1.3320.9.109.3.2.4.3" />
+        <exp id="new-cpu-5m" value=".1.3.6.1.4.1.3320.9.109.3.2.4.4" />
+        <exp id="nat-cpu" value=".1.3.6.1.4.1.3320.9.100.1.5 / 100" instance = ".1.3.6.1.4.1.3320.9.100.1.5"/>
+      </expgroup>
+      <expgroup id="grp-def-mem" type="mem">
+        <exp id="default-mem" value="(.1.3.6.1.4.1.3320.9.48.1.1.1.5 / (.1.3.6.1.4.1.3320.9.48.1.1.1.5 + .1.3.6.1.4.1.3320.9.48.1.1.1.6)) * 100" instance=".1.3.6.1.4.1.3320.9.48.1.1.1.5" />
+         <exp id="default-mem-1m" value=".1.3.6.1.4.1.3320.9.48.1.2.1.1" />
+         <exp id="default-mem-5m" value=".1.3.6.1.4.1.3320.9.48.1.2.1.2" />
+         <exp id="default-mem-10m" value=".1.3.6.1.4.1.3320.9.48.1.2.1.3" />
+         <exp id="nat-mem" value=".1.3.6.1.4.1.3320.9.100.1.6 / 100" instance = "1.3.6.1.4.1.3320.9.100.1.6"/>
+      </expgroup>
+    </producer>
+    
+    <producer name="F5" code="3375">
+      <expgroup id="grp-def-cpu" type="cpu">
+        <exp id="default-cpu" value=".1.3.6.1.4.1.2021.11.9" />
+      </expgroup>
+      <expgroup id="grp-def-mem" type="mem">
+        <exp id="default-mem" value="((.1.3.6.1.4.1.2021.4.3 + .1.3.6.1.4.1.2021.4.5 - .1.3.6.1.4.1.2021.4.11) / (.1.3.6.1.4.1.2021.4.3 + 1.3.6.1.4.1.2021.4.5)) * 100" instance = ".1.3.6.1.4.1.2021.4.3" />
+      </expgroup>
+    </producer>
+
+    <producer name="redgiant锐捷" code="4881">
+      <expgroup id="grp-def-cpu" type="cpu">
+        <exp id="default-cpu" value=".1.3.6.1.4.1.4881.1.1.10.2.36.1.1.3"  />
+        <exp id="default-cpu-1m" value=".1.3.6.1.4.1.4881.1.1.10.2.36.1.1.2"  />
+        <exp id="default-cpu-5s" value=".1.3.6.1.4.1.4881.1.1.10.2.36.1.1.1"  />
+      </expgroup>
+      <expgroup id="grp-def-mem" type="mem">
+        <exp id="default-mem" value=".1.3.6.1.4.1.4881.1.1.10.2.35.1.1.1.3"  />
+      </expgroup>
+    </producer>
+
+    <producer name="nokia诺基亚" code="94">
+      <expgroup id="grp-def-cpu" type="cpu">
+        <exp id="default-cpu" type="cpu" value=".1.3.6.1.4.1.94.1.21.1.7.1"  />
+      </expgroup>
+    </producer>
+    
+    <producer name="allied telesis爱瑞特" code="207">
+    	<expgroup id="grp-def-cpu" type="cpu">
+        <exp id="default-cpu-10s" type="cpu" value=".1.3.6.1.4.1.207.8.4.4.3.3.4" />
+        <exp id="default-cpu-1m" type="cpu" value=".1.3.6.1.4.1.207.8.4.4.3.3.3" />
+        <exp id="default-cpu-5m" type="cpu" value=".1.3.6.1.4.1.207.8.4.4.3.3.7" />
+      </expgroup> 
+    </producer>
+    
+    <producer name="micom北电" code="335">
+    	<expgroup id="grp-def-cpu" type="cpu">
+        <exp id="default-cpu" value=".1.3.6.1.4.1.335.1.4.1.3.1.1" />
+      </expgroup>
+      <expgroup id="grp-def-mem" type="mem">
+        <exp id="default-mem" value=".1.3.6.1.4.1.335.1.4.1.3.1.3" />
+      </expgroup>
+    </producer>
+    
+    <producer name="alteon北电" code="1872">
+    	<expgroup id="grp-def-cpu" type="cpu">
+        <exp id="default-cpu-1s" value="(.1.3.6.1.4.1.1872.2.1.8.16.1 + .1.3.6.1.4.1.1872.2.1.8.16.2) / 2" instance=".1.3.6.1.4.1.1872.2.1.8.16.1" />
+        <exp id="default-cpu-4s" value="(.1.3.6.1.4.1.1872.2.1.8.16.3 + .1.3.6.1.4.1.1872.2.1.8.16.4) / 2" instance=".1.3.6.1.4.1.1872.2.1.8.16.3" />
+        <exp id="default-cpu-64s" value="(.1.3.6.1.4.1.1872.2.1.8.16.5 + .1.3.6.1.4.1.1872.2.1.8.16.6) / 2" instance=".1.3.6.1.4.1.1872.2.1.8.16.5" />
+      </expgroup>
+      <expgroup id="grp-def-mem" type="mem">
+        <exp id="default-mem" value="(.1.3.6.1.4.1.1872.2.1.8.12.1 - .1.3.6.1.4.1.1872.2.1.8.12.2) / .1.3.6.1.4.1.1872.2.1.8.12.1 * 100" instance=".1.3.6.1.4.1.1872.2.1.8.12.1" />
+      </expgroup>
+    </producer>
+    
+    <producer name="extreme" code="1916">
+    	<expgroup id="grp-def-cpu" type="cpu">
+        <exp id="default-cpu" value=".1.3.6.1.4.1.1916.1.1.1.28" />
+      </expgroup>
+      <expgroup id="grp-def-mem" type="mem">
+        <exp id="default-mem" value="(.1.3.6.1.4.1.3375.1.1.77 / (.1.3.6.1.4.1.3375.1.1.78 / 1024)) * 100" instance=".1.3.6.1.4.1.3375.1.1.77" />
+        <exp id="new-mem" value="(.1.3.6.1.4.1.3375.1.1.1.2.15 / (.1.3.6.1.4.1.3375.1.1.1.2.14 / 1024)) * 100" instance=".1.3.6.1.4.1.3375.1.1.1.2.15" />
+      </expgroup>
+    </producer>
+
+    <producer name="bluecoat" code="3417">
+      <expgroup id="grp-def-cpu" type="cpu">
+        <exp id="default-cpu" value=".1.3.6.1.4.1.3417.2.4.1.1.1.4"  />
+      </expgroup>
+    </producer>
+    
+    <producer name="ZTE中兴" code="3902">
+      <expgroup id="grp-def-cpu" type="cpu">
+        <exp id="default-cpu-5s" value=".1.3.6.1.4.1.3902.15.2.6.1.1" />
+        <exp id="default-cpu-30s" value=".1.3.6.1.4.1.3902.15.2.6.1.2" />
+        <exp id="default-cpu-2m" value=".1.3.6.1.4.1.3902.15.2.6.1.3" />
+        <exp id="new-cpu-5s" value=".1.3.6.1.4.1.3902.3.3.1.1.6" />
+        <exp id="new-cpu-30s" value=".1.3.6.1.4.1.3902.3.3.1.1.7" />
+        <exp id="new-cpu-2m" value=".1.3.6.1.4.1.3902.3.3.1.1.5" />
+        <exp id="low-cpu-5s" value=".1.3.6.1.4.1.3902.15.2.2.1.1" />
+	<exp id="low-cpu-30s" value=".1.3.6.1.4.1.3902.15.2.2.1.2" />
+	<exp id="low-cpu-2m" value=".1.3.6.1.4.1.3902.15.2.2.1.3" />
+      </expgroup>
+      <expgroup id="grp-def-mem" type="mem">
+        <exp id="default-mem" value=".1.3.6.1.4.1.3902.15.2.6.1.5" />
+        <exp id="new-mem" value="(.1.3.6.1.4.1.3902.3.3.1.1.4 * 1024 * 1024 / .1.3.6.1.4.1.3902.3.3.1.1.3) * 100" instance = ".1.3.6.1.4.1.3902.3.3.1.1.3" />
+	  <exp id="low-mem" value=".1.3.6.1.4.1.3902.15.2.2.1.5" />
+      </expgroup>
+    </producer>
+
+    <producer name="fortigate" code="12356">
+      <expgroup id="grp-def-cpu" type="cpu">
+        <exp id="default-cpu" value=".1.3.6.1.4.1.12356.1.8"  />
+      </expgroup>
+    </producer>
+
+    <producer name="redware" code="89">
+      <expgroup id="grp-def-cpu" type="cpu">
+      	<exp id="default-cpu-5s" value=".1.3.6.1.4.1.89.35.1.112" />
+      	<exp id="default-cpu-1m" value=".1.3.6.1.4.1.89.35.1.113" />
+        <exp id="default-cpu" value=".1.3.6.1.4.1.89.35.1.53"  />
+      </expgroup>
+    </producer>
+
+    <producer name="enterasys凯创" code="5624">
+      <expgroup id="grp-def-cpu" type="cpu">
+        <exp id="default-cpu-5m" value=".1.3.6.1.4.1.5624.1.2.49.1.1.1.1.4" />
+        <exp id="default-cpu-1m" value=".1.3.6.1.4.1.5624.1.2.49.1.1.1.1.3" />
+        <exp id="default-cpu-5s" value=".1.3.6.1.4.1.5624.1.2.49.1.1.1.1.2" />
+      </expgroup>
+      <expgroup id="grp-def-mem" type="mem">
+        <exp id="default-mem"
+          value=" (.1.3.6.1.4.1.5624.1.2.49.1.3.1.1.5 / .1.3.6.1.4.1.5624.1.2.49.1.3.1.1.4) * 100" instance=".1.3.6.1.4.1.5624.1.2.49.1.3.1.1.5" />
+      </expgroup>
+
+      <expgroup id="grp-ent52-cpu" type="cpu">
+        <exp id="ent52-cpu" value=".1.3.6.1.4.1.52.2501.1.270.2.1.1.2"  />
+      </expgroup>
+      <expgroup id="grp-ent52-mem" type="mem">
+        <exp id="ent52-mem" value="(.1.3.6.1.4.1.52.2501.1.270.4.1.1.6 / .1.3.6.1.4.1.52.2501.1.270.4.1.1.4) * 100"
+          instance=".1.3.6.1.4.1.52.2501.1.270.4.1.1.6"  />
+      </expgroup>
+    </producer>
+
+    <producer name="foundry网捷" code="1991">
+      <expgroup id="grp-def-cpu" type="cpu">
+        <exp id="default-cpu-5s"  name="最后5秒钟CPU使用率" value=".1.3.6.1.4.1.1991.1.1.2.1.51" />
+        <exp id="default-cpu-1s"  name="最后1秒钟CPU使用率" value=".1.3.6.1.4.1.1991.1.1.2.1.50" />
+        <exp id="default-cpu-1m"  name="最后1分钟CPU使用率" value=".1.3.6.1.4.1.1991.1.1.2.1.52" />
+      </expgroup>
+      <expgroup id="grp-def-mem" type="mem">
+        <exp id="default-mem" value=".1.3.6.1.4.1.1991.1.1.2.1.53"  />
+      </expgroup>
+      <expgroup id="grp-def-cpu" type="temp">
+        <exp id="default-temp" value=".1.3.6.1.4.1.1991.1.1.1.1.18 / 2" name="底盘温度"  />
+      </expgroup>
+    </producer>
+
+    <producer name="topsec天融信" code="14331">
+      <expgroup id="grp-def-cpu" type="cpu">
+        <exp id="default-cpu-1" value=".1.3.6.1.4.1.14331.2.2 / 10" instance=".1.3.6.1.4.1.14331.2.2"  />
+		<exp id="default-cpu-2" value=".1.3.6.1.4.1.14331.5.5.1.4.5" instance=".1.3.6.1.4.1.14331.5.5.1.4.5"  />
+      </expgroup>
+      <expgroup id="grp-def-mem" type="mem">
+        <exp id="default-mem-1" value="((.1.3.6.1.4.1.14331.2.3 - .1.3.6.1.4.1.14331.2.4) / .1.3.6.1.4.1.14331.2.3) * 100" instance=".1.3.6.1.4.1.14331.2.3"  />
+        <exp id="default-mem-2" value=".1.3.6.1.4.1.14331.5.5.1.4.6" instance=".1.3.6.1.4.1.14331.5.5.1.4.6"  />
+      </expgroup>
+
+      <expgroup id="grp-cpu-5" type="cpu">
+        <exp id="cpu-5" value=".1.3.6.1.4.1.14331.5.5.1.4.2 / 10" instance=".1.3.6.1.4.1.14331.5.5.1.4.2"  />
+      </expgroup>
+      <expgroup id="grp-mem-5" type="mem">
+        <exp id="mem-5" value=".1.3.6.1.4.1.14331.5.5.1.4.3 / 10" instance=".1.3.6.1.4.1.14331.5.5.1.4.3"  />
+      </expgroup>
+
+      <product name="topsec.4" sysObjectId=".1.3.6.1.4.1.14331.1.4">
+        <perf type="cpu" expgroup="grp-cpu-5" exp="cpu-5" />
+        <perf type="mem" expgroup="grp-mem-5" exp="mem-5" />
+      </product>
+    </producer>
+    
+    <producer name="secgate" code="24968">
+      <expgroup id="grp-def-cpu" type="cpu">
+        <exp id="default-cpu" value=".1.3.6.1.4.1.24968.1.3.9" />
+        <exp id="ws-cpu" value="(100 - .1.3.6.1.4.1.2021.11.11)" instance=".1.3.6.1.4.1.2021.11.11" />
+      </expgroup>
+      <expgroup id="grp-def-mem" type="mem">
+        <exp id="default-mem" value=".1.3.6.1.4.1.24968.1.3.10" />
+        <exp id="ws-mem" value="((.1.3.6.1.4.1.2021.4.5 - .1.3.6.1.4.1.2021.4.6) / .1.3.6.1.4.1.2021.4.5) * 100" instance = ".1.3.6.1.4.1.2021.4.5" />
+      </expgroup>
+    </producer>  
+
+    <producer name="harbour港湾" code="8212">
+      <expgroup id="grp-def-cpu" type="cpu">
+        <exp id="default-cpu" value=".1.3.6.1.4.1.8212.1.1.4.1.1.4 / 100" instance=".1.3.6.1.4.1.8212.1.1.4.1.1.4"/>
+      </expgroup>
+      <expgroup id="grp-def-mem" type="mem">
+        <exp id="default-mem"
+          value="((.1.3.6.1.4.1.8212.1.1.4.1.1.7 - .1.3.6.1.4.1.8212.1.1.4.1.1.8) / .1.3.6.1.4.1.8212.1.1.4.1.1.7) * 100"
+          instance=".1.3.6.1.4.1.8212.1.1.4.1.1.7"  />
+      </expgroup>
+    </producer>
+    
+    <producer name="lenovo联想" code="9833">
+      <expgroup id="grp-def-cpu" type="cpu">
+        <exp id="default-cpu" value="(100 - .1.3.6.1.4.1.9833.1.4.1.1.4)" instance=".1.3.6.1.4.1.9833.1.4.1.1.4" />
+      </expgroup>
+      <expgroup id="grp-def-mem" type="mem">
+        <exp id="default-mem"
+          value="((.1.3.6.1.4.1.9833.1.4.2.5 - .1.3.6.1.4.1.9833.1.4.2.6) / .1.3.6.1.4.1.9833.1.4.2.5) * 100" instance=".1.3.6.1.4.1.9833.1.4.2.5" />
+      </expgroup>
+    </producer>
+    
+    <producer name="fortinet" code="12356">
+      <expgroup id="grp-def-cpu" type="cpu">
+        <exp id="default-cpu" value=".1.3.6.1.4.1.12356.1.8" />
+      </expgroup>
+    </producer>
+
+    <producer name="nortel北电" code="2272">
+      <expgroup id="grp-def-cpu" type="cpu">
+        <exp id="default-cpu" value=".1.3.6.1.4.1.2272.1.1.20"  />
+      </expgroup>
+      <expgroup id="grp-def-mem" type="mem">
+        <exp id="default-mem" value=".1.3.6.1.4.1.2272.1.1.47"  />
+      </expgroup>
+    </producer>
+
+	<producer name="juniper杰科" code="2636">
+      <expgroup id="grp-def-cpu" type="cpu">
+        <exp id="default-cpu-1m" value=".1.3.6.1.4.1.2636.3.1.13.1.8" />
+      </expgroup>
+      <expgroup id="grp-def-mem" type="mem">
+        <exp id="default-mem" value=".1.3.6.1.4.1.2636.3.1.16" />
+        <exp id="default-mem-buffer" name="栈使用率" value=".1.3.6.1.4.1.2636.3.1.13.1.11" />
+        <exp id="default-mem-heap" name="堆使用率" value=".1.3.6.1.4.1.2636.3.1.13.1.12" />
+      </expgroup>
+      <expgroup id="grp-def-temp" type="temp">
+        <exp id="default-temp" value=".1.3.6.1.4.1.2636.3.1.13.1.7" />
+      </expgroup>
+    </producer>
+
+	<producer name="dcrs神州数码" code="6339">
+      <expgroup id="grp-def-cpu" type="cpu">
+        <exp id="default-cpu-5s" value="(100 - .1.3.6.1.4.1.6339.100.1.8.1.3)" instance=".1.3.6.1.4.1.6339.100.1.8.1.3" />
+        <exp id="default-cpu-30s" value="(100 - .1.3.6.1.4.1.6339.100.1.8.1.4)" instance=".1.3.6.1.4.1.6339.100.1.8.1.4" />
+        <exp id="default-cpu-5m" value="(100 - .1.3.6.1.4.1.6339.100.1.8.1.5)" instance=".1.3.6.1.4.1.6339.100.1.8.1.5" />
+        <exp id="default-cpu" value=".1.3.6.1.4.1.6339.100.1.8.1.3" />
+        <exp id="new-cpu-5s" value="(100 - .1.3.6.1.4.1.6339.99.1.8)" instance=".1.3.6.1.4.1.6339.99.1.8" />
+        <exp id="new-cpu-30s" value="(100 - .1.3.6.1.4.1.6339.99.1.9)" instance=".1.3.6.1.4.1.6339.99.1.9" />
+        <exp id="new-cpu-5m" value="(100 - .1.3.6.1.4.1.6339.99.1.10)" instance=".1.3.6.1.4.1.6339.99.1.10" />
+        <exp id="old-cpu-1m" value=".1.3.6.1.4.1.6486.800.1.2.1.16.1.1.1.14" />        
+      </expgroup>
+      <expgroup id="grp-def-mem" type="mem">
+        <exp id="default-mem" value="(.1.3.6.1.4.1.6339.100.1.8.1.8 / .1.3.6.1.4.1.6339.100.1.8.1.7 ) * 100" instance=".1.3.6.1.4.1.6339.100.1.8.1.8"/>
+        <exp id="new-mem" value="(.1.3.6.1.4.1.6339.100.1.8.1.5 / .1.3.6.1.4.1.6339.100.1.8.1.4 ) * 100" instance=".1.3.6.1.4.1.6339.100.1.8.1.5"/>
+        <exp id="old-mem-1m" value=".1.3.6.1.4.1.6486.800.1.2.1.16.1.1.1.10" />        
+      </expgroup>
+      <expgroup id="grp-def-temp" type="temp">
+        <exp id="default-temp" value=".1.3.6.1.4.1.6339.100.1.8.1.10" />
+      </expgroup>
+
+      <product name="DCRS-5650-28CT" sysObjectId=".1.3.6.1.4.1.6339.1.1.2.5">
+        <perf type="cpu" expgroup="grp-def-cpu" exp="default-cpu" />
+        <perf type="mem" expgroup="grp-def-mem" exp="new-mem" />
+      </product>
+
+      <product name="DCRS-5650-52CT" sysObjectId=".1.3.6.1.4.1.6339.1.1.2.6">
+        <perf type="cpu" expgroup="grp-def-cpu" exp="default-cpu" />
+        <perf type="mem" expgroup="grp-def-mem" exp="new-mem" />
+      </product> 
+
+      <product name="DCRS-5650-28C" sysObjectId=".1.3.6.1.4.1.6339.1.1.2.7">
+        <perf type="cpu" expgroup="grp-def-cpu" exp="default-cpu" />
+        <perf type="mem" expgroup="grp-def-mem" exp="new-mem" />
+      </product> 
+
+      <product name="DCRS-5650-52C" sysObjectId=".1.3.6.1.4.1.6339.1.1.2.8">
+        <perf type="cpu" expgroup="grp-def-cpu" exp="default-cpu" />
+        <perf type="mem" expgroup="grp-def-mem" exp="new-mem" />
+      </product>
+    </producer>                                                                                                                                                                      
+
+    <producer name="huawei华为" code="2011">
+      <expgroup id="grp-def-cpu" type="cpu">
+        <exp id="default-cpu" value=".1.3.6.1.4.1.2011.6.1.1.1.4"  />
+        <exp id="default-cpu-1m" value=".1.3.6.1.4.1.2011.6.1.1.1.3"  />
+        <exp id="default-cpu-5s" value=".1.3.6.1.4.1.2011.6.1.1.1.2"  />
+      </expgroup>
+      <expgroup id="grp-def-mem" type="mem">
+        <exp id="default-mem"
+          value="((.1.3.6.1.4.1.2011.6.1.2.1.1.2 - .1.3.6.1.4.1.2011.6.1.2.1.1.3) / .1.3.6.1.4.1.2011.6.1.2.1.1.2) * 100"
+          instance=".1.3.6.1.4.1.2011.6.1.2.1.1.2"  />
+      </expgroup>
+ 
+      <expgroup id="grp-ne20-cpu" type="cpu">                                                                                                                                                                         
+      	<exp id="ne20e-cpu-1m" type="cpu" value=".1.3.6.1.4.1.2011.6.3.4.1.3" instance=".1.3.6.1.4.1.2011.6.3.5.1.1.3" />                                                                           
+      	<exp id="ne20e-cpu-5m" type="cpu" value=".1.3.6.1.4.1.2011.6.3.4.1.4" instance=".1.3.6.1.4.1.2011.6.3.5.1.1.4" />
+      </expgroup>
+      <expgroup id="grp-ne20-mem" type="mem">                                                                          
+      	<exp id="ne20e-mem" type="mem" value="((.1.3.6.1.4.1.2011.6.3.5.1.1.2 - .1.3.6.1.4.1.2011.6.3.5.1.1.3) / .1.3.6.1.4.1.2011.6.3.5.1.1.2) * 100" instance=".1.3.6.1.4.1.2011.6.3.5.1.1.2" />
+      </expgroup> 
+                                                                                                                                                                                                 
+      <expgroup id="grp-ne40-cpu" type="cpu">
+        <exp id="ne40-cpu" value=".1.3.6.1.4.1.2011.2.17.1.2.3.10.1.4"  />
+      </expgroup>
+      <expgroup id="grp-ne40-mem" type="mem">
+        <exp id="ne40-mem" value=".1.3.6.1.4.1.2011.2.17.1.2.3.10.1.5"  />
+      </expgroup>
+
+      <expgroup id="grp-ne80-cpu" type="cpu">
+        <exp id="ne80-cpu" value=".1.3.6.1.4.1.2011.2.17.1.2.3.1.1.4"  />
+      </expgroup>
+      <expgroup id="grp-ne80-mem" type="mem">
+        <exp id="ne80-mem" value=".1.3.6.1.4.1.2011.2.17.1.2.3.1.1.5"  />
+      </expgroup>
+
+      <expgroup id="grp-sys-cpu" type="cpu">
+        <exp id="sys-cpu" value=".1.3.6.1.4.1.2011.2.23.1.18.1.3"  />
+      </expgroup>
+
+      <expgroup id="grp-ar-cpu" type="cpu">
+        <exp id="ar-cpu-5m" value=".1.3.6.1.4.1.2011.2.2.4.13"  />
+        <exp id="ar-cpu-5s" value=".1.3.6.1.4.1.2011.2.2.4.12"  />
+      </expgroup>
+      <expgroup id="grp-ar-mem" type="mem">
+        <exp id="ar-mem"
+          value=".1.3.6.1.4.1.2011.2.2.5.1 / (.1.3.6.1.4.1.2011.2.2.5.1 + .1.3.6.1.4.1.2011.2.2.5.2) * 100"
+          instance=".1.3.6.1.4.1.2011.2.2.5.1"  />
+      </expgroup>
+      
+      <expgroup id="grp-ac-cpu" type="cpu">
+    	<exp id="ac-cpu" type="cpu" value=".1.3.6.1.4.1.2720.1.2.2.1"/>
+      </expgroup>            
+      <expgroup id="grp-ac-mem" type="mem">
+        <exp id="ac-mem" type="mem" value=".1.3.6.1.4.1.2720.1.2.2.2"/>
+      </expgroup> 
+      
+      <expgroup id="grp-def-temp" type="temp">
+        <exp id="default-temp" name="底盘温度" value=".1.3.6.1.4.1.2011.10.2.6.1.1.1.1.12" />
+      </expgroup>
+                                                                                 
+      <product name="MA5200" sysObjectId=".1.3.6.1.4.1.2011.2.6.2.28.0">         
+        <perf type="cpu" expgroup="grp-ac-cpu" exp="ac-cpu"/>                                          
+        <perf type="mem" expgroup="grp-ac-mem" exp="ac-mem"/>                                          
+      </product>                                                                    
+
+      <product name="NE05" sysObjectId=".1.3.6.1.4.1.2011.2.26.3">
+        <perf type="cpu" expgroup="grp-ar-cpu" exp="ar-cpu-5m" />
+        <perf type="mem" expgroup="grp-ar-mem" exp="ar-mem" />
+      </product>
+
+      <product name="AR28" sysObjectId=".1.3.6.1.4.1.2011.1.1.1.12811">
+        <perf type="cpu" expgroup="grp-ar-cpu" exp="ar-cpu-5m" />
+        <perf type="mem" expgroup="grp-ar-mem" exp="ar-mem" />
+      </product>
+
+      <product name="NE20E" sysObjectId=".1.3.6.1.4.1.2011.2.88.2">
+        <perf type="cpu" expgroup="grp-ne20-cpu" exp="ne20e-cpu-5m"/>
+        <perf type="mem" expgroup="grp-ne20-mem" exp="ne20e-mem"/>
+      </product>
+
+      <product name="NE40" sysObjectId=".1.3.6.1.4.1.2011.2.31">
+        <perf type="cpu" expgroup="grp-ne40-cpu" exp="ne40-cpu" />
+        <perf type="mem" expgroup="grp-ne40-mem" exp="ne40-mem" />
+      </product>
+
+      <product name="NE80" sysObjectId=".1.3.6.1.4.1.2011.2.17">
+        <perf type="cpu" expgroup="grp-ne80-cpu" exp="ne80-cpu" />
+        <perf type="mem" expgroup="grp-ne80-mem" exp="ne80-mem" />
+      </product>
+    </producer>
+    
+    <producer name="h3c" code="25506">
+      <expgroup id="grp-def-cpu" type="cpu">
+        <exp id="default-cpu" value=".1.3.6.1.4.1.2011.6.1.1.1.4" />
+        <exp id="default-cpu-1m" value=".1.3.6.1.4.1.2011.6.1.1.1.3" />
+        <exp id="default-cpu-5s" value=".1.3.6.1.4.1.2011.6.1.1.1.2" />
+        <exp id="ar-cpu-5m" value=".1.3.6.1.4.1.2011.2.2.4.13" />
+        <exp id="ar-cpu-5s" value=".1.3.6.1.4.1.2011.2.2.4.12" />
+        <exp id="new-cpu" value=".1.3.6.1.4.1.2011.10.2.6.1.1.1.1.6" />
+        <exp id="f5-cpu" value="(100 - .1.3.6.1.4.1.2021.11.11)" instance=".1.3.6.1.4.1.2021.11.11" />
+        <exp id="h3c-cpu" value=".1.3.6.1.4.1.25506.2.6.1.1.1.1.6" />
+      </expgroup>
+      <expgroup id="grp-def-mem" type="mem">
+        <exp id="default-mem"
+          value="((.1.3.6.1.4.1.2011.6.1.2.1.1.2 - .1.3.6.1.4.1.2011.6.1.2.1.1.3) / .1.3.6.1.4.1.2011.6.1.2.1.1.2) * 100"
+          instance=".1.3.6.1.4.1.2011.6.1.2.1.1.2" />
+        <exp id="ar-mem" value=".1.3.6.1.4.1.2011.2.2.5.1 / (.1.3.6.1.4.1.2011.2.2.5.1 + .1.3.6.1.4.1.2011.2.2.5.2) * 100" instance=".1.3.6.1.4.1.2011.2.2.5.1" />
+        <exp id="new-mem" value=".1.3.6.1.4.1.2011.10.2.6.1.1.1.1.8" />
+        <exp id="f5-mem" value="((.1.3.6.1.4.1.2021.4.5 - .1.3.6.1.4.1.2021.4.6) / .1.3.6.1.4.1.2021.4.5) * 100" instance = ".1.3.6.1.4.1.2021.4.5" />
+        <exp id="h3c-mem" value=".1.3.6.1.4.1.25506.2.6.1.1.1.1.8" />        
+      </expgroup>
+    </producer>
+    
+    <producer name="网神" code="8072">
+      <expgroup id="grp-def-cpu" type="cpu">
+        <exp id="default-cpu" value=".1.3.6.1.4.1.15227.1.2.2.0.3.1.1.9.99.112.117.95.117.115.97.103 * 100" instance=".1.3.6.1.4.1.15227.1.2.2.0.3.1.1.9.99.112.117.95.117.115.97.103" />
+      </expgroup>
+      <expgroup id="grp-def-mem" type="mem">
+        <exp id="default-mem" value=".1.3.6.1.4.1.15227.1.2.5.0.3.1.1.9.109.101.109.95.117.115.97.103 * 100" instance = ".1.3.6.1.4.1.15227.1.2.5.0.3.1.1.9.109.101.109.95.117.115.97.103" />
+      </expgroup>
+    </producer>
+	
+	<producer name="Hillstone山石网科" code="28557">
+      <expgroup id="grp-def-cpu" type="cpu">
+      	<exp id="default-cpu-1" value=".1.3.6.1.4.1.28557.2.2.1.3" />
+      </expgroup>
+      <expgroup id="grp-def-mem" type="mem">
+        <exp id="default-mem-1" value="(.1.3.6.1.4.1.28557.2.2.1.5 / .1.3.6.1.4.1.28557.2.2.1.4) * 100" instance=".1.3.6.1.4.1.28557.2.2.1.5"/>
+      </expgroup>
+    </producer>
+	
+  </perfexp>
+</perfmon>

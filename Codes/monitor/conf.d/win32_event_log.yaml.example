@@ -1,0 +1,48 @@
+init_config:
+
+
+instances:
+  - password:
+    host: remote_machine_name
+    username: user
+    password: "******"
+
+    og_file:
+      - Security
+
+    source_name:
+       - Microsoft-Windows-Security-Auditing
+
+    type:
+       - Audit Failure
+
+    event_id:
+       - 4776
+       - 4672
+
+    message_filters:
+       - "-%success%"
+       - "%SYSTEM%"
+
+    ags:
+       - security
+
+
+  - log_file:
+       - Application
+    source_name:
+       - MSSQLSERVER
+    type:
+       - Warning
+       - Error
+    message_filters:
+       - "%error%"
+    tags:
+       - sqlserver
+
+  - log_file:
+       - System
+    type:
+       - Error
+    tags:
+       - system

@@ -1,0 +1,17 @@
+name: remote-discovery
+version: 2.0.0
+description: Proxy和Agent端自动化发现插件，可进行远程资源发现，支持Groovy和Python脚本
+author: uyun
+platforms:
+  Windows: [64]
+  Linux: [64]
+dependencies:
+  Windows64: [jre@1.8.0121@Windows64.tar.gz, nmap@7.40.0@Windows.tar.gz]
+  Linux: [jre@1.8.0121@Linux64.tar.gz, nmap@7.40.0@Linux.tar.gz]
+
+actions:
+    remote-discovery.ipscan: python -m discovery.ipscan
+    remote-discovery.deepscan: python -m discovery.deepscan
+env:
+    JRE_HOME: ./jre
+    PATH_NMAP: ./nmap

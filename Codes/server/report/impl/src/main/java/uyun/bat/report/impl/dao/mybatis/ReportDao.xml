@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="uyun.bat.report.impl.dao.ReportDao">
+    <resultMap id="ReportResultMap" type="uyun.bat.report.api.entity.Report">
+        <id property="reportId" column="report_id" typeHandler="uyun.whale.common.mybatis.type.UUIDTypeHandler" />
+        <result property="reportName" column="report_name" jdbcType="VARCHAR" />
+        <result property="reportType" column="report_type" jdbcType="VARCHAR" />
+        <result property="diagramType" column="diagram_type" jdbcType="VARCHAR" />
+        <result property="status" column="status" jdbcType="SMALLINT" />
+        <result property="groupId" column="group_id"
+                typeHandler="uyun.whale.common.mybatis.type.UUIDTypeHandler"/>
+        <result property="modified" column="modified" jdbcType="TIMESTAMP" />
+        <result property="tenantId" column="tenant_id"
+                typeHandler="uyun.whale.common.mybatis.type.UUIDTypeHandler" />
+        <result property="sortField" column="sort_field" jdbcType="VARCHAR" />
+        <result property="sortOrder" column="sort_order" jdbcType="VARCHAR" />
+        <result property="defaultSize" column="default_size" jdbcType="INTEGER" />
+        <result property="metrics" column="metrics"
+                jdbcType="BLOB" typeHandler="uyun.bat.report.impl.dao.mybatis.ListBlobTypeHandler" />
+        <result property="resTags" column="res_tags"
+                jdbcType="BLOB" typeHandler="uyun.bat.report.impl.dao.mybatis.ListBlobTypeHandler" />
+    </resultMap>
+
+    <sql id="Base_Column_List" >
+        report_id, report_name, report_type, diagram_type, status, modified, sort_field, sort_order,
+        default_size, metrics, res_tags, group_id, tenant_id
+    </sql>
+
+    <insert id="createReport" parameterType="uyun.bat.report.api.entity.Report" >
+        insert into report (report_id, report_name, report_type,
+          diagram_type, status, modified,
+          sort_field, sort_order, default_size,
+          group_id, tenant_id, metrics, res_tags)
+        values (#{reportId,typeHandler=uyun.whale.common.mybatis.type.UUIDTypeHandler},
+          #{reportName,jdbcType=VARCHAR}, #{reportType,jdbcType=VARCHAR},
+          #{diagramType,jdbcType=VARCHAR}, #{status,jdbcType=SMALLINT}, #{modified,jdbcType=TIMESTAMP},
+          #{sortField,jdbcType=VARCHAR}, #{sortOrder,jdbcType=VARCHAR}, #{defaultSize,jdbcType=INTEGER},
+          #{groupId,typeHandler=uyun.whale.common.mybatis.type.UUIDTypeHandler},
+          #{tenantId,typeHandler=uyun.whale.common.mybatis.type.UUIDTypeHandler},
+          #{metrics,typeHandler=uyun.bat.report.impl.dao.mybatis.ListBlobTypeHandler},
+          #{resTags,typeHandler=uyun.bat.report.impl.dao.mybatis.ListBlobTypeHandler})
+    </insert>
+
+    <delete id="deleteReport" parameterType="uyun.bat.report.api.entity.Report" >
+        delete from report
+        where report_id = #{reportId,typeHandler=uyun.whale.common.mybatis.type.UUIDTypeHandler}
+        and tenant_id = #{tenantId,typeHandler=uyun.whale.common.mybatis.type.UUIDTypeHandler}
+    </delete>
+
+    <update id="updateReport" parameterType="uyun.bat.report.api.entity.Report">
+        update report
+        <set >
+            <if test="reportName != null" >
+                report_name = #{reportName,jdbcType=VARCHAR},
+            </if>
+            <if test="reportType != null" >
+                report_type = #{reportType,jdbcType=VARCHAR},
+            </if>
+            <if test="diagramType != null" >
+                diagram_type = #{diagramType,jdbcType=VARCHAR},
+            </if>
+            <if test="status != null" >
+                status = #{status,jdbcType=SMALLINT},
+            </if>
+            <if test="modified != null" >
+                modified = #{modified,jdbcType=TIMESTAMP},
+            </if>
+            <if test="sortField != null" >
+                sort_field = #{sortField,jdbcType=VARCHAR},
+            </if>
+            <if test="sortOrder != null" >
+                sort_order = #{sortOrder,jdbcType=VARCHAR},
+            </if>
+            <if test="defaultSize != null" >
+                default_size = #{defaultSize,jdbcType=INTEGER},
+            </if>
+            <if test="groupId != null" >
+                group_id = #{groupId,typeHandler=uyun.whale.common.mybatis.type.UUIDTypeHandler},
+            </if>
+            <if test="metrics != null">
+                metrics = #{metrics,typeHandler=uyun.bat.report.impl.dao.mybatis.ListBlobTypeHandler},
+            </if>
+            <if test="resTags != null">
+                res_tags = #{resTags,typeHandler=uyun.bat.report.impl.dao.mybatis.ListBlobTypeHandler}
+            </if>
+        </set>
+        where report_id = #{reportId,typeHandler=uyun.whale.common.mybatis.type.UUIDTypeHandler}
+    </update>
+
+    <select id="getReportById" resultMap="ReportResultMap" parameterType="uyun.bat.report.api.entity.Report">
+        select
+        <include refid="Base_Column_List" />
+        from report
+        where report_id = #{reportId,typeHandler=uyun.whale.common.mybatis.type.UUIDTypeHandler}
+        <if test="tenantId != null">
+            and tenant_id = #{tenantId,typeHandler=uyun.whale.common.mybatis.type.UUIDTypeHandler}
+        </if>
+    </select>
+
+    <select id="getReportByGroupId" resultMap="ReportResultMap" parameterType="uyun.bat.report.api.entity.Report">
+        select
+        <include refid="Base_Column_List" />
+        from report
+        where 1= 1
+        <if test="groupId != null">
+            and group_id = #{groupId,typeHandler=uyun.whale.common.mybatis.type.UUIDTypeHandler}
+        </if>
+        and tenant_id = #{tenantId,typeHandler=uyun.whale.common.mybatis.type.UUIDTypeHandler}
+        order by modified desc
+    </select>
+
+    <select id="getAllValidReport" resultMap="ReportResultMap">
+        select <include refid="Base_Column_List" />
+        from report
+        where status = 1
+        order by modified desc
+    </select>
+
+</mapper>

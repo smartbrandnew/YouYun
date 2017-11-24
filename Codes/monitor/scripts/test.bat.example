@@ -1,0 +1,9 @@
+:: 脚本元信息
+:: name=测试bat脚本
+:: interval=60
+:: version=1.0.1
+
+@echo off
+echo "metric=system.bat.test1|value=30|type=gauge|tags=bat:test"
+echo "metric=system.bat.test2|value=50|type=gauge|tags=bat:test"
+echo "event=test_bat|msg=if bat test success|severity=info|tags=bat:test"

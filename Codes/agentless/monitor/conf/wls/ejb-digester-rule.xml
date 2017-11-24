@@ -1,0 +1,71 @@
+<?xml version="1.0"?>
+
+<digester-rules>
+	<object-create-rule pattern="ejb-collection"
+		classname="com.broada.carrier.monitor.impl.mw.weblogic.agent.ejb.EJBCollection"/>
+	<pattern value="*/exception">
+			<call-method-rule methodname="setMessage" paramcount="0"
+						pattern="message"/>
+			<call-method-rule methodname="setDetail" paramcount="0"
+						pattern="detail"/>
+	</pattern>
+	<pattern value="*/ejb">
+		<object-create-rule classname="com.broada.carrier.monitor.impl.mw.weblogic.agent.ejb.EJBRuntimeInformation"/>
+		<set-properties-rule>
+			<alias attr-name="ejbName" prop-name="ejbName"/>
+		</set-properties-rule>
+		<set-properties-rule>
+			<alias attr-name="ejbType" prop-name="ejbType"/>
+		</set-properties-rule>
+		
+		<pattern value="EJBTransactionRuntimeMBean/property">
+			<object-create-rule
+				classname="com.broada.carrier.monitor.impl.mw.weblogic.agent.Property"/>
+			<set-properties-rule>
+				<alias attr-name="name" prop-name="name"/>
+			</set-properties-rule>
+			<set-properties-rule>
+				<alias attr-name="value" prop-name="value"/>
+			</set-properties-rule>
+			<set-next-rule methodname="addProperty"/>
+		</pattern>
+		
+		<pattern value="EJBPoolRuntimeMBean/property">
+			<object-create-rule
+				classname="com.broada.carrier.monitor.impl.mw.weblogic.agent.Property"/>
+			<set-properties-rule>
+				<alias attr-name="name" prop-name="name"/>
+			</set-properties-rule>
+			<set-properties-rule>
+				<alias attr-name="value" prop-name="value"/>
+			</set-properties-rule>
+			<set-next-rule methodname="addProperty"/>
+		</pattern>
+		
+		<pattern value="EJBCacheRuntimeMBean/property">
+			<object-create-rule
+				classname="com.broada.carrier.monitor.impl.mw.weblogic.agent.Property"/>
+			<set-properties-rule>
+				<alias attr-name="name" prop-name="name"/>
+			</set-properties-rule>
+			<set-properties-rule>
+				<alias attr-name="value" prop-name="value"/>
+			</set-properties-rule>
+			<set-next-rule methodname="addProperty"/>
+		</pattern>
+		
+		<pattern value="EJBLockingRuntimeMBean/property">
+			<object-create-rule
+				classname="com.broada.carrier.monitor.impl.mw.weblogic.agent.Property"/>
+			<set-properties-rule>
+				<alias attr-name="name" prop-name="name"/>
+			</set-properties-rule>
+			<set-properties-rule>
+				<alias attr-name="value" prop-name="value"/>
+			</set-properties-rule>
+			<set-next-rule methodname="addProperty"/>
+		</pattern>
+		
+		<set-next-rule methodname="addEJBRuntimeInformation"/>
+	</pattern>
+</digester-rules>

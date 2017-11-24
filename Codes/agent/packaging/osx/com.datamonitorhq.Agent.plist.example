@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <key>RunAtLoad</key>
+    <true/>
+    <key>Label</key>
+    <string>com.datamonitorhq.agent</string>
+    <key>ProgramArguments</key>
+    <array>
+        <string>/opt/datamonitor-agent/bin/datamonitor-agent</string>
+        <string>restart</string>
+    </array>
+    <key>UserName</key>
+    <string>USER_NAME</string>
+    <key>StandardOutPath</key>
+    <string>/var/log/datamonitor/launchd.log</string>
+    <key>StandardErrorPath</key>
+    <string>/var/log/datamonitor/launchd.log</string>
+</dict>
+</plist>

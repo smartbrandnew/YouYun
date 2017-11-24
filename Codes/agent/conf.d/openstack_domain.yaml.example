@@ -1,0 +1,11 @@
+init_config:
+
+instances:
+    - keystone_host: 
+      nova_host: 
+      tenant_name: 
+      user: 
+      password: 
+
+
+

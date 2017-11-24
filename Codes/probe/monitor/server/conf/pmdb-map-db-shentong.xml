@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<pmdb-map>
+	<monitor type="SHENTONG-BASE">
+		<!-- SHENTONG-BASE-1 实例状态 SHENTONG-BASE-2 主机名 SHENTONG-BASE-3 DB名称 SHENTONG-BASE-4 
+			DB版本 SHENTONG-BASE-5 例程名 SHENTONG-BASE-6
+			例程开始时间 SHENTONG-BASE-7 归档模式 SHENTONG-BASE-8 归档路径 SHENTONG-BASE-9 当前连接数 -->
+		<object local="resource" remote="Shentong" states="SUCCESSED,FAILED,OVERSTEP">
+			<item local="monitor.state" remote="state.available_status"
+				function="monitorState2availableStatus" />
+			<item local="perf.SHENTONG-BASE-5" remote="attr.shentongSID" />
+			<item local="perf.SHENTONG-BASE-7" remote="attr.archieveMode" />
+			<item local="perf.SHENTONG-BASE-8" remote="attr.archievePath" />
+			<item local="method.port" remote="attr.usePort" />
+			<item local="perf.SHENTONG-BASE-9" remote="perf.db.current_conns" />
+		</object>
+	
+		<object local="instance" remote="ShentongInstance">
+			<item local="monitor.state" remote="state.available_status"
+				function="monitorState2availableStatus" />
+			<item local="resource.id" remote="rs.ComponentOf" />
+			<item local="perf.SHENTONG-BASE-5" remote="attr.code" />
+			<item local="SHENTONG-BASE-3" remote="attr.name" />	
+							
+		</object>		
+	</monitor>
+
+	<monitor type="SHENTONG-CHECKPOINT">
+		<!-- SHENTONG-CHECKPOINT-1 发生检查点数 次 SHENTONG-CHECKPOINT-2 完成检查点数 次 -->
+		<object local="resource" remote="Shentong">
+			<item local="perf.SHENTONG-CHECKPOINT-1" remote="perf.shentong-chkpt.ckpts_started" />
+			<item local="perf.SHENTONG-CHECKPOINT-2" remote="perf.shentong-chkpt.ckpts_completed" />
+		</object>
+	</monitor>
+
+	<monitor type="SHENTONG-DATAFILE">
+		<!-- SHENTONG-DATAFILE-1 读次数 次 SHENTONG-DATAFILE-2 写次数 次 SHENTONG-DATAFILE-3 
+			读时间 秒 SHENTONG-DATAFILE-4 写时间 秒 SHENTONG-DATAFILE-5 文件大小 MB SHENTONG-DATAFILE-6 
+			写文件块数 SHENTONG-DATAFILE-7 读文件块数 SHENTONG-DATAFILE-8 读写文件块数 -->
+		<object local="instance" remote="ShentongFile">
+			<item local="resource.id" remote="rs.ComponentOf" />
+			<item local="instance.code" remote="attr.code" />
+			<item local="instance.name" remote="attr.name" />
+			<item local="perf.SHENTONG-DATAFILE-1" remote="perf.shentong-file.read_times" />
+			<item local="perf.SHENTONG-DATAFILE-2" remote="perf.shentong-file.write_times" />
+			<item local="perf.SHENTONG-DATAFILE-3" remote="perf.shentong-file.read_time" />
+			<item local="perf.SHENTONG-DATAFILE-4" remote="perf.shentong-file.write_time" />
+			<item local="perf.SHENTONG-DATAFILE-5" remote="perf.shentong-file.file_size" />
+			<item local="perf.SHENTONG-DATAFILE-6" remote="perf.shentong-file.write_block_number" />
+			<item local="perf.SHENTONG-DATAFILE-7" remote="perf.shentong-file.read_block_number" />
+		</object>
+	</monitor>
+
+	<monitor type="SHENTONG-FTS">
+		<!-- SHENTONG-FTS-1 RSRATIO值 % -->
+		<object local="resource" remote="Shentong">
+			<item local="perf.SHENTONG-FTS-1" remote="perf.shentong.row_source_pct" />
+		</object>
+	</monitor>
+
+	<monitor type="SHENTONG-PATCHRATE">
+		<!-- SHENTONG-PATCHRATE-1 FSFI值 % -->
+		<object local="resource" remote="Shentong">
+			<item local="perf.SHENTONG-PATCHRATE-1" remote="perf.shentong.free_space_fragmentation" />
+		</object>
+	</monitor>
+
+	<monitor type="SHENTONG-PROCESS">
+		<!-- SHENTONG-PROCESS-1 已分配PGA M SHENTONG-PROCESS-2 已使用PGA M SHENTONG-PROCESS-3 
+			可用PGA百分比 % SHENTONG-PROCESS-4 可用PGA M -->
+		<object local="instance" remote="ShentongProcess">
+			<item local="resource.id" remote="rs.ComponentOf" />
+			<item local="instance.code" remote="attr.code" />
+			<item local="instance.name" remote="attr.name" />
+			<item local="perf.SHENTONG-PROCESS-1" remote="perf.shentong-process.distributed_pga" />
+			<item local="perf.SHENTONG-PROCESS-2" remote="perf.shentong-process.used_pga_pct" />
+			<item local="perf.SHENTONG-PROCESS-3" remote="perf.shentong-process.pga_avaliable_pct" />
+			<item local="perf.SHENTONG-PROCESS-4" remote="perf.shentong-process.avilable_pga" />
+		</object>
+	</monitor>
+
+	<monitor type="SHENTONG-RATIO">
+		<!-- SHENTONG-RATIO-1 高速缓存区命中率 %  SHENTONG-RATIO-2 磁盘排序与内存排序比率 % -->
+		<object local="resource" remote="Shentong">
+			<item local="perf.SHENTONG-RATIO-1" remote="perf.shentong-buff.buff_cache_hit_ratio" />
+			<item local="perf.SHENTONG-RATIO-2" remote="perf.shentong-buff.disk_to_memsort_ratio" />
+		</object>
+	</monitor>
+
+	<monitor type="SHENTONG-WORKQUE">
+		<!-- SHENTONG-WORKQUE-1 破损作业数量 个 SHENTONG-WORKQUE-2 失败作业数量 个 SHENTONG-WORKQUE-3 
+			过期作业数量 个 -->
+		<object local="resource" remote="Shentong">
+			<item local="perf.SHENTONG-WORKQUE-1" remote="perf.shentong-workqueue.jobs_broken" />
+			<item local="perf.SHENTONG-WORKQUE-2" remote="perf.shentong-workqueue.jobs_failed" />
+			<item local="perf.SHENTONG-WORKQUE-3" remote="perf.shentong-workqueue.jobs_expried" />
+		</object>
+	</monitor>
+
+	<monitor type="SHENTONG-BUFFER">
+		<!-- SHENTONG-BUFFER-1  页大小 SHENTONG-BUFFER-2 空闲页数
+			SHENTONG-BUFFER-3 脏页数 SHENTONG-BUFFER-4 缓冲区读块  SHENTONG-BUFFER-5 缓冲区写块 -->
+		<object local="resource" remote="Shentong">
+			<item local="perf.SHENTONG-BUFFER-1" remote="perf.shentong-buffer.pageSize" />
+			<item local="perf.SHENTONG-BUFFER-2" remote="perf.shentong-buffer.freePage" />
+			<item local="perf.SHENTONG-BUFFER-3" remote="perf.shentong-buffer.dirty_page" />
+			<item local="perf.SHENTONG-BUFFER-4" remote="perf.shentong-buffer.read_block_number" />
+			<item local="perf.SHENTONG-BUFFER-5" remote="perf.shentong-buffer.write_block_number" />
+		</object>
+	</monitor>
+	
+</pmdb-map>

@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<computer-app>
+    <!-- name为跑的什么服务，process为线程名，port为端口，通过process和port确定是什么应用，process和port不能同时为空 -->
+    <app name="Oracle" process="" port="1521" type="Application"/>
+    <app name="MongoDB" process="" port="27017" type="Application"/>
+    <app name="Redis" process="" port="6379" type="Application"/>
+    <app name="PostgreSQL" process="" port="5432" type="Application"/>
+    <app name="Sybase" process="" port="4100" type="Application"/>
+    <app name="MySQL" process="" port="3306" type="Application"/>
+    <app name="SQLServer" process="" port="1433" type="Application"/>
+    <app name="DB2" process="" port="50000" type="Application"/>
+    <app name="Web Servers" process="" port="80" type="Application"/>
+    <app name="Apache" process="" port="4100" type="Application"/>
+    <app name="WebSphere" process="" port="9080" type="Application"/>
+    <app name="WebLogic" process="" port="7001" type="Application"/>
+    <app name="Tomcat" process="" port="8080" type="Application"/>
+    <app name="ActiveMQ" process="" port="61616" type="Application"/>
+    <app name="WebSphereMQ" process="" port="1414" type="Application"/>
+    <app name="WebSphereSSL" process="" port="9443" type="Application"/>
+    <app name="RabbitMQ" process="" port="5672" type="Application"/>
+    <app name="ElasticSearch" process="" port="9300" type="Application"/>
+    <app name="Cassandra" process="" port="9160" type="Application"/>
+    <app name="OrientDB" process="" port="2424" type="Application"/>
+    <app name="Zookpeer" process="" port="5666" type="Application"/>
+    <app name="KairosDB" process="" port="4242" type="Application"/>
+    <app name="CMDB" process="" port="7200" type="Application"/>
+</computer-app>

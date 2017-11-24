@@ -1,0 +1,6 @@
+init_config:
+
+instances:
+  - upstream: http://10.1.100.110
+    tenant: e10adc3949ba59abbe56e057f20f88dd
+

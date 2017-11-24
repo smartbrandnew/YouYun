@@ -1,0 +1,11 @@
+init_config:
+
+
+instances:
+-  host: "localhost"
+   computername: "Windows7  64" 
+  #   username: MYREMOTESERVER\fred
+  #   password: mysecretpassword
+  #computername is your virtual machine name 
+  #if your virtual machine in your localhost ,hostname is localhost
+  #else hostname is remote ip address and the username password must be writen

@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="uyun.bat.report.impl.dao.ReportDataDao" >
+  <resultMap id="BaseResultMap" type="uyun.bat.report.api.entity.ReportData" >
+    <id column="report_data_id" property="reportDataId" typeHandler="uyun.whale.common.mybatis.type.UUIDTypeHandler" />
+    <result column="start_date" property="startDate" jdbcType="DATE" />
+    <result column="end_date" property="endDate" jdbcType="DATE" />
+    <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="report_id" property="reportId" typeHandler="uyun.whale.common.mybatis.type.UUIDTypeHandler" />
+  </resultMap>
+
+  <resultMap id="AllDataResultMap" type="uyun.bat.report.api.entity.web.TReportDataAll" >
+    <id column="report_data_id" property="reportDataId" typeHandler="uyun.whale.common.mybatis.type.UUIDTypeHandler" />
+    <collection property="resources" ofType="uyun.bat.report.api.entity.web.TReportResourceMetrics" >
+      <id column="resource_id" property="resourceId" typeHandler="uyun.whale.common.mybatis.type.UUIDTypeHandler" />
+      <result column="hostname" property="hostname" jdbcType="VARCHAR" />
+      <result column="ipaddr" property="ipaddr" jdbcType="VARCHAR" />
+      <collection property="metrics" ofType="uyun.bat.report.api.entity.web.TReportMetricData" >
+        <id column="metric_name" property="metricName" jdbcType="VARCHAR" />
+        <result column="points" property="points" jdbcType="BLOB" />
+        <result column="val_avg" property="valAvg" jdbcType="DOUBLE" />
+        <result column="unit" property="unit" jdbcType="VARCHAR" />
+      </collection>
+    </collection>
+  </resultMap>
+
+  <sql id="Base_Column_List" >
+    report_data_id, start_date, end_date, create_time, report_id
+  </sql>
+
+  <insert id="insert" parameterType="uyun.bat.report.api.entity.ReportData" >
+    insert into report_data (report_data_id, start_date, end_date, 
+      create_time, report_id)
+    values (#{reportDataId,typeHandler=uyun.whale.common.mybatis.type.UUIDTypeHandler},
+      #{startDate,jdbcType=DATE}, #{endDate,jdbcType=DATE}, #{createTime,jdbcType=TIMESTAMP},
+      #{reportId,typeHandler=uyun.whale.common.mybatis.type.UUIDTypeHandler})
+  </insert>
+
+  <select id="selectByReportId" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select report_data_id, start_date, end_date, report_id, create_time from report_data
+    where report_id = #{reportId, typeHandler=uyun.whale.common.mybatis.type.UUIDTypeHandler}
+    order by start_date desc
+  </select>
+
+  <select id="selectAllDataByConditions" parameterType="java.util.Map" resultMap="AllDataResultMap">
+    select aa.report_data_id, bb.resource_id, bb.hostname, bb.ipaddr, cc.metric_name, cc.val_avg, cc.unit ,cc.points
+    from report_data aa
+    left join report_resource bb
+    on aa.report_data_id = bb.report_data_id
+    left join report_metric_data cc
+    on bb.resource_id = cc.resource_id
+    where aa.report_data_id = #{reportDataId, typeHandler=uyun.whale.common.mybatis.type.UUIDTypeHandler}
+    and bb.report_data_id = #{reportDataId, typeHandler=uyun.whale.common.mybatis.type.UUIDTypeHandler}
+    and cc.report_data_id = #{reportDataId, typeHandler=uyun.whale.common.mybatis.type.UUIDTypeHandler}
+    <choose>
+      <when test="sortField != null and sortField == 'hostname'.toString()">
+        order by bb.hostname ${sortOrder}
+      </when>
+      <when test="sortField != null and sortField == 'ipaddr'.toString()">
+        order by bb.ipaddr ${sortOrder}
+      </when>
+      <otherwise>
+        <choose>
+          <when test="sortOrder == 'desc'.toString()">
+            order by metric_name = #{sortField} desc, cc.val_avg desc
+          </when>
+          <otherwise>
+            order by metric_name = #{sortField} desc, val_avg is null, cc.val_avg asc
+          </otherwise>
+        </choose>
+      </otherwise>
+    </choose>
+  </select>
+
+  <select id="selectReportByDate" parameterType="uyun.bat.report.api.entity.ReportData" resultMap="BaseResultMap">
+    select <include refid="Base_Column_List" /> from report_data
+    where report_id = #{reportId, typeHandler=uyun.whale.common.mybatis.type.UUIDTypeHandler}
+    and date_format(start_date, '%x-%m-%d') = date_format(#{startDate, jdbcType=DATE}, '%x-%m-%d')
+  </select>
+
+  <delete id="deleteByReportId" parameterType="java.lang.String" >
+    delete from report_data
+    where report_id = #{reportId, typeHandler=uyun.whale.common.mybatis.type.UUIDTypeHandler}
+  </delete>
+
+</mapper>

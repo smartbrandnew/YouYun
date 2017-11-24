@@ -1,0 +1,49 @@
+---
+collect_methods:
+  # name of monitoring method
+  - name: test
+    # monitoring type(never change)
+    type: ProtocolXugu
+    # monitoring cycle:60s
+    interval: 60
+    # port
+    port: 5138
+    # username
+    username: SYSDBA
+    # password
+    password: test
+    # database name
+    database: SYSTEM
+    # connect type(optional)
+    con_type: 1
+    # connection balanced when con_type is setted to 1(optional)
+    ips: 192.168.0.205,192.168.0.204,192.168.1.206
+    # wmi/ssh/telnet/agent
+    sessionName: ssh
+    # remote port(telnet:23, ssh:22)
+    remotePort: 22
+    # loginTimeout
+    loginTimeout: 15000
+    # waitTimeout
+    waitTimeout: 10000
+    # root user use #; unroot user use $
+    prompt: "#"
+    # loginName
+    usernameCli: root
+    # password:  "pure numbers" or string that mixed numbers with characters("123456" or pass or admin123)
+    passwordCli: test
+    # system name, supported OS: AIX,FreeBSD,HP-UX,IRIX64,Linux,SCOUNIX,Solaris,TRU64 OSF1,Windows
+    sysname: linux
+hosts: 
+  # name of monitoring method, same as the collect_methods name above
+  - collect_method: test
+    # ip of monitored host,must not be 127.0.0.1
+    ip: 10.1.10.104
+    # name of the monitored host
+    host:
+    # os of the monitored host(linux/windows/netdev[network device])
+    os: linux
+    # use semicolons to separate different tags(ip:127.0.0.1;host:myPC)
+    tags: 
+    # when deployed agent and agentless on the monitored host,id must be same,otherwise id is unnecessary
+    id: 

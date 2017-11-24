@@ -1,0 +1,96 @@
+# Module config YAML
+
+# 产品名称
+product: Monitor
+
+# 模块名称，命名格式：产品内部代号-模块编号
+name: monitor-dashboard
+
+# 版本信息，与产品版本保持一致
+version: V2.0.R9
+
+# 是否定制过（0：否，1：是）
+customized: 0
+
+# 作者
+author: monitor@uyunsoft.cn
+
+# 模块描述信息
+description: Monitor仪表盘服务
+
+# 平台要求，当前只支持CentOS 7
+platform: Linux
+
+# 内核版本
+kernel: 3.10.0-327.el7
+
+# 当前支持 [main, compute, normal] 三个枚举值
+# main：产品主模块，运维管理平台将以此模块作为安装切点进行依赖分析并完成所在产品的安装，每个产品只有一个main模块，一般为nginx或web前端
+# compute：计算模块
+# normal：常规模块
+type: normal
+
+# 是否需要Platform Nginx进行方向代理或负载均衡，
+# 可选项，如果需要进行代理，请按如下方式进行配置。
+#enable_reverse_proxy:
+#    upstream: |
+#        upstream bat-agent-autosync {
+#        <#list hosts as host>
+#            # 在此处追加对应Server配置，修改API接口
+#            server ${host.ip}:7315;
+#        </#list>
+#        }
+#    location: |
+#        location /monitor/api/autosync {
+#            proxy_pass http://bat-agent-autosync/api/v2/autosync;
+#       }
+
+# 日志文件名称（支持shell通配符，多个以“,”分隔）
+log_file_name: bat-dashboard*.log
+
+# 需要关闭的防火墙端口
+firewall_port: 7303
+
+# 模块支持的操作(可选项)， 默认支持 start, stop, upgrade, uninstall, download_log
+# support_opts: start,stop,uninstall,download_log
+
+# # DB相关命令
+# db:
+#   - type: mysql
+#   upgrade: mysql_upgrade.sh
+
+# 模块安装命令
+installation:
+    pre_handle:
+        cmd: pre_install.sh
+    install:
+        cmd: install.sh
+    after_completion:
+        cmd: "/opt/uyun/monitor/dashboard/bin/bat-dashboard.sh start && source util.sh && check_stat bat-dashboard 7303 && echo "
+# 可执行命令，建议放在安装目录下的bin文件夹中，不建议使用systemctl命令
+commands:
+    exec_start: "/opt/uyun/monitor/dashboard/bin/bat-dashboard.sh start"
+    exec_stop: "/opt/uyun/monitor/dashboard/bin/bat-dashboard.sh stop"
+    exec_restart: "/opt/uyun/monitor/dashboard/bin/bat-dashboard.sh restart"
+    exec_status: "/opt/uyun/monitor/dashboard/bin/bat-dashboard.sh status"
+    exec_uninstall: "/opt/uyun/monitor/dashboard/bin/bat-dashboard.sh uninstall && rm -f /usr/lib/systemd/system/monitor-dashboard.service"
+# 运行参数
+runtime_params:
+    # cpu核数
+    cpu: 1
+    # 最大运行内存（M）
+    mem: 512
+    # 所需磁盘空间（G）
+    disk: 1
+
+# 依赖信息，该应用依赖的其他模块，包括DB、中间件等（可为空）
+dependencies:
+    - module: platform-jdk
+      version: 1.8.0_77
+    - module: platform-disconf
+      version: 2.6.0
+    - module: platform-zookeeper
+      version: 3.4.8
+    - module: platform-mysql
+      version: 5.7.13
+

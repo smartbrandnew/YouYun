@@ -1,0 +1,171 @@
+swagger: '2.0'
+info:
+  version: '2.0'
+  title: Autosync Server HTTP API
+  description: 文件自动同步服务端 HTTP API
+host: localhost:8080
+basePath: /autosync/client
+schemes:
+  - http
+consumes:
+  - application/json
+produces:
+  - application/json
+paths:
+  '/{clientId}':
+    get:
+      description: '查询指定client定义信息，含fileset与action定义'
+      parameters:
+        - name: clientId
+          in: path
+          description: 'client唯一标识'
+          required: true
+          type: string
+      responses:
+        200:
+          description: '返回client定义信息'
+          schema:
+            $ref: '#/definitions/Client'
+  '/{clientId}/version':
+    get:
+      description: '查询指定client当前版本号'
+      parameters:
+        - name: clientId
+          in: path
+          description: 'client唯一标识'
+          required: true
+          type: string
+      responses:
+        200:
+          description: '返回client定义信息'
+  '/{clientId}/file-v2':
+    get:
+      description: '查询指定client的文件详情列表'
+      parameters:
+        - name: clientId
+          in: path
+          description: 'client唯一标识'
+          required: true
+          type: string
+      responses:
+        200:
+          description: '返回client的文件详情列表'
+          schema:
+            $ref: '#/definitions/FileList'
+  '/{clientId}/file/{filename}':
+    get:
+      description: '下载指定文件名'
+      parameters:
+        - name: clientId
+          in: path
+          description: 'client唯一标识'
+          required: true
+          type: string
+        - name: filename
+          in: path
+          description: '文件名base64编码'
+          required: true
+          type: string
+      responses:
+        200:
+          description: '下载指定文件'
+          schema:
+            $ref: '#/definitions/FileList'
+definitions:
+  Client:
+    type: object
+    description: 客户端定义
+    properties:
+      id:
+        type: string
+        description: 客户端标识
+      version:
+        type: string
+        description: 客户端当前文件版本
+      filesets:
+        type: array
+        description: 客户端定义的所有fileset
+        items:
+          $ref: '#/definitions/FileSet'
+      actions:
+        type: array
+        description: 客户端产生文件同步后的action
+        items:
+          $ref: '#/definitions/Action'
+  FileSet:
+    type: object
+    description: 文件集
+    properties:
+      id:
+        type: string
+        description: 文件集标识
+      dir:
+        type: string
+        description: 文件集对于客户端的路径
+      deleteMode:
+        type: string
+        description: 当客户端出现了服务端没有定义的文件时，处理方式
+      includes:
+        type: array
+        description: 文件集匹配表达式
+        items:
+          $ref: '#/definitions/FileSetMatch'
+      excludes:
+        type: array
+        description: 文件集排除表达式
+        items:
+          $ref: '#/definitions/FileSetMatch'
+  FileList:
+    type: object
+    description: 文件列表
+    properties:
+      version:
+        type: string
+        description: 此文件列表的client当前版本
+      files:
+        type: array
+        description: 文件列表
+        items:
+          $ref: '#/definitions/File'
+  File:
+    type: object
+    description: 对一个文件的具体描述
+    properties:
+      name:
+        type: string
+        description: 文件名，包含路径
+      lastModified:
+        type: integer
+        description: 文件最后修改时间，linux文件时间戳
+      size:
+        type: integer
+        description: 文件大小
+      fileset:
+        type: string
+        description: 此文件属于哪个fileset
+      md5:
+        type: string
+        description: 文件的MD5计算结果
+  FileSetMatch:
+    type: object
+    description: 文件匹配表达式
+    properties:
+      name:
+        type: string
+        description: 文件匹配名称
+      value:
+        type: string
+        description: 匹配字符串
+  Action:
+    type: object
+    description: 文件同步后的执行动作定义
+    properties:
+      event:
+        type: string
+        description: 动作执行的事件触发位置
+      type:
+        type: string
+        description: 动作类型
+      arg:
+        type: string
+        description: 动作参数

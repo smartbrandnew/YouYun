@@ -1,0 +1,6 @@
+# Ignore everything in this directory 
+# 相关的文件从https://git.uyunsoft.cn/bat/agent.git 项目的 checks.d下拿
+# 相关的文件从https://git.uyunsoft.cn/bat/agent.git 项目的 conf.d下拿
+* 
+# Except this file 
+!.gitignore 

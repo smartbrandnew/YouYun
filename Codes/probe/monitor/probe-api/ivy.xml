@@ -1,0 +1,15 @@
+<ivy-module version="2.0">
+	<info organisation="com.broada.carrier" module="carrier.monitor.probe.api" />
+
+	<configurations>		
+		<conf name="default" />
+		<conf name="dev" />
+	</configurations>
+
+	<dependencies>
+		<!-- 模块依赖 -->
+		<dependency org="com.broada.carrier" name="carrier.monitor.server.api" rev="2.0.12" conf="default->default" changing="true" />		
+		<dependency org="com.broada.platform" name="platform.common.util" rev="2.0.2" conf="default->utils" changing="true"/>
+		<dependency org="javax" name="javax.persistence" rev="2.0.0" conf="dev->default" />
+	</dependencies>
+</ivy-module> 

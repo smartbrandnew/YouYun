@@ -1,0 +1,12 @@
+[Unit]  
+Description=monitor-monitor
+After=network.target  
+   
+[Service]  
+Type=oneshot
+RemainAfterExit=yes  
+ExecStart=/usr/bin/su -l root /opt/uyun/monitor/monitor/bin/bat-monitor.sh start
+ExecStop=/usr/bin/su -l root /opt/uyun/monitor/monitor/bin/bat-monitor.sh stop
+   
+[Install]  
+WantedBy=multi-user.target

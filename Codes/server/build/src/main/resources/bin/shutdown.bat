@@ -1,0 +1,2 @@
+tskill java
+tskill cmd

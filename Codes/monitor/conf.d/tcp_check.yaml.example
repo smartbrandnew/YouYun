@@ -1,0 +1,16 @@
+init_config:
+
+instances:
+  - name: My first service
+    host: myhost.example.com
+    port: 8080
+    timeout: 1
+    threshold: 3
+    window: 5
+
+    collect_response_time: false
+    skip_event: true
+
+  - name: My second service
+    host: 127.0.0.1
+    port: 80

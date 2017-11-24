@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="uyun.bat.datastore.overview.dao.OTagDao">
+	<resultMap type="uyun.bat.datastore.api.overview.entity.OTag"
+		id="entityMap">
+		<result property="id" column="id" jdbcType="BINARY"
+			typeHandler="uyun.whale.common.mybatis.type.UUIDTypeHandler" />
+		<result property="tenantId" column="tenant_id" jdbcType="BINARY"
+			typeHandler="uyun.whale.common.mybatis.type.UUIDTypeHandler" />
+		<result property="key" column="key" />
+		<result property="value" column="value" />
+	</resultMap>
+
+	<resultMap type="uyun.bat.datastore.overview.entity.OResourceTag"
+		id="resourceTagResultMap">
+		<result property="resourceId" column="resource_id" jdbcType="BINARY"
+			typeHandler="uyun.whale.common.mybatis.type.UUIDTypeHandler" />
+		<result property="tagId" column="id" jdbcType="BINARY"
+			typeHandler="uyun.whale.common.mybatis.type.UUIDTypeHandler" />
+		<result property="key" column="key" />
+		<result property="value" column="value" />
+	</resultMap>
+
+	<insert id="create">
+		insert IGNORE into overview_tag (`id`, `tenant_id`,
+		`key`,
+		`value`)
+		values
+		<foreach collection="list" item="item" index="index"
+			separator=",">
+			(#{item.id,typeHandler=uyun.whale.common.mybatis.type.UUIDTypeHandler},
+			#{item.tenantId,typeHandler=uyun.whale.common.mybatis.type.UUIDTypeHandler},
+			#{item.key}, #{item.value})
+		</foreach>
+	</insert>
+
+	<delete id="delete">
+		delete from overview_tag where `tenant_id` =
+		#{tenantId,typeHandler=uyun.whale.common.mybatis.type.UUIDTypeHandler}
+		and id =
+		#{id,typeHandler=uyun.whale.common.mybatis.type.UUIDTypeHandler}
+	</delete>
+
+	<select id="getTagKeyListByTenantId" resultType="string">
+		select `key` from
+		overview_tag
+		where `tenant_id` =
+		#{tenantId,typeHandler=uyun.whale.common.mybatis.type.UUIDTypeHandler}
+		group by `key`
+	</select>
+
+	<select id="getTenantResourceTag" resultMap="resourceTagResultMap">
+		select ot.id, otr.resource_id, ot.key,
+		ot.value from
+		overview_tag ot
+		right join overview_tag_resource otr on
+		ot.tenant_id = otr.tenant_id
+		and ot.id = otr.tag_id
+		where
+		ot.`tenant_id` =
+		#{tenantId,typeHandler=uyun.whale.common.mybatis.type.UUIDTypeHandler}
+		<if test="resourceId != null">
+			and otr.resource_id =
+			#{resourceId,typeHandler=uyun.whale.common.mybatis.type.UUIDTypeHandler}
+		</if>
+	</select>
+
+	<select id="queryTag" resultMap="entityMap">
+		select
+		id,tenant_id,`key`,value
+		from
+		overview_tag
+		where `tenant_id` =
+		#{tenantId,typeHandler=uyun.whale.common.mybatis.type.UUIDTypeHandler}
+		and `key` = #{key} and value = #{value}
+	</select>
+</mapper>

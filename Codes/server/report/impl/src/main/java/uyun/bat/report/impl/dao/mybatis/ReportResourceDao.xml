@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="uyun.bat.report.impl.dao.ReportResourceDao" >
+  <resultMap id="BaseResultMap" type="uyun.bat.report.api.entity.ReportResource" >
+    <id column="resource_id" property="resourceId" typeHandler="uyun.whale.common.mybatis.type.UUIDTypeHandler" />
+    <id column="report_data_id" property="reportDataId" typeHandler="uyun.whale.common.mybatis.type.UUIDTypeHandler" />
+    <result column="hostname" property="hostname" jdbcType="VARCHAR" />
+    <result column="ipaddr" property="ipaddr" jdbcType="VARCHAR" />
+    <result column="report_id" property="reportId" typeHandler="uyun.whale.common.mybatis.type.UUIDTypeHandler" />
+  </resultMap>
+
+  <sql id="Base_Column_List" >
+    resource_id, report_data_id, hostname, ipaddr, report_id
+  </sql>
+
+  <insert id="insertBatch" parameterType="java.util.List">
+    insert into report_resource
+    values
+    <foreach collection="list" item="item" separator=",">
+      (
+        #{item.resourceId, typeHandler=uyun.whale.common.mybatis.type.UUIDTypeHandler},
+        #{item.reportDataId, typeHandler=uyun.whale.common.mybatis.type.UUIDTypeHandler},
+        #{item.hostname, jdbcType=VARCHAR}, #{item.ipaddr, jdbcType=VARCHAR},
+        #{item.reportId, typeHandler=uyun.whale.common.mybatis.type.UUIDTypeHandler}
+      )
+    </foreach>
+  </insert>
+
+  <delete id="deleteByReportId" parameterType="java.lang.String" >
+    delete from report_resource
+    where report_id = #{reportId, typeHandler=uyun.whale.common.mybatis.type.UUIDTypeHandler}
+  </delete>
+</mapper>

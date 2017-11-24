@@ -1,0 +1,45 @@
+---
+collect_methods:
+  # jdbc 
+  # name of monitoring method
+  - name: cdbMonitor
+    # monitoring type(never change)
+    type: ProtocolOracle
+    # monitoring cycle:60s
+    interval: 60
+    # database instance port
+    port: 1521
+    # database service name
+    service_name: orcl
+    # username(only use normal accounts)
+    username: system
+    # password:  "pure numbers" or string that mixed numbers with characters("123456" or pass or admin123)
+    password: test
+  - name: pdbMonitor
+    # monitoring type(never change)
+    type: ProtocolOracle
+    # monitoring cycle:60s
+    interval: 60
+    # database instance port
+    port: 1521
+    # database service name
+    service_name: orcl
+    # username(only use normal accounts)
+    username: system
+    # password:  "pure numbers" or string that mixed numbers with characters("123456" or pass or admin123)
+    password: test
+hosts: 
+  # name of monitoring method, same as the collect_methods name above
+  - collect_method: test
+    # ip of monitored host,must not be 127.0.0.1
+    ip: 127.0.0.1
+    # name of the monitored host
+    host:
+    # os of the monitored host(linux/windows/netdev[network device])
+    os: windows
+    # use semicolons to separate different tags(ip:127.0.0.1;host:myPC)
+    tags: 
+    # when deployed agent and agentless on the monitored host,id must be same,otherwise id is unnecessary
+    id: 
+    # disable OracleTableSpaceMonitor by default, if need OracleTableSpaceMonitor to work, cut out the ORACLE-TABLESPACE
+    excludes: ORACLE-TABLESPACE

@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:mvc="http://www.springframework.org/schema/mvc"
+	   xmlns:p="http://www.springframework.org/schema/p" xmlns:tx="http://www.springframework.org/schema/tx"
+	   xmlns:context="http://www.springframework.org/schema/context"
+	   xmlns:util="http://www.springframework.org/schema/util" xmlns:aop="http://www.springframework.org/schema/aop"
+	   xsi:schemaLocation="http://www.springframework.org/schema/beans
+            http://www.springframework.org/schema/beans/spring-beans-3.2.xsd
+            http://www.springframework.org/schema/tx
+            http://www.springframework.org/schema/tx/spring-tx-3.2.xsd
+            http://www.springframework.org/schema/context
+            http://www.springframework.org/schema/context/spring-context-3.2.xsd
+            http://www.springframework.org/schema/util
+            http://www.springframework.org/schema/util/spring-util-3.2.xsd
+            http://www.springframework.org/schema/mvc
+            http://www.springframework.org/schema/mvc/spring-mvc-3.2.xsd http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd">
+	<import resource="classpath:/uyun/bat/common/config/spring-conf.xml" />
+
+	<context:component-scan base-package="uyun.bat.datastore" />
+	<!-- -->
+	<bean class="org.mortbay.jetty.Server" init-method="start"
+		destroy-method="stop" />
+
+	<import resource="classpath:uyun/bat/datastore/spring-dao.xml" />
+	<import resource="classpath:uyun/bat/datastore/spring-dubbo.xml" />
+	<bean id="kairosdbLoadBalancer" class="uyun.bat.datastore.balance.KairosdbLoadBalancer" />
+	<bean id="resourceLogic" class="uyun.bat.datastore.logic.impl.ResourceLogicImpl" />
+	<bean id="stateMetricLogic" class="uyun.bat.datastore.logic.impl.StateMetricLogicImpl"
+		  init-method="init"/>
+	<bean id="redisService" class="uyun.bat.datastore.logic.redis.RedisService"
+		init-method="init" destroy-method="dispose">
+		<property name="ipList" value="${redis.sentinel.nodes}" />
+		<property name="masterName" value="${redis.master}" />
+		<property name="password" value="${redis.password}" />
+		<property name="timeout" value="${redis.timeout}" />
+		<property name="database" value="${redis.database}" />
+	</bean>
+	<bean id="metricRedisService" class="uyun.bat.datastore.logic.redis.MetricRedisService" />
+	<bean id="resourceRedisService" class="uyun.bat.datastore.logic.redis.ResourceRedisService" />
+	<bean id="metricLogic" class="uyun.bat.datastore.logic.impl.MetricLogicImpl"
+		init-method="init">
+		<property name="timeAlignmentType" value="${kairosdb.aggregator.timealignment.type}" />
+	</bean>
+
+	<bean id="metricService" class="uyun.bat.datastore.service.impl.MetricServiceImpl" />
+	
+	<bean id="sqlSessionTemplate" class="org.mybatis.spring.SqlSessionTemplate">
+		<constructor-arg index="0" ref="sqlSessionFactory" />
+	</bean>
+	<bean id="metricMetaDataService"
+		class="uyun.bat.datastore.service.impl.MetricMetaDataServiceImpl" />
+	<bean id="stateLogic" class="uyun.bat.datastore.logic.impl.StateLogicImpl" />
+	<bean id="stateService" class="uyun.bat.datastore.service.impl.StateServiceImpl" />
+	<bean id="tagService" class="uyun.bat.datastore.service.impl.TagServiceImpl" />
+	<bean id="stateMetricService" class="uyun.bat.datastore.service.impl.StateMetricServiceImpl"/>
+	<bean id="metricTrashCleaner" class="uyun.bat.datastore.util.MetricTrashCleaner" />
+	<bean id="stateMetricRedisService" class="uyun.bat.datastore.logic.redis.StateMetricRedisService" />
+	<bean class="uyun.bat.datastore.logic.LogicManager"
+		factory-method="getInstance">
+		<property name="metricLogic" ref="metricLogic" />
+		<property name="metricRedisService" ref="metricRedisService" />
+		<property name="resourceRedisService" ref="resourceRedisService" />
+		<property name="resourceLogic" ref="resourceLogic" />
+		<property name="metricClean" ref="metricTrashCleaner" />
+		<property name="stateMetricLogic" ref="stateMetricLogic" />
+		<property name="stateMetricRedisService" ref="stateMetricRedisService"/>
+	</bean>
+
+	<import resource="classpath:uyun/bat/datastore/spring-mq.xml" />
+	<bean class="uyun.bat.datastore.selfmonitor.ScheduleTask" init-method="init"/>
+
+	<bean id="resourceIdTransformLogic" class="uyun.bat.datastore.logic.impl.ResourceIdTransformLogicImpl"/>
+	
+	<bean id="pacificResourceLogic" class="uyun.bat.datastore.logic.pacific.PacificResourceLogic"/>
+
+	<bean id="resourceService" class="uyun.bat.datastore.service.impl.ResourceServiceImpl"
+		init-method="init" />
+	<bean class="uyun.bat.datastore.authorization.ResourceCleanTask"
+		init-method="init" />
+	<bean class="uyun.bat.datastore.authorization.MetricCleanTask"
+		init-method="init" />
+
+	<bean class="uyun.bat.datastore.service.ServiceManager"
+		  factory-method="getInstance">
+		<property name="stateService" ref="stateService" />
+		<property name="resourceService" ref="resourceService" />
+		<property name="metricService" ref="metricService" />
+		<property name="tagService" ref="tagService" />
+		<property name="eventService" ref="eventService" />
+	</bean>
+
+	<import resource="classpath:uyun/bat/datastore/spring-overview.xml" />
+</beans>

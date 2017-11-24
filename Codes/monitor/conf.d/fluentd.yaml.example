@@ -1,0 +1,10 @@
+init_config:
+
+instances:
+    -  monitor_agent_url: http://example.com:24220/api/plugins.json
+       plugin_ids:
+         - plg1
+         - plg2
+    -  monitor_agent_url: http://example.com:24220/api/plugins.json
+       tag_by: type
+

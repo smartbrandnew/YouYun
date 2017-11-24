@@ -1,0 +1,71 @@
+#!/bin/bash   
+#description: monitor-agentless
+#chkconfig: 2345 20 81   
+ 
+EXEC_PATH=/test/dist-probe-linux1/bin
+START=start.sh 
+STOP=stop.sh 
+INSTALLER=root
+APP_NAME=monitor-agentless-9145
+ 
+if [ ! -x $EXEC_PATH/$START ] ; then   
+       echo "ERROR: $EXEC_PATH/$START not found"   
+       exit 1   
+fi   
+ 
+stop()   
+{ 
+       echo "Stoping monitor-agentless ..." 
+       cd $EXEC_PATH; 
+       if [ `whoami` == $INSTALLER ]; then 
+	  	./$STOP 
+		else 
+		  su $INSTALLER -c "./$STOP" 
+		fi 
+       sleep 1 
+       echo "Shutting down monitor-agentless: [  OK  ]" 
+} 
+   
+start()   
+{   
+       echo "Starting monitor-agentless ..." 
+       cd $EXEC_PATH; 
+       if [ `whoami` == $INSTALLER ]; then 
+	  	./$START 
+		else 
+	       su $INSTALLER -c "./$START" 
+		fi 
+       sleep 1 
+       echo "Starting monitor-agentless: [  OK  ]" 
+}   
+   
+restart()   
+{   
+    stop   
+    start   
+}   
+   
+case "$1" in   
+    start)   
+        start   
+        ;;   
+    stop)   
+        stop   
+        ;;   
+    restart)   
+        restart   
+        ;;   
+    status)   
+	COUNT=`ps -ef | grep $APP_NAME | grep -v grep | grep -E "java" | wc -l`;
+	if [ $COUNT -eq 0 ]; then 
+		echo '服务已停止' 
+	else 
+		echo '服务已启动' 
+	fi	 
+        ;; 		
+    *)   
+        echo "Usage: service $EXEC {start|stop|restart|status}"   
+        exit 1   
+esac   
+   
+exit $?   

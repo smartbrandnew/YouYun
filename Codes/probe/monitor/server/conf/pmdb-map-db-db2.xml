@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<pmdb-map>
+	<monitor type="DB2" >
+		<!-- 
+		DB2-1	数据库状态	
+		DB2-2	数据库激活时间	
+		DB2-3	当前连接数	个
+		DB2-4	连接总次数	次
+		DB2-5	最后一次备份时间	
+		 -->			
+		<object local="resource" remote="DB2" states="SUCCESSED,FAILED,OVERSTEP">
+			<item local="monitor.state" remote="state.available_status" function="monitorState2availableStatus"/>
+			<item local="method.port" remote="attr.usePort" />
+			<item local="perf.DB2-3" remote="perf.db.current_conns" />						
+			<item local="perf.DB2-4" remote="perf.db2.total_conns" />			
+		</object>
+	</monitor>		
+	
+	<monitor type="DB2-BUFFERPOOL-JDBC" >
+		<!-- 
+		DB2-BUFFERPOOL-JDBC-1	缓冲池数据逻辑读次数	次
+		DB2-BUFFERPOOL-JDBC-2	缓冲池索引逻辑读次数	次
+		DB2-BUFFERPOOL-JDBC-3	缓冲池数据物理读次数	次
+		DB2-BUFFERPOOL-JDBC-4	缓冲池索引物理读次数	次
+		DB2-BUFFERPOOL-JDBC-5	数据缓冲池命中率	%
+		DB2-BUFFERPOOL-JDBC-6	索引缓冲池命中率	%
+		DB2-BUFFERPOOL-JDBC-7	直接读次数	次
+		DB2-BUFFERPOOL-JDBC-8	直接写次数	次
+		DB2-BUFFERPOOL-JDBC-9	目录缓冲命中率	%
+		DB2-BUFFERPOOL-JDBC-10	包缓冲命中率	%
+		 -->			
+		<object local="resource" remote="DB2">
+			<item local="perf.DB2-BUFFERPOOL-JDBC-1" remote="perf.db2-buff.pool_data_logc_reads" />
+			<item local="perf.DB2-BUFFERPOOL-JDBC-2" remote="perf.db2-buff.pool_idx_logc_reads"/>
+			<item local="perf.DB2-BUFFERPOOL-JDBC-3" remote="perf.db2-buff.pool_data_phy_reads"/>
+			<item local="perf.DB2-BUFFERPOOL-JDBC-4" remote="perf.db2-buff.pool_idx_phy_reads"/>
+			<item local="perf.DB2-BUFFERPOOL-JDBC-5" remote="perf.db2-buff.data_page_hit_ratio"/>
+			<item local="perf.DB2-BUFFERPOOL-JDBC-6" remote="perf.db2-buff.idx_page_hit_ratio"/>
+			<item local="perf.DB2-BUFFERPOOL-JDBC-7" remote="perf.db2-buff.direct_reads"/>
+			<item local="perf.DB2-BUFFERPOOL-JDBC-8" remote="perf.db2-buff.direct_writes"/>
+			<item local="perf.DB2-BUFFERPOOL-JDBC-9" remote="perf.db2-buff.catalog_cache_hit_ratio"/>
+			<item local="perf.DB2-BUFFERPOOL-JDBC-10" remote="perf.db2-buff.pkg_cache_hit_ratio"/>									
+		</object>
+	</monitor>			
+	
+	<monitor type="DB2-LOCK-JDBC" >
+		<!-- 
+		DB2-LOCK-JDBC-1	死锁数	个
+		DB2-LOCK-JDBC-2	锁升级率	%
+		DB2-LOCK-JDBC-3	锁等待率	%
+		 -->			
+		<object local="resource" remote="DB2">
+			<item local="perf.DB2-LOCK-JDBC-1" remote="perf.db2-lock.deadlocks"/>
+			<item local="perf.DB2-LOCK-JDBC-2" remote="perf.db2-lock.lock_upgrades_pct"/>
+			<item local="perf.DB2-LOCK-JDBC-3" remote="perf.db2-lock.lock_waits_pct"/>									
+		</object>
+	</monitor>			
+	
+	<monitor type="DB2-SORT-JDBC" >
+		<!-- 
+		DB2-SORT-JDBC-1	应用排序数	个
+		DB2-SORT-JDBC-2	排序溢出百分比	%
+		 -->			
+		<object local="resource" remote="DB2">
+			<item local="perf.DB2-SORT-JDBC-1" remote="perf.db2.total_sorts"/>
+			<item local="perf.DB2-SORT-JDBC-2" remote="perf.db2.sort_overflows_pct"/>		
+		</object>
+	</monitor>	
+	
+	<monitor type="DB2-TABLESPACE" >
+		<!-- 
+		DB2-TABLESPACE-1	表空间类型	
+		DB2-TABLESPACE-2	页长	B
+		DB2-TABLESPACE-3	总页数	个
+		DB2-TABLESPACE-4	已使用页	个
+		DB2-TABLESPACE-5	空闲页	个
+		DB2-TABLESPACE-6	空闲率	%
+		DB2-TABLESPACE-7	使用率	%
+		DB2-TABLESPACE-8	预取大小	KB
+		DB2-TABLESPACE-9	扩展数据块大小	KB
+		DB2-TABLESPACE-10	表空间状态	
+		 -->			
+		<object local="instance" remote="DB2Tablespace">
+		<![CDATA[		
+			output.setValue(input, "rs.ComponentOf", input.resource.id);			
+			output.setValue(input, "attr.code", input.instance.instCode);
+			output.setValue(input, "attr.name", input.instance.instName);
+			output.setValue(input, "attr.tsType", input.instance.getIndicator("DB2-TABLESPACE-1"));
+			double pageSize = input.instance.getIndicator("DB2-TABLESPACE-2");
+			output.setValue(input, "attr.pageSize", pageSize);
+			double pageTotalCount = input.instance.getIndicator("DB2-TABLESPACE-3");
+			output.setValue(input, "attr.pageTotalCount", pageTotalCount);
+			double usedPages = input.instance.getIndicator("DB2-TABLESPACE-4");								
+			double freePages = input.instance.getIndicator("DB2-TABLESPACE-5");
+			output.setValue(input, "perf.tablespace.free_pages_pct", input.instance.getIndicator("DB2-TABLESPACE-6"));
+			output.setValue(input, "perf.tablespace.used_pages_pct", input.instance.getIndicator("DB2-TABLESPACE-7"));
+			output.setValue(input, "attr.prefetchSize", input.instance.getIndicator("DB2-TABLESPACE-8"));
+			output.setValue(input, "attr.extensionDataBlockSize", input.instance.getIndicator("DB2-TABLESPACE-9"));
+			output.setValue(input, "perf.tablespace.obj_size", (pageSize * pageTotalCount) / 1024 / 1024);
+			output.setValue(input, "perf.tablespace.ts_free", (pageSize * freePages) / 1024 / 1024);
+			output.setValue(input, "perf.tablespace.ts_used_size", (pageSize * usedPages) / 1024 / 1024);		
+		]]>		
+		</object>
+	</monitor>	
+	
+	<monitor type="DB2-TBSCONT" >
+		<!-- 
+		DB2-TBSCONT-1	表空间名称	
+		DB2-TBSCONT-2	容器类型	
+		DB2-TBSCONT-3	已使用页	个
+		DB2-TBSCONT-4	总页数	个
+		DB2-TBSCONT-5	使用率	%
+		 -->			
+		<object local="instance" remote="DB2Container">
+			<item local="resource.id" remote="rs.ComponentOf" />	
+			<item local="instance.code" remote="attr.code" />
+			<item local="instance.name" remote="attr.name" />
+			<item local="perf.DB2-TBSCONT-1" remote="attr.tableSpaceName"/>
+			<item local="perf.DB2-TBSCONT-2" remote="attr.containerType"/>
+			<item local="perf.DB2-TBSCONT-3" remote="perf.db2-container.used_pages"/>
+			<item local="perf.DB2-TBSCONT-4" remote="perf.db2-container.page_count"/>
+			<item local="perf.DB2-TBSCONT-5" remote="perf.db2-container.used_pages_pct"/>							
+		</object>
+	</monitor>		
+</pmdb-map>

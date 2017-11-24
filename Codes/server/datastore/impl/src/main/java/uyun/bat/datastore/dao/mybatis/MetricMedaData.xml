@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="uyun.bat.datastore.dao.MetricMetaDataDao">
+	<resultMap type="uyun.bat.datastore.api.entity.MetricMetaData" id="metricMetaDataMap">
+		<result property="name" column="name" />
+		<result property="valueMin" column="value_min" jdbcType="DOUBLE"/>
+		<result property="valueMax" column="value_max"  jdbcType="DOUBLE"/>
+		<result property="precision" column="accuracy" />
+		<result property="typeName" column="data_type" />
+		<result property="unit" column="unit" />
+		<result property="cName" column="cn" />
+		<result property="cDescr" column="cdescr" />
+		<result property="integration" column="integration" />
+		<result property="tenantId" column="tenant_id" jdbcType="BINARY"
+				typeHandler="uyun.whale.common.mybatis.type.UUIDTypeHandler"/>
+	</resultMap>
+
+    <insert id="insert" parameterType="uyun.bat.datastore.api.entity.MetricMetaData">
+        insert into metric_meta_data (name,unit,value_min,value_max,accuracy,data_type,cn,cdescr,integration,tenant_id)
+        values(#{name},#{unit},#{valueMin},#{valueMax},#{precision},#{typeName},#{cName},#{cDescr},#{integration},
+        #{tenantId,typeHandler=uyun.whale.common.mybatis.type.UUIDTypeHandler})
+    </insert>
+
+	<update id="update" parameterType="uyun.bat.datastore.api.entity.MetricMetaData">
+		update metric_meta_data
+		set name=#{name},
+		unit=#{unit},
+		value_min=#{valueMin},
+		value_max=#{valueMax},
+		accuracy=#{precision},
+		data_type=#{typeName},
+		cn=#{cName},
+		cdescr=#{cDescr},
+		integration=#{integration}
+		where name = #{name}
+
+	</update>
+
+	<delete id="delete">
+		delete from metric_meta_data where name=#{name}
+	</delete>
+
+	<select id="queryByName" resultMap="metricMetaDataMap"
+		parameterType="string">
+		select * from metric_meta_data where name=#{name}
+	</select>
+
+
+	<select id="queryAll" resultMap="metricMetaDataMap">
+		select * from metric_meta_data where ISNULL(tenant_id) or
+		tenant_id=#{0,typeHandler=uyun.whale.common.mybatis.type.UUIDTypeHandler}
+	</select>
+
+	<select id="getMetricNames" resultType="string"
+		parameterType="int">
+		select name from metric_meta_data limit #{value}
+	</select>
+
+	<select id="getMetricNamesByKey" resultType="string">
+		select name from metric_meta_data where name like CONCAT(CONCAT('%', #{0}), '%') limit #{1}
+	</select>
+
+	<select id="getMetricMetaDataByKey" resultMap="metricMetaDataMap">
+		select * from metric_meta_data where name like CONCAT(#{0}, '%')
+	</select>
+
+	<select id="getAllMetricMetaDataName" resultType="string">
+		select name from metric_meta_data
+	</select>
+
+	<select id="getMetricsUnitByList" parameterType="java.util.List" resultMap="metricMetaDataMap" >
+		select name, unit from metric_meta_data where name in
+		<foreach collection="list" item="item" open="(" close=")" separator=",">
+			#{item}
+		</foreach>
+	</select>
+
+	<select id="queryRangedMetaData" resultMap="metricMetaDataMap">
+		select * from metric_meta_data where (ISNULL(tenant_id) or
+		tenant_id=#{0,typeHandler=uyun.whale.common.mybatis.type.UUIDTypeHandler})
+		AND !ISNULL(value_max)
+	</select>
+</mapper>

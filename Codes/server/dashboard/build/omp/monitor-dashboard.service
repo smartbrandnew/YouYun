@@ -1,0 +1,12 @@
+[Unit]  
+Description=monitor-dashboard
+After=network.target  
+   
+[Service] 
+Type=oneshot
+RemainAfterExit=yes 
+ExecStart=/usr/bin/su -l root /opt/uyun/monitor/dashboard/bin/bat-dashboard.sh start
+ExecStop=/usr/bin/su -l root /opt/uyun/monitor/dashboard/bin/bat-dashboard.sh stop
+   
+[Install]  
+WantedBy=multi-user.target

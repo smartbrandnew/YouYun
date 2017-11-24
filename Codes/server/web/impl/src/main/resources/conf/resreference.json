@@ -1,0 +1,201 @@
+{
+    "MySQL": {
+        "icoUrl" : "image/mysql.png",
+        "manualUrl" : "markdown/MySQL.md",
+        "category" : "Database"
+    },
+
+    "Redis": {
+        "icoUrl" : "image/redis.png",
+        "manualUrl" : "markdown/redisdb.md",
+        "category" : "Database"
+    },
+
+    "Java": {
+        "icoUrl" : "image/java.png",
+        "manualUrl" : "markdown/Java.md",
+        "category" : "Develop Language"
+    },
+
+    "HAProxy": {
+        "icoUrl" : "image/haproxy.png",
+        "manualUrl" : "markdown/haproxy.md",
+        "category" : "MW Proxy"
+    },
+
+    "HDFS": {
+        "icoUrl" : "image/hdfs.png",
+        "manualUrl" : "markdown/HDFS.md",
+        "category" : "Other"
+    },
+
+     "Event Viewer": {
+        "icoUrl" : "image/event_viewer.png",
+        "manualUrl" : "markdown/Event_Viewer_News.md",
+        "category" : "OPS Log"
+    },
+    
+     "ActiveMQ": {
+        "icoUrl" : "image/activemq.png",
+        "manualUrl" : "markdown/ActiveMQ.md",
+        "category" : "MW MQ"
+    },
+
+    "PowerDNS Recursor": {
+        "icoUrl" : "image/powerdns_recursor.png",
+        "manualUrl" : "markdown/Dns_Check.md",
+        "category" : "Network Service"
+    },
+
+     "Jenkins": {
+        "icoUrl" : "image/jenkins.png",
+        "manualUrl" : "markdown/Jenkins.md",
+        "category" : "Develop Build"
+    },
+
+    "Secure Shell": {
+        "icoUrl" : "image/ssh.png",
+        "manualUrl" : "markdown/SSH.md",
+        "category" : "Network Service"
+    },
+
+    
+    "TCP": {
+        "icoUrl" : "image/tcp.png",
+        "manualUrl" : "markdown/tcp-check.md",
+        "category" : "Network Service"
+    },
+
+     "HTTP": {
+        "icoUrl" : "image/http.png",
+        "manualUrl" : "markdown/http-check.md",
+        "category" : "Network Service"
+    },
+
+    "Apache": {
+        "icoUrl" : "image/apache.png",
+        "manualUrl" : "markdown/Apache.md",
+        "category" : "Database"
+    },
+
+    "Docker": {
+        "icoUrl" : "image/docker.png",
+        "manualUrl" : "markdown/Docker.md",
+        "category" : "Platform Container"
+    },
+
+    "IIS": {
+        "icoUrl" : "image/iis.png",
+        "manualUrl" : "markdown/IIS.md",
+        "category" : "MW Web"
+    },
+
+    "MapReduce": {
+        "icoUrl" : "image/mapreduce.png",
+        "manualUrl" : "markdown/MapReduce.md",
+        "category" : "other"
+    },
+
+    "Mesos": {
+        "icoUrl" : "image/mesos.png",
+        "manualUrl" : "markdown/Mesos.md",
+        "category" : "Platform Container"
+    },
+
+    "Nginx": {
+        "icoUrl" : "image/nginx.png",
+        "manualUrl" : "markdown/Nginx.md",
+        "category" : "MW Web"
+    },
+
+    "OpenStack": {
+        "icoUrl" : "image/openstack.png",
+        "manualUrl" : "markdown/OpenStack.md",
+        "category" : "IaaS"
+    },
+
+    "Postfix": {
+        "icoUrl" : "image/postfix.png",
+        "manualUrl" : "markdown/Postfix.md",
+        "category" : "Other"
+    },
+
+    "SNMP": {
+        "icoUrl" : "image/snmp.png",
+        "manualUrl" : "markdown/SNMP.md",
+        "category" : "OPS Protocol"
+    },
+
+    "SQL Server": {
+        "icoUrl" : "image/sqlserver.png",
+        "manualUrl" : "markdown/SQLServer.md",
+        "category" : "Database"
+    },
+
+    "Tomcat": {
+        "icoUrl" : "image/tomcat.png",
+        "manualUrl" : "markdown/Tomcat.md",
+        "category" : "MW Web"
+    },
+
+    "Windows Service": {
+        "icoUrl" : "image/windows_service.png",
+        "manualUrl" : "markdown/windows_service.md",
+        "category" : "OS Component"
+    },
+
+    "WMI": {
+        "icoUrl" : "image/wmi.png",
+        "manualUrl" : "markdown/WMI.md",
+        "desc" : "Windows Management Instrumentation 是在 Windows 系统中管理数据和操作的基础构件",
+        "category" : "OPS Protocol"
+    },
+
+    "Zookeeper": {
+        "icoUrl" : "image/zookeeper.png",
+        "manualUrl" : "markdown/Zookeeper.md",
+        "category" : "MW Config"
+    },
+
+    "Elasticsearch": {
+        "icoUrl" : "image/elasticsearch.png",
+        "manualUrl" : "markdown/elastic.md",
+        "category" : "MW Search"
+    },
+
+    "Memcach": {
+        "icoUrl" : "image/memcached.png",
+        "manualUrl" : "markdown/memcached.md",
+        "category" : "MW Cache"
+    },
+
+    "MongoDB": {
+        "icoUrl" : "image/mongodb.png",
+        "manualUrl" : "markdown/mongodb.md",
+        "category" : "Database"
+    },
+
+    "PostgreSQL": {
+        "icoUrl" : "image/postgres.png",
+        "manualUrl" : "markdown/postgres.md",
+        "category" : "Database"
+    },
+
+    "RabbitMQ": {
+        "icoUrl" : "image/rabbitmq.png",
+        "manualUrl" : "markdown/rabbitmq.md",
+        "category" : "MW MQ"
+    },
+
+    "vSphere": {
+        "icoUrl" : "image/vsphere.png",
+        "manualUrl" : "markdown/vsphere.md",
+        "category" : "IaaS"
+    },
+    "NetCollector": {
+        "icoUrl" : "image/netcollector.png",
+        "manualUrl" : "markdown/NetCollector.md",
+        "category" : "Hardware"
+    }
+
+}

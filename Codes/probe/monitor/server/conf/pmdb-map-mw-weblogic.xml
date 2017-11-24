@@ -1,0 +1,314 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<pmdb-map>
+	<monitor type="WLSBASIC" >
+		<!-- 
+		WLSBASIC-1	WebLogic版本	
+		WLSBASIC-2	运行状态	
+		WLSBASIC-3	健康状况	
+		WLSBASIC-4	服务器	
+		WLSBASIC-5	服务监听端口	
+		WLSBASIC-6	SSL端口	
+		WLSBASIC-7	活动socket连接数	
+		WLSBASIC-8	重启次数	
+		WLSBASIC-9	当前目录	
+		WLSBASIC-10	堆栈大小	
+		WLSBASIC-11	当前可用堆栈	
+		WLSBASIC-12	操作系统	
+		WLSBASIC-13	操作系统版本	
+		WLSBASIC-14	Java版本	
+		WLSBASIC-15	JavaVendor	
+		 -->
+		<object local="resource" remote="Weblogic" states="SUCCESSED,FAILED,OVERSTEP">
+			<item local="monitor.state" remote="state.available_status" function="monitorState2availableStatus"/>
+			<item local="perf.WLSBASIC-1" remote="attr.edition" />
+			<item local="perf.WLSBASIC-5" remote="attr.usePort" />
+			<item local="perf.WLSBASIC-6" remote="attr.sslPort" />
+			<item local="perf.WLSBASIC-9" remote="attr.installPath" />
+			<item local="perf.WLSBASIC-10" remote="attr.heapSize" />
+			<item local="perf.WLSBASIC-13" remote="attr.operSysVer" />
+			<item local="perf.WLSBASIC-14" remote="attr.jdkVersion" />
+			<item local="perf.WLSBASIC-15" remote="attr.jdkVendor" />
+		</object>
+	</monitor>
+	
+	<monitor type="WLS-SERVER" >
+		<!-- 
+		WLS-SERVLET-4      空闲线程数	
+		WLS-SERVLET-5	当前等待请求数
+		 -->
+		<object local="resource" remote="Weblogic">					
+			<item local="perf.WLS-SERVER-4" remote="perf.wls.idel_threads_count"/>
+			<item local="perf.WLS-SERVER-5" remote="perf.wls.pending_reqs"/>
+		</object>		
+	</monitor>	
+	
+	<monitor type="WLS-WLEC" >
+		<!-- 
+			WLS-WLEC-4	客户端连接请求数
+			WLS-WLEC-5	客户端请求等待数
+			WLS-WLEC-6	客户端请求错误数
+		 -->
+		<object local="instance" remote="WlsEnterpriseConn">	
+			<item local="instance.code" remote="attr.code" />
+			<item local="instance.name" remote="attr.name" />					
+			<item local="perf.WLS-WLEC-4" remote="perf.wls-ep-conn.conn_request_count"/>
+			<item local="perf.WLS-WLEC-5" remote="perf.wls-ep-conn.wait_request_count"/>
+			<item local="perf.WLS-WLEC-6" remote="perf.wls-ep-conn.error_request_count"/>
+		</object>		
+	</monitor>	
+	
+	<monitor type="WLS-SERVLET" >
+		<!-- 
+		WLS-SERVLET-1	总调用次数	次
+		WLS-SERVLET-2	最长执行时间	毫秒
+		WLS-SERVLET-3	平均执行时间	毫秒
+		 -->
+		<object local="instance" remote="WeblogicServlet">
+			<item local="resource.id" remote="rs.ComponentOf" />
+			<item local="instance.code" remote="attr.code" />
+			<item local="instance.name" remote="attr.name" />							
+			<item local="perf.WLS-SERVLET-1" remote="perf.wls-servlet.invocations"/>
+			<item local="perf.WLS-SERVLET-2" remote="perf.wls-servlet.max_execution_time"/>
+			<item local="perf.WLS-SERVLET-3" remote="perf.wls-servlet.avg_execution_time"/>
+		</object>		
+	</monitor>	
+	
+	<monitor type="WLSSERVLET" >
+		<!-- 
+		WLSSERVLET-1	平均执行时间	毫秒
+		WLSSERVLET-2	最大执行时间	毫秒
+		WLSSERVLET-3	调用次数	次
+		WLSSERVLET-4	servlet的请求速率	次/秒
+		 -->
+		<object local="instance" remote="WeblogicServlet">
+			<item local="resource.id" remote="rs.ComponentOf" />
+			<item local="instance.code" remote="attr.code" />
+			<item local="instance.name" remote="attr.name" />									
+			<item local="perf.WLSSERVLET-1" remote="perf.wls-servlet.avg_execution_time"/>
+			<item local="perf.WLSSERVLET-2" remote="perf.wls-servlet.max_execution_time"/>
+			<item local="perf.WLSSERVLET-3" remote="perf.wls-servlet.invocations"/>
+			<item local="perf.WLSSERVLET-4" remote="perf.wls-servlet.invocations_rate"/>			
+		</object>
+	</monitor>	
+	
+	<monitor type="WLS-JVM" >
+		<!-- 
+		WLS-JVM-1	当前堆大小	byte
+		WLS-JVM-2	当前可用堆	byte
+		WLS-JVM-3	堆可用百分比	
+		WLS-JVM-4	最大堆大小	byte
+		 -->
+		<object local="resource" remote="Weblogic">
+		<![CDATA[
+			double jvm_heap_size = input.instance.getIndicator("WLS-JVM-1");
+			double jvm_heap_free = input.instance.getIndicator("WLS-JVM-2");
+			double jvm_heap_free_pct = input.instance.getIndicator("WLS-JVM-3") * 100;
+			double max_heap_size = input.instance.getIndicator("WLS-JVM-4");			
+			double jvm_heap_used_pct = 100 - jvm_heap_free_pct; 
+			
+			output.setValue(input, "perf.wls-jvm.jvm_heap_size", jvm_heap_size / 1024 / 1024);
+			output.setValue(input, "perf.wls-jvm.jvm_heap_free", jvm_heap_free / 1024 / 1024);
+			output.setValue(input, "perf.wls-jvm.max_heap_size", max_heap_size / 1024 / 1024);
+			output.setValue(input, "perf.wls-jvm.jvm_heap_free_pct", jvm_heap_free_pct);
+			output.setValue(input, "perf.wls-jvm.jvm_heap_used_pct", jvm_heap_used_pct);			
+		]]>				
+		</object>
+	</monitor>	
+	
+	<monitor type="WLSJVM" >
+		<!-- 
+		WLSJVM-1	JVM堆栈大小	兆字节(MB)
+		WLSJVM-2	JVM堆栈利用率	%
+		 -->
+		<object local="resource" remote="Weblogic">
+			<item local="perf.WLSJVM-1" remote="perf.wls-jvm.jvm_heap_size" />
+			<item local="perf.WLSJVM-2" remote="perf.wls-jvm.jvm_heap_used_pct" />
+		</object>
+	</monitor>	
+	
+	<monitor type="WLS-JDBC" >
+		<!-- 
+		WLS-JDBC-1	状态	
+		WLS-JDBC-2	活动连接平均计数	个
+		WLS-JDBC-3	当前活动连接计数	个
+		WLS-JDBC-4	最大活动连接计数	个
+		 -->
+		<object local="instance" remote="WeblogicConnPool">
+		<![CDATA[
+			output.setValue(input, "rs.ComponentOf", input.resource.id); 
+			output.setValue(input, "attr.code", input.getValue("instance.code"));
+			output.setValue(input, "attr.name", input.getValue("instance.name"));
+			
+			
+			double actives = input.instance.getIndicator("WLS-JDBC-3");
+			double max_capacity = input.instance.getIndicator("WLS-JDBC-4");
+			output.setValue(input, "attr.maxCapacity", max_capacity);			
+			output.setValue(input, "perf.connpool.connpool_used_pct", actives / max_capacity * 100);
+			output.setValue(input, "perf.connpool.current_size", actives);
+			
+			output.setValue(input, "perf.wls-connpool.avg_active_conns_count", input.instance.getIndicator("WLS-JDBC-2"));
+			output.setValue(input, "perf.wls-connpool.jdbc_active_conns", input.instance.getIndicator("WLS-JDBC-3"));
+			output.setValue(input, "perf.wls-connpool.max_jdbc_active_connns", input.instance.getIndicator("WLS-JDBC-4"));
+		]]>
+		</object>
+	</monitor>
+	
+	<monitor type="WLSJDBC" >
+		<!-- 
+		WLSJDBC-1	连接总数	个
+		WLSJDBC-2	活动连接数	个
+		WLSJDBC-3	最大活动连接数	个
+		WLSJDBC-4	等待连接数	个
+		WLSJDBC-5	最大等待连接数	个
+		WLSJDBC-6	最长等待连接时间	秒
+		WLSJDBC-7	连接池容量	个
+		WLSJDBC-8	JDBC连接百分比	%
+		 -->
+		<object local="instance" remote="WeblogicConnPool">
+		<![CDATA[
+			output.setValue(input, "rs.ComponentOf", input.resource.id); 
+			output.setValue(input, "attr.code", input.getValue("instance.code"));
+			output.setValue(input, "attr.name", input.getValue("instance.name"));
+
+			double max_capacity = input.instance.getIndicator("WLSJDBC-7");			
+			double connpool_used_pct = input.instance.getIndicator("WLSJDBC-8");
+			output.setValue(input, "perf.connpool.connpool_used_pct", connpool_used_pct);
+			output.setValue(input, "attr.maxCapacity", max_capacity);
+			output.setValue(input, "perf.connpool.current_size",input.instance.getIndicator("WLSJDBC-2"));
+			output.setValue(input, "perf.wls-connpool.jdbc_active_conns", input.instance.getIndicator("WLSJDBC-2"));
+			output.setValue(input, "perf.wls-connpool.max_jdbc_active_connns", input.instance.getIndicator("WLSJDBC-3"));
+			output.setValue(input, "perf.wls-connpool.conn_waiters", input.instance.getIndicator("WLSJDBC-4"));
+			output.setValue(input, "perf.wls-connpool.max_conn_waiters", input.instance.getIndicator("WLSJDBC-5"));
+			output.setValue(input, "perf.wls-connpool.max_conn_wait_time", input.instance.getIndicator("WLSJDBC-6"));
+			output.setValue(input, "perf.wls-connpool.max_capacity", input.instance.getIndicator("WLSJDBC-7"));
+			output.setValue(input, "perf.wls-connpool.connpool_free_pct", input.instance.getIndicator("WLSJDBC-8"));
+		]]>		
+		</object>
+	</monitor>
+	
+	<monitor type="WLS-THREAD" >
+		<!-- 
+		WLS-THREAD-1	总线程数	个
+		WLS-THREAD-3	吞吐量	个
+		WLS-THREAD-4	运行状况	
+		 -->
+		<object local="resource" remote="Weblogic">
+		<![CDATA[
+			util.setOutputValue("WLS-THREAD-1", "sum", "perf.wls.total_thread_count");	
+			util.setOutputValue("WLS-THREAD-3", "sum", "perf.wls.handling_capacity");
+		]]>
+		</object>
+	</monitor>
+	
+	<monitor type="WLSTHREAD" >
+		<!-- 
+		WLSTHREAD-1	总线程数	个
+		WLSTHREAD-2	空闲线程数	个
+		WLSTHREAD-3	当前等待请求数	个
+		 -->
+		<object local="resource" remote="Weblogic">
+		<![CDATA[
+			util.setOutputValue("WLSTHREAD-3", "sum", "perf.wls.pending_reqs");
+			util.setOutputValue("WLS-THREAD-2", "sum", "perf.wls.idel_threads_count");
+		]]>
+		</object>
+		<object local="instance" remote="ThreadPool">
+		<![CDATA[
+			output.setValue(input, "rs.ComponentOf", input.resource.id); 
+			output.setValue(input, "attr.code", input.getValue("instance.code"));
+			output.setValue(input, "attr.name", input.getValue("instance.name"));
+
+			double total = input.instance.getIndicator("WLSTHREAD-1");			
+			double idles = input.instance.getIndicator("WLSTHREAD-2");
+			output.setValue(input, "perf.threadpool.pool_active_threads", total - idles);
+			output.setValue(input, "perf.threadpool.threadpool_size", total);
+		]]>		
+		</object>		
+	</monitor>	
+	
+	<monitor type="WLSEJB" >
+		<!-- 
+		WLSEJB-1	激活次数	次
+		WLSEJB-2	钝化次数	次
+		WLSEJB-3	缓存个数	个
+		WLSEJB-4	事务提交次数	次
+		WLSEJB-5	事务回滚次数	次
+		WLSEJB-6	事务超时次数	次
+		WLSEJB-7	访问次数	次
+		 -->
+		<object local="resource" remote="Weblogic">
+		<![CDATA[
+			util.setOutputValue("WLSEJB-1", "sum", "perf.wls-ejb.activations");
+			util.setOutputValue("WLSEJB-2", "sum", "perf.wls-ejb.passivations");
+			util.setOutputValue("WLSEJB-3", "sum", "perf.wls-ejb.cached_beans");
+			util.setOutputValue("WLSEJB-4", "sum", "perf.wls-ejb.trans_committed");
+			util.setOutputValue("WLSEJB-5", "sum", "perf.wls-ejb.trans_rolledback");
+			util.setOutputValue("WLSEJB-6", "sum", "perf.wls-ejb.trans_timedout");
+			util.setOutputValue("WLSEJB-7", "sum", "perf.wls-ejb.cache_accesses");
+		]]>
+		</object>
+	</monitor>	
+	
+	<monitor type="WLSJTA" >
+		<!-- 
+		WLSJTA-1	资源错误导致的事务回滚数	个
+		WLSJTA-2	系统错误导致的事务回滚数	个
+		WLSJTA-3	应用程序错误导致的事务回滚数	个
+		WLSJTA-4	已处理事务数	个
+		WLSJTA-5	全部回滚事务比例	%
+		WLSJTA-6	资源错误导致回滚的事务比例	%
+		WLSJTA-7	系统错误导致回滚的事务比例	%
+		WLSJTA-8	应用程序错误导致回滚的事务比例	%
+		WLSJTA-9	每秒交易执行数量	次/秒
+		 -->
+		<object local="resource" remote="Weblogic">
+			<item local="perf.WLSJTA-1" remote="perf.wls-jta.trans_rolledby_reserr" />
+			<item local="perf.WLSJTA-2" remote="perf.wls-jta.trans_rolledby_syserr" />
+			<item local="perf.WLSJTA-3" remote="perf.wls-jta.trans_rolledby_apperr"/>
+			<item local="perf.WLSJTA-4" remote="perf.wls-jta.total_trans_processed"/>
+			<item local="perf.WLSJTA-5" remote="perf.wls-jta.trans_rolledback_pct"/>
+			<item local="perf.WLSJTA-6" remote="perf.wls-jta.trans_rolledby_reserr_pct"/>
+			<item local="perf.WLSJTA-7" remote="perf.wls-jta.trans_rolledby_syserr_pct"/>
+			<item local="perf.WLSJTA-8" remote="perf.wls-jta.trans_rolledby_apperr_pct"/>
+			<item local="perf.WLSJTA-9" remote="perf.wls-jta.trans_processed_rate"/>
+		</object>
+	</monitor>
+	
+	<monitor type="WLSWEBAPP,WLSWEBAPP-SNMP" >
+		<!-- 
+		WLSWEBAPP-1	当前session个数	个
+		WLSWEBAPP-2	session最大值	个
+		WLSWEBAPP-3	session总数	个
+		 -->
+		<object local="instance" remote="WeblogicWebApp">
+			<item local="resource.id" remote="rs.ComponentOf" />
+			<item local="instance.code" remote="attr.code" />
+			<item local="instance.name" remote="attr.name" />							
+			<item local="perf.WLSWEBAPP-1" remote="perf.web-app.current_session_count" />			
+			<item local="perf.WLSWEBAPP-2" remote="perf.wls-app.current_session_top" />
+			<item local="perf.WLSWEBAPP-3" remote="perf.web-app.session_count"/>
+		</object>
+		<object local="resource" remote="Weblogic">
+		<![CDATA[
+			util.setOutputValue("WLSWEBAPP-1", "sum", "perf.wls.current_open_sessions");
+			util.setOutputValue("WLSWEBAPP-2", "sum", "perf.wls.max_open_sessions");
+			util.setOutputValue("WLSWEBAPP-3", "sum", "perf.wls.total_sessions_opened");
+		]]>
+		</object>		
+	</monitor>	
+	
+	<monitor type="WLS-STATUS" >
+		<!-- 
+			WLS-STATUS-1  当前应用状态
+		 -->
+		 <object local="instance" remote="WeblogicWebApp">
+		<![CDATA[
+			String state = "ACTIVE";	
+			output.setValue(input, "attr.code", input.getValue("instance.code"));
+			output.setValue(input, "attr.name", input.getValue("instance.name"));						
+			output.setValue(input, "state.available_status", state.equals(input.instance.getIndicator("WLS-STATUS-1")) ? 1 : 0);		
+		]]>				
+		</object>
+	</monitor>	
+	
+</pmdb-map>

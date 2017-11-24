@@ -1,0 +1,12 @@
+init_config:
+
+instances:
+  - url: "https://server:port"
+    timeout: 5
+
+    ssl_keyfile: /path/to/key/file
+    ssl_certfile: /path/to/certificate/file
+
+    ssl_cert_validation: true
+
+    ssl_ca_certs: /path/to/CA/certificate/file

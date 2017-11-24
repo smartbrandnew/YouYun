@@ -1,0 +1,23 @@
+name: local-monitor
+version: 2.6.2
+author: uyun
+description: monitor-agent
+platforms:
+    Turbo@11.3: [64]
+run:
+  - ./embedded/bin/python ./agent/agent.py foreground --use-local-forwarder
+  - ./embedded/bin/python ./agent/monitoragent.py
+  - ./embedded/bin/python ./agent/monitorstatsd.py --use-local-forwarder
+  - ./embedded/bin/python ./agent/updater_process.py
+  - ./embedded/bin/python ./agent/jmxfetch.py
+  - ./embedded/bin/python ./agent/script_monitor_process.py
+  - ./embedded/bin/python ./agent/custom_script.py
+priority: 999
+backups:
+    - conf.d
+    - conf
+scripts:
+    post_install: ./embedded/bin/python install.py
+env:
+    LD_LIBRARY_PATH: $LD_LIBRARY_PATH:./embedded/lib
+    PATH: $PATH:./embedded/bin:./bin

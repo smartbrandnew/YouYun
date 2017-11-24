@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+	<groupId>com.broada</groupId>
+	<artifactId>carrier.monitor.agentless</artifactId>
+	<version>1.0.0</version>
+	<packaging>pom</packaging>
+
+	<name>agentless</name>
+	<url>http://maven.apache.org</url>
+
+	<properties>
+		<!--指定Maven用什么编码来读取源码及文档 -->
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<!--指定Maven用什么编码来呈现站点的HTML文件 -->
+		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+	</properties>
+
+	<modules>
+		<module>server-api</module>
+		<module>server</module>
+		<module>probe-api</module>
+		<module>probe</module>
+		<module>monitor</module>
+		<module>base</module>
+		<module>build</module>
+	</modules>
+
+</project>

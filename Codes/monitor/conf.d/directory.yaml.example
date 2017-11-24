@@ -1,0 +1,10 @@
+init_config:
+
+instances:
+  - directory: "/path/to/directory"
+    name: "tag_value"
+    dirtagname: "tag_dirname"
+    filetagname: "tag_filename"
+    filegauges: False
+    pattern: "*.log"
+    recursive: True

@@ -1,0 +1,566 @@
+<?xml version="1.0" encoding="GBK"?>
+
+<collection-define>
+  <cliconfiguration sysname="AIX">
+   <shellInteract>
+  		<shellStart>
+  			<command cliPrompt=">" output="false">
+			  	<![CDATA[
+			  		cat << "EOF" > ${remoteFilePath}
+			  		#!/bin/sh
+					 	if [ "$1" = "check" ];
+						then echo ${sequence}
+						else 
+						${commands}
+						fi
+			  	]]>
+		  	</command>
+	  	</shellStart>
+	  	<shellEnd>
+	  		<command cliPrompt="default" output="false">
+			  	<![CDATA[
+				  		EOF
+				  		chmod +x ${remoteFilePath}
+				  	]]>
+			  </command>
+		  </shellEnd>
+		  <shellExec>
+			   <command cliPrompt="default" output="true">
+			  	<![CDATA[
+			  		 LANG=en_US;${remoteFilePath}
+				  	]]>
+			  </command>
+			</shellExec>
+  	</shellInteract>
+    <category name="disk" sysversion="all" description="AIX disk">
+      <commands>
+        <command>PATH=/usr/bin:/usr/sbin:$PATH;df -Pk</command>
+      </commands>
+      <parserRule start="0" datatype="table" delimeter="\s">
+        <parserItem name="blocks" token="1">
+          <bsh>"" + Float.parseFloat(blocks)/1024.0</bsh>
+        </parserItem>
+        <parserItem name="used" token="2">
+          <bsh>"" + Float.parseFloat(used)/1024.0</bsh>
+        </parserItem>
+        <parserItem name="available" token="3">
+          <bsh>"" + Float.parseFloat(available)/1024.0</bsh>
+        </parserItem>
+        <parserItem name="capacity" token="4">
+          <bsh>
+            if(capacity.endsWith("%")){ capacity = capacity.substring(0, capacity.length()-1); } return capacity;
+          </bsh>
+        </parserItem>
+        <parserItem name="diskname" token="5" />
+        <bsh>
+          <![CDATA[
+          String[] splitter = collectData.split("\n");
+          StringBuffer buffer = new StringBuffer();
+          for(int index = 0; index < splitter.length; index++){
+            String s = splitter[index];
+			if (!s.contains("%"))
+				continue;
+            String[] s1 = s.split("\\s");
+            if(s1.length < 6){
+              index++;
+              if(index < splitter.length){
+                buffer.append(s.replaceAll("\\s+"," "));
+                buffer.append(splitter[index]);
+              }
+            }else{			  
+              buffer.append(s);
+            }
+            buffer.append("\n");
+          }
+          return buffer.toString();
+        ]]>
+        </bsh>
+      </parserRule>
+    </category>
+    <category name="io" sysversion="all" description="AIX device io">
+      <commands>
+        <command>
+          sar -d 1 1
+        </command>
+      </commands>
+      <parserRule start="0" end="0" delimeter="\s" datatype="table">
+        <parserItem name="device" token="0" />
+        <parserItem name="busy" token="1" />
+        <parserItem name="avque" token="2" />
+        <parserItem name="r+w/s" token="3" />
+        <parserItem name="blks/s" token="4" />
+        <parserItem name="avwait" token="5" />
+        <parserItem name="avserv" token="6" />
+         <bsh>
+	      <![CDATA[
+	      	int pos = collectData.indexOf("avserv");
+	      	collectData = collectData.substring(pos + 6).trim();
+	      	pos = collectData.indexOf(" ");
+	      	return collectData.substring(pos).trim();
+	      ]]>
+	     </bsh>
+      </parserRule>
+    </category>
+    <category name="ls" sysversion="all" description="AIX file">
+      <commands>
+        <command>PATH=/usr/bin:/usr/sbin:$PATH;ls -dl</command>
+      </commands>
+      <parserRule start="0" end="0" datatype="table" delimeter="\s">
+        <bsh>
+      	<![CDATA[
+      	  import com.broada.carrier.monitor.impl.host.cli.file.CLIFileExecutor;
+      	  import com.broada.carrier.monitor.impl.host.cli.file.CLIFileMonitorCondition;
+      	  
+      	  String[] lines = collectData.split("\n");
+      	  List result = new ArrayList();		
+		  for(int index = 0; index < lines.length; index++){
+			CLIFileMonitorCondition row = CLIFileExecutor.parseFileline(lines[index]);
+			if (row != null)
+			  result.add(row);
+		  }
+		  return result;
+      	]]>
+		</bsh>      
+      </parserRule>
+    </category>
+    
+    <category name="netstat" sysversion="all" delimeter="aix netstat">
+    	<commands>
+    		<command>netstat -in</command>
+    	</commands>
+    	<parserRule start="1" end="0" datatype="table" delimeter="\s">
+    		<parserItem name="name" token="0"/>
+			<parserItem name="mtu" token="1"/>
+			<parserItem name="network" token="2"/>
+			<parserItem name="address" token="3"/>
+			<parserItem name="ipkts" token="4"/>
+			<parserItem name="ierrs" token="5"/>
+			<parserItem name="opkts" token="6"/>
+			<parserItem name="oerrs" token="7"/>
+			<parserItem name="coll" token="8"/>
+			<bsh>
+			<![CDATA[
+				String[] lines = collectData.split("\n");
+				String result = "";
+				for(int index = 0; index < lines.length; index++){
+					System.out.println(lines[index]);
+					String[] s = lines[index].split("(\\s)+");
+					for(int n = 0; n < s.length; n++){
+						if(s.length == 8 && n == 3){
+							result += "- ";
+						}
+						result += s[n] + " ";
+					}
+					result += "\n";
+				}
+				return result;
+			]]>
+			</bsh>
+    	</parserRule>
+    </category>
+    
+    <category name="memory" sysversion="all" description="aix memory" remoteFilePath="/tmp/broadaAIXMemory.sh" sequence="1000">
+      <commands>
+        <command output="false">
+          <![CDATA[
+          PATH=/usr/bin:/usr/sbin:$PATH
+        	total=`lsattr -El mem0 | grep -i Total |awk '{ print ($2)}'`
+        	free=`vmstat 1 1 | tail -n1 | awk '{print($4*4)}'`
+        	free=`expr $free \/ 1024`
+					used=`expr $total - $free`
+        	mem=`expr $used \* 100 \/ $total`
+       		svmon_out=`/usr/sbin/swap -s`
+        	pgsp_total=`echo $svmon_out | awk '{ print ($3 * 4)}'`
+        	pgsp_total=`expr $pgsp_total \/ 1024`
+        	pgsp_used=`echo $svmon_out | awk '{ print ($7 * 4)}'`
+        	pgsp_used=`expr $pgsp_used \/ 1024`
+        	pgsp_util=`echo|awk '{printf("%0.2f",((c1*100)/c2)) }' c1=$pgsp_used c2=$pgsp_total`
+        	echo $used $mem $pgsp_used $pgsp_util>/tmp/broada.memory.out
+      ]]>
+        </command>
+        <command>
+          <![CDATA[
+        cat /tmp/broada.memory.out
+        ]]>
+        </command>
+      </commands>
+
+      <parserRule start="0" end="0" delimeter="\s" datatype="property">
+
+        <parserItem line="0" token="0" name="real" />
+        <parserItem line="0" token="1" name="realuseutil" />
+        <parserItem line="0" token="2" name="virtualused" />
+        <parserItem line="0" token="3" name="virtualutil" />
+      </parserRule>
+    </category>
+    <category name="cpu" sysversion="all" description="aix cpu">
+      <commands>
+        <command>PATH=/usr/bin:/usr/sbin:$PATH;vmstat 1 3|tail -1</command>
+      </commands>
+
+      <parserRule start="0" end="0" delimeter="\s" datatype="property">
+        <parserItem line="0" token="13" name="user" />
+        <parserItem line="0" token="14" name="sys" />
+      </parserRule>
+
+    </category>
+
+    <category name="hostinfo" sysversion="all" description="AIX hostinfo" remoteFilePath="/tmp/broadaAIXHostinfo.sh" sequence="1001">
+      <commands>
+        <command output="false">
+        PATH=/usr/bin:/usr/sbin:$PATH
+      a=`prtconf|grep "Number Of Processors"|awk '{print ($4)}'`
+		  b=`uname -s`
+		  c=`uname -v`
+		  d=`uname -M`
+		  e=`lspv|awk '{print ($1)}'|tr '\n' '@'`
+		  f=`lsattr -El mem0 | grep -i Total |awk '{ print ($2)}'`;
+		  rm /tmp/broada.processes.out
+		  ps -ef>/tmp/broada.processes.out
+		  g=`wc /tmp/broada.processes.out | awk '{print $1}'`
+		  h=`netstat -in|grep -v 'Name'|awk '{printf("%s,%s;",$1,$4);}'`
+        </command>
+        <command>echo $a $d $b $c $f $g 'aix;'$h $e</command>
+      </commands>
+      <parserRule start="0" end="0" delimeter="\s" datatype="property">
+        <parserItem line="0" token="0" name="processorCount"/>
+        <parserItem line="0" token="1" name="machineType"/>
+        <parserItem line="0" token="2" name="systemName"/>
+        <parserItem line="0" token="3" name="systemVersion"/>
+        <parserItem line="0" token="4" name="memorySize"/>
+        <parserItem line="0" token="5" name="processCount"/>
+        <parserItem line="0" token="6" name="intfList"/>
+        <parserItem line="0" token="7" name="diskInfo"/>
+      </parserRule>
+    </category>
+    
+    <category name="totalmemory" sysversion="all" description="AIX totalmemory">
+      <commands>
+        <command output="false">
+        PATH=/usr/bin:/usr/sbin:$PATH;
+        svmon_out=`lsattr -El mem0 | grep -i Total |awk '{ print ($2)}'`;
+        </command>
+        <command>echo $svmon_out</command>
+      </commands>
+      <parserRule start="0" end="0" delimeter="\s" datatype="property">
+     		<parserItem name="totalMemory" line="0" token="0"/>
+     		 <bsh>
+      <![CDATA[
+      import java.util.regex.Matcher;
+			import java.util.regex.Pattern;
+      Pattern pattern = Pattern.compile(".*\\d+(\\s)?$");
+			Matcher macher = pattern.matcher(collectData);
+			String dataNum = "";
+			if(macher.find()){
+        dataNum = macher.group(0);
+			}
+			return dataNum;
+			 ]]>
+			</bsh>
+      </parserRule>
+    </category>
+
+    <category name="process" sysversion="all" description="AIX process">
+      <commands>
+        <command>PATH=/usr/bin:/usr/sbin:$PATH;ps -eo comm,pcpu,pmem,vsz,stat</command>
+      </commands>
+
+      <parserRule start="1" delimeter="\s" datatype="table">
+        <parserItem token="0" name="command"/>
+        <parserItem token="1" name="cpu"/>
+        <parserItem token="3" name="memory">
+          <bsh>
+            <![CDATA[
+        import java.text.DecimalFormat;
+        DecimalFormat format = new DecimalFormat("#0.00");
+        format.format(Float.parseFloat(memory)/1024.0);
+        ]]>
+          </bsh>
+        </parserItem>
+        <parserItem token="4" name="status"/>
+      </parserRule>
+    </category>
+
+    <category name="sysversion" sysversion="all" description="aix version">
+      <commands>
+        <command>PATH=/usr/bin:/usr/sbin:$PATH;echo `uname -s -n` `uname -v`.`uname -r`</command>
+      </commands>
+      <parserRule start="0" end="0" delimeter="\s" datatype="property">
+        <parserItem line="0" token="0" name="os" />
+        <parserItem line="0" token="1" name="name" />
+        <parserItem line="0" token="2" name="sysversion" />
+      </parserRule>
+    </category>
+    
+    <category name="latest15" sysversion="all" description="aix version">
+      <commands>
+        <command>PATH=/usr/bin:/usr/sbin:$PATH;errpt |head -n 15</command>
+      </commands>
+      <parserRule start="1" end="0" delimeter="\s" datatype="table">
+        <parserItem token="0" name="identifier" />
+        <parserItem token="1" name="timestamp" />
+        <parserItem token="2" name="type" />
+        <parserItem token="3" name="err_class" />
+        <parserItem token="4" name="resource_name" />
+        <parserItem start="41" end="-1" name="description" />
+      </parserRule>
+    </category>
+    
+    <category name="latestSeq" sysversion="all" description="aix version">
+      <commands>
+        <command>PATH=/usr/bin:/usr/sbin:$PATH;errpt -a | grep Sequence| head -n 1 |awk '{print $3}'</command>
+      </commands>
+      <parserRule start="0" end="0" delimeter="\s" datatype="property">
+        <parserItem line="0" token="0" name="sequence" />
+      </parserRule>
+    </category>
+    
+    <category name="detail" sysversion="all" description="aix version">
+      <commands>
+        <command>PATH=/usr/bin:/usr/sbin:$PATH;errpt -a -l</command>
+      </commands>
+      <parserRule start="1" end="0" delimeter="\s" datatype="block">
+          <bsh>
+               <![CDATA[
+			   setProperty(lower, line, prefix, props, key) {
+					if (lower.startsWith(prefix)) {
+						props.put(key, line.substring(prefix.length()).trim());
+						return true;
+					}
+					return false;
+			   }
+			   
+               Properties props = new Properties();
+               String[] lines = collectData.split("\n");
+               for (int i = 0; i < lines.length; i++) {
+					String line = lines[i];
+					String lower = line.toLowerCase();
+					setProperty(lower, line, "identifier:", props, "identifier");
+					setProperty(lower, line, "date/time:", props, "timestamp");
+					setProperty(lower, line, "sequence number:", props, "seqno");
+					setProperty(lower, line, "type:", props, "type");
+					setProperty(lower, line, "class:", props, "err_class");
+					setProperty(lower, line, "resource name:", props, "resource_name");
+					if (lower.startsWith("type:")) 
+						props.put("type", line.substring(5).trim().substring(0, 1));
+					if (lower.startsWith("description")) {
+						props.put("description", lines[i + 1]);
+						break;
+					}
+               }
+			   
+			   props.put("detail", collectData);
+               return props;
+               ]]>
+          </bsh>
+      </parserRule>	  
+    </category>
+    
+    <category name="detail" sysversion="5.3" description="aix version">
+      <commands>
+        <command>PATH=/usr/bin:/usr/sbin:$PATH;errpt -a -l</command>
+      </commands>
+      <parserRule start="1" end="0" delimeter="\s" datatype="block">
+      	<parserItem line="2" token="1" name="identifier" />
+      	<parserItem line="4" start="17" end="-1" name="timestamp"/>
+				<parserItem line="5" token="2" name="seqno" />
+      	<parserItem line="9" token="1" name="type">
+      	<bsh>
+          	<![CDATA[
+		        if(type.trim().length() > 1)
+      				type = type.substring(0,1);
+      			return type;
+        		]]>
+          </bsh>
+        </parserItem>
+      	<parserItem line="8" token="1" name="err_class" />
+				<parserItem line="10" token="2" name="resource_name" />
+				<parserItem line="13" start="0" end="-1" name="description" />
+        <parserItem line="-1" name="detail" />
+      </parserRule>
+    </category>
+    
+    <category name="detail" sysversion="5.1" description="aix version">
+      <commands>
+        <command>errpt -a -l</command>
+      </commands>
+      <parserRule start="1" end="0" delimeter="\s" datatype="block">
+      	<parserItem line="2" token="1" name="identifier" />
+      	<parserItem line="4" start="17" end="-1" name="timestamp"/>
+				<parserItem line="5" token="2" name="seqno" />
+      	<parserItem line="9" token="1" name="type">
+      	<bsh>
+          	<![CDATA[
+		        if(type.trim().length() > 1)
+      				type = type.substring(0,1);
+      			return type;
+        		]]>
+          </bsh>
+        </parserItem>
+      	<parserItem line="8" token="1" name="err_class" />
+				<parserItem line="10" token="2" name="resource_name" />
+				<parserItem line="29" start="0" end="-1" name="description" />
+        <parserItem line="-1" name="detail" />
+      </parserRule>
+    </category>
+    
+        <category name="userinfo" sysversion="all" description="aix current login users">
+      <commands>
+        <command>who -H</command>
+      </commands>
+      <parserRule start="1" end="0" delimeter="\s" datatype="table">
+        <parserItem line="0" token="0" name="user" />
+        <parserItem line="0" token="1" name="tty" />
+        <parserItem start="24" end="36" name="logintime" />
+        <parserItem line="0" token="2" name="loginfrom"/>
+      </parserRule>
+    </category>
+    
+    <category name="hisuserinfo" sysversion="all" description="aix login users's history">
+      <commands>
+        <command>last </command>
+      </commands>
+      <parserRule start="0" end="0" delimeter="\s" datatype="table">
+        <parserItem line="0" token="0" name="user" />
+        <parserItem line="0" token="1" name="tty" />
+        <parserItem start="46" end="-1" name="logintime" />
+        <parserItem line="0" token="2" name="loginfrom"/>
+      </parserRule>
+    </category>
+    
+    <category name="useraccounts" sysversion="all" description="aix user accounts">
+      <commands>
+        <command>cat /etc/passwd</command>
+      </commands>
+      <parserRule start="0" end="0" delimeter=":" datatype="table">
+        <parserItem line="0" token="0" name="user" />
+        <parserItem line="0" token="1" name="passwd"/>
+        <parserItem line="0" token="2" name="uid" />
+        <parserItem line="0" token="3" name="gid"/>
+        <parserItem line="0" token="4" name="comment"/>
+        <parserItem line="0" token="5" name="home"/>        
+      </parserRule>
+    </category>
+    
+   <category name="cd" sysversion="all" description="aix directory">
+			<commands>
+	       <command>LANG=en_US;ls -dl</command>
+			</commands>
+			<parserRule start="0" end="0" datatype="table" delimeter="\s">
+				 <parserItem token="1" name="linkedcnt"/>
+				 <parserItem token="2" name="user"/>
+				 <parserItem token="3" name="group"/>
+				 <parserItem token="8" name="filepath">
+          <bsh>
+            <![CDATA[
+					if(!filepath.startsWith("/")){
+						int pos = filepath.indexOf("/");
+						if(pos > -1) filepath = filepath.substring(pos);
+					}
+					if(filepath.indexOf("->") != -1){
+						filepath = filepath.substring(0, filepath.indexOf("->")).trim();
+					}
+					return filepath;
+				]]>
+          </bsh>
+        </parserItem>
+				<parserItem name="mmonth" token="5"/>
+				<parserItem name="mday" token="6"/>
+				<parserItem name="mother" token="7"/>
+        <parserItem name="size" token="4">
+          <bsh>
+            <![CDATA[
+					import java.text.DecimalFormat;
+					DecimalFormat format = new DecimalFormat("#0.00");
+					format.format(Float.parseFloat(size)/(1024*1024));
+					]]>
+          </bsh>
+        </parserItem>
+        <bsh>
+          <![CDATA[
+          if(collectData.trim().endsWith("not found")){
+             collectData = "";
+          }
+          return collectData;
+				]]>
+        </bsh>
+	  </parserRule>
+    </category>
+    
+    <category name="hacmp4nodestate" sysversion="all" description="hacmp nodestate">
+      <commands>
+        <command>cat /usr/sbin/cluster/clstat |grep ^Node</command>
+      </commands>
+      <parserRule start="0" end="-1" delimeter="\s" datatype="table">
+        <parserItem line="0" token="0" name="nodeName">
+	        <bsh>
+	           <![CDATA[
+				String[] tmp = nodeName.split(":");
+				return tmp[1];	
+			]]>
+	        </bsh>
+        </parserItem>
+        <parserItem line="0" token="1" name="nodeState" >
+        	<bsh>
+	            <![CDATA[
+					String[] tmp = nodeState.split(":");
+					return tmp[1];	
+				]]>
+          	</bsh>
+        </parserItem>
+      </parserRule>
+    </category>
+    
+    <category name="hacmp4state" sysversion="all" description="hacmp state">
+      <commands>
+        <command>cat /usr/sbin/cluster/utilities/cldump</command>
+      </commands>
+      <parserRule start="0" end="-1" delimeter="\s" datatype="block">
+        <parserItem line="1" token="2" name="Name" />
+        <parserItem line="2" token="2" name="State" />
+        <parserItem line="3" token="2" name="Substate" />
+      </parserRule>
+    </category>
+
+		<category name="hacmp4matchip" sysversion="all" description="check the configuration of the main machine ip is the same of the backup's">
+			<commands>
+				<command>rsh ${0}:/etc/hosts >/tmp/host2_hosts</command>
+				<command>diff /etc/hosts /tmp/host2_hosts</command>
+			</commands>
+			<parserRule start="0" end="0" datatype="property" delimeter="">
+				 <parserItem line="0" name="result"/>
+			</parserRule>
+		</category>
+    <category name="processstate" sysversion="all" description="AIX processstate">
+      <commands>
+        <command>PATH=/usr/bin:/usr/sbin:$PATH;ps -eo "%c|%z|%t"</command>
+      </commands>
+      <parserRule start="1" end="0" delimeter="\|" datatype="table">
+        <parserItem token="0" name="proname" />
+        <parserItem token="1" name="provsize"/>
+        <parserItem token="2" name="proetime"/>
+      </parserRule>
+    </category>
+    <category name="systemtime" sysversion="all" description="AIX systemtime">
+      <commands>
+        <command>date '+%Y-%m-%d %H:%M:%S'</command>
+      </commands>
+      <parserRule start="0" end="0" delimeter="\|" datatype="block">
+        <parserItem token="0" name="systemtime" />
+      </parserRule>
+    </category>
+    
+	 <category name="db2agent" sysversion="all" description="aix">
+      <commands>
+        <command> <![CDATA[
+        su - #db2User#
+        cd /home/uniagent/script
+        ./db2exec.sh #asynKey#
+        ]]>
+        </command>
+      </commands>
+      <parserRule start="0" end="0" delimeter=":" datatype="table">
+      </parserRule>
+   </category>    
+  </cliconfiguration>
+</collection-define>

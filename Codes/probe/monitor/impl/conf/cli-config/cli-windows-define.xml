@@ -1,0 +1,583 @@
+<?xml version="1.0" encoding="GBK"?>
+<collection-define>
+	<cliconfiguration sysname="Windows">
+		<category name="ls" sysversion="all" description="windows file">
+			<commands>
+				<command delay="1000">
+					cscript //T:300 conf/cli-config/scripts/files.vbs
+				</command>
+			</commands>
+			<parserRule start="0" end="0" datatype="table" delimeter="\|\|">
+		        <bsh>
+		      	<![CDATA[
+		      	  import com.broada.carrier.monitor.impl.host.cli.file.CLIFileExecutor;
+		      	  import com.broada.carrier.monitor.impl.host.cli.file.CLIFileMonitorCondition;
+		      	  import java.math.BigDecimal;
+		      	  
+		      	  String[] lines = collectData.split("\n");
+		      	  List result = new ArrayList();		
+				  for(int index = 0; index < lines.length; index++){
+				  	String[] fields = lines[index].split("\\|\\|");
+				  	if (fields.length < 3)
+				  	  continue;				  	
+					CLIFileMonitorCondition row = new CLIFileMonitorCondition();
+					row.setFilepath(fields[2]);
+					row.setModifiedTime(fields[1]);
+					double size = Double.parseDouble(fields[0]) / (1024 * 1024); 
+					BigDecimal bd = new BigDecimal(size);
+					bd = bd.setScale(2, BigDecimal.ROUND_HALF_UP);
+					row.setSize(bd.doubleValue());					
+					result.add(row);
+				  }
+				  return result;
+		      	]]>
+				</bsh>      						
+			</parserRule>
+		</category>
+
+		<category name="sysversion" sysversion="all" description="Windows version">
+			<commands>
+				<command>
+					cscript //T:300 conf/cli-config/scripts/version.vbs
+				</command>
+			</commands>
+			<parserRule start="0" end="0" delimeter="\s" datatype="property">
+				<parserItem line="0" token="0" name="os" />
+				<parserItem line="0" token="1" name="sysversion" />
+			</parserRule>
+		</category>
+		
+		<category name="baseinfo" sysversion="all" description="IIS BaseInfo">
+			<commands>
+				<command>
+					cscript //T:300 conf/cli-config/scripts/IISBaseInfo.vbs
+				</command>
+			</commands>
+			<parserRule start="0" end="0" datatype="table" delimeter="\|">
+				<parserItem name="Name" token="0"/>
+				<parserItem name="ServiceUptime" token="1"/>
+			</parserRule>
+		</category>
+		
+		<category name="bytes" sysversion="all" description="IIS TransferBytes">
+			<commands>
+				<command>
+					cscript //T:300 conf/cli-config/scripts/IISTransferBytes.vbs
+				</command>
+			</commands>
+			<parserRule start="0" end="0" datatype="table" delimeter="\|">
+				<parserItem name="BytesReceivedPersec" token="0"/>
+				<parserItem name="BytesSentPersec" token="1"/>
+				<parserItem name="BytesTotalPersec" token="2"/>
+				<parserItem name="Name" token="3"/>
+				<parserItem name="ServiceUptime" token="4"/>
+			</parserRule>
+		</category>
+		
+		<category name="files" sysversion="all" description="IIS TransferFiles">
+			<commands>
+				<command>
+					cscript //T:300 conf/cli-config/scripts/IISTransferFiles.vbs
+				</command>
+			</commands>
+			<parserRule start="0" end="0" datatype="table" delimeter="\|">
+				<parserItem name="FilesPersec" token="0"/>
+				<parserItem name="FilesReceivedPersec" token="1"/>
+				<parserItem name="FilesSentPersec" token="2"/>
+				<parserItem name="Name" token="3"/>
+				<parserItem name="ServiceUptime" token="4"/>
+				<parserItem name="TotalNotFoundErrors" token="5"/>
+			</parserRule>
+		</category>
+		
+		<category name="connections" sysversion="all" description="IIS Connections">
+			<commands>
+				<command>
+					cscript //T:300 conf/cli-config/scripts/IISConnections.vbs
+				</command>
+			</commands>
+			<parserRule start="0" end="0" datatype="table" delimeter="\|">
+				<parserItem name="ConnectionAttemptsPersec" token="0"/>
+				<parserItem name="CurrentConnections" token="1"/>
+				<parserItem name="LogonAttemptsPersec" token="2"/>
+				<parserItem name="MaximumConnections" token="3"/>
+				<parserItem name="Name" token="4"/>
+				<parserItem name="ServiceUptime" token="5"/>
+			</parserRule>
+		</category>
+		
+		<category name="webrequest" sysversion="all" description="IIS WebRequestsPersec">
+			<commands>
+				<command>
+					cscript //T:300 conf/cli-config/scripts/IISWebRequest.vbs
+				</command>
+			</commands>
+			<parserRule start="0" end="0" datatype="table" delimeter="\|">
+				<parserItem name="GetRequestsPersec" token="0"/>
+				<parserItem name="HeadRequestsPersec" token="1"/>
+				<parserItem name="Name" token="2"/>
+				<parserItem name="OtherRequestMethodsPersec" token="3"/>
+				<parserItem name="PostRequestsPersec" token="4"/>
+				<parserItem name="ServiceUptime" token="5"/>
+			</parserRule>
+		</category>
+		
+		<category name="users" sysversion="all" description="IIS Users">
+			<commands>
+				<command>
+					cscript //T:300 conf/cli-config/scripts/IISUsers.vbs
+				</command>
+			</commands>
+			<parserRule start="0" end="0" datatype="table" delimeter="\|">
+				<parserItem name="AnonymousUsersPersec" token="0"/>
+				<parserItem name="CurrentAnonymousUsers" token="1"/>
+				<parserItem name="CurrentNonAnonymousUsers" token="2"/>
+				<parserItem name="MaximumAnonymousUsers" token="3"/>
+				<parserItem name="MaximumNonAnonymousUsers" token="4"/>
+				<parserItem name="Name" token="5"/>
+				<parserItem name="NonAnonymousUsersPersec" token="6"/>
+				<parserItem name="ServiceUptime" token="7"/>
+			</parserRule>
+		</category>
+
+        <category name="winAccountUsers" sysversion="all" description="Win User Account">
+			<commands>
+				<command>
+					cscript //T:300 conf/cli-config/scripts/WinUserAccount.vbs
+				</command>
+			</commands>
+			<parserRule start="0" end="0" datatype="table" delimeter="\|">
+				<parserItem name="Description" token="0"/>
+				<parserItem name="Domain" token="1"/>
+				<parserItem name="FullName" token="2"/>
+				<parserItem name="Name" token="3"/>
+			</parserRule>
+		</category>
+
+   <category name="winLogonUsers" sysversion="all" description="Win User Logon">
+			<commands>
+				<command>
+					cscript //T:300 conf/cli-config/scripts/WinUserLogon.vbs
+				</command>
+			</commands>
+			<parserRule start="0" end="0" datatype="table" delimeter="\|">
+				<parserItem name="Computer" token="0"/>
+				<parserItem name="Name" token="1"/>
+				<parserItem name="StartTime" token="2"/>
+			</parserRule>
+		</category>
+		
+		<category name="io" sysversion="all" description="windows device io">
+			<commands>
+				<command>
+					cscript //T:300 conf/cli-config/scripts/io.vbs
+				</command>
+			</commands>
+			<parserRule start="0" end="0" datatype="table" delimeter="\|">
+				<parserItem name="name" token="0"/>
+				<parserItem name="currentDiskQueueLength" token="1"/>
+				<parserItem name="diskReadBytesPerSec" token="2">
+					<bsh>
+						<![CDATA[
+					import java.text.DecimalFormat;
+					DecimalFormat format = new DecimalFormat("#0.00");
+					format.format(Float.parseFloat(diskReadBytesPerSec)/1024);
+					]]>
+					</bsh>
+				</parserItem>
+				<parserItem name="diskReadsPerSec" token="3"/>
+				<parserItem name="diskWriteBytesPerSec" token="4">
+					<bsh>
+						<![CDATA[
+					import java.text.DecimalFormat;
+					DecimalFormat format = new DecimalFormat("#0.00");
+					format.format(Float.parseFloat(diskWriteBytesPerSec)/1024);
+					]]>
+					</bsh>
+				</parserItem>
+				<parserItem name="diskWritesPerSec" token="5"/>
+				<parserItem name="percentDiskReadTime" token="6"/>
+				<parserItem name="percentDiskTime" token="7"/>
+				<parserItem name="percentDiskWriteTime" token="8"/>
+				<parserItem name="percentIdleTime" token="9"/>
+				<bsh>
+			        <![CDATA[
+			          String[] disks = collectData.split("\n");
+								String result = "";
+								for(int index = 0; index < disks.length; index++){
+									String disk = disks[index];
+									if(!disk.startsWith("_Total")){
+										if(result.length() > 0)
+											result += "\n";
+										result += disk;
+									}
+								}
+								return result.trim();
+			        ]]>
+      </bsh>
+			</parserRule>
+		</category>
+
+		<category name="cd" sysversion="all" description="windows directory">
+			<commands>
+				<command delay="1000">
+					cscript //T:300 conf/cli-config/scripts/directoryInfo.vbs
+				</command>
+			</commands>
+			<parserRule start="0" end="0" datatype="table" delimeter="\|\|">
+				<parserItem name="status" token="5" />
+				<parserItem name="fileType" token="4" />
+				<parserItem name="filePath" token="3" />
+				<parserItem name="modifyTime" token="2" />
+				<parserItem name="createTime" token="1" />
+				<parserItem name="size" token="0">
+					<bsh>
+					<![CDATA[
+					import java.text.DecimalFormat;
+					DecimalFormat format = new DecimalFormat("#0.00");
+					format.format(Float.parseFloat(size)/1024);
+					]]>
+					</bsh>
+				</parserItem>
+			</parserRule>
+		</category>
+	
+	  <category name="disk" sysversion="all" description="windows logciDisk info">
+			<commands>
+				<command delay="1000">
+					cscript //T:300 conf/cli-config/scripts/WinDf.vbs
+				</command>
+			</commands>
+			<parserRule start="0" end="0" datatype="table" delimeter="\s">
+				<parserItem name="diskname" token="0">
+				</parserItem>
+				<parserItem name="blocks" token="1" />
+				<parserItem name="available" token="2" />
+				<parserItem name="capacity" token="3">
+					<bsh>
+					<![CDATA[
+					import java.text.DecimalFormat;
+					DecimalFormat format = new DecimalFormat("#0.00");
+					format.format(Float.parseFloat(capacity));
+					]]>
+					</bsh>
+				</parserItem>
+			</parserRule>
+		</category>
+		
+		<category name="winEventLog" sysversion="all" description="windows event log">
+      <commands>
+	      <command delay="1000">
+	        cscript //T:300 conf/cli-config/scripts/WinEventLog.vbs
+	      </command>
+      </commands>
+      <parserRule start="0" end="0" datatype="table" delimeter="\|\|">
+	      <parserItem name="message" token="7" />
+	      <parserItem name="logfile" token="6" />
+	      <parserItem name="eventType" token="5" />
+	      <parserItem name="timeWritten" token="4" />
+	      <parserItem name="sourceName" token="3" />
+	      <parserItem name="recordNumber" token="2" />
+	      <parserItem name="eventCode" token="1" />
+	      <parserItem name="index" token="0" />
+      </parserRule>
+    </category>
+    <category name="processstate" sysversion="5.0.2195" description="Windows processstate">
+      <commands>
+        <command delay="1000">cscript //T:300 conf/cli-config/scripts/ProcessState-2000.vbs</command>
+      </commands>
+      <parserRule start="1" end="0" delimeter="\|" datatype="table">
+        <parserItem token="0" name="proname"/>
+        <parserItem token="1" name="provsize"/>
+        <parserItem token="2" name="prolstart"/>
+        <parserItem token="3" name="systime"/>
+      </parserRule>
+    </category>
+    <category name="processstate" sysversion="5.1.2600" description="Windows processstate">
+      <commands>
+        <command delay="1000">cscript //T:300 conf/cli-config/scripts/ProcessState-xp.vbs</command>
+      </commands>
+      <parserRule start="1" end="0" delimeter="\|" datatype="table">
+        <parserItem token="0" name="proname"/>
+        <parserItem token="1" name="provsize"/>
+        <parserItem token="2" name="prolstart"/>
+        <parserItem token="3" name="systime"/>
+      </parserRule>
+    </category>
+    <category name="processstate" sysversion="all" description="Windows processstate">
+      <commands>
+        <command delay="1000">cscript //T:300 conf/cli-config/scripts/ProcessState.vbs</command>
+      </commands>
+      <parserRule start="1" end="0" delimeter="\|" datatype="table">
+        <parserItem token="0" name="proname"/>
+        <parserItem token="1" name="provsize"/>
+        <parserItem token="2" name="prolstart"/>
+        <parserItem token="3" name="systime"/>
+      </parserRule>
+    </category>
+    <category name="totalmemory" sysversion="all" description="Windows totalmemory">
+      <commands>
+		<command delay="1000">cscript //T:300 conf/cli-config/scripts/WinTotalMemory.vbs</command>
+      </commands>
+      <parserRule start="0" end="0" delimeter="\s" datatype="property">
+        <parserItem name="totalMemory" line="0" token="0" />
+      </parserRule>
+    </category>
+    <category name="process" sysversion="all" description="database procgroup usage">
+      <commands>
+        <command delay="1000">cscript //T:300 conf/cli-config/scripts/WinProcGroup.vbs</command>
+      </commands>
+      <parserRule start="0" end="0" delimeter="\|" datatype="table">
+        <parserItem token="0" name="command"/>
+        <parserItem token="1" name="cpu"/>
+        <parserItem token="2" name="memory"/>
+        <parserItem token="3" name="status"/>
+      </parserRule>
+    </category>
+    <category name="cpu" sysversion="all" description="windows cpu">
+      <commands>
+        <command delay="1000">cscript //T:300 conf/cli-config/scripts/WinCpu.vbs</command>
+      </commands>
+      <parserRule start="0" end="0" delimeter="\s" datatype="property">
+        <parserItem line="0" token="0" name="sys" />
+        <parserItem line="0" token="1" name="user" />
+      </parserRule>
+    </category>
+	<category name="memory" sysversion="5.1.2600" description="windows memory">
+      <commands>
+        <command delay="1000">cscript //T:300 conf/cli-config/scripts/WinMemory-xp.vbs</command>
+      </commands>
+      <parserRule start="0" end="0" delimeter="\s" datatype="property">
+        <parserItem line="0" token="0" name="real" />
+        <parserItem line="0" token="1" name="realuseutil" />
+        <parserItem line="0" token="2" name="virtualused" />
+        <parserItem line="0" token="3" name="virtualutil" />
+      </parserRule>
+    </category>
+	<category name="memory" sysversion="all" description="windows memory">
+      <commands>
+        <command delay="1000">cscript //T:300 conf/cli-config/scripts/WinMemory.vbs</command>
+      </commands>
+      <parserRule start="0" end="0" delimeter="\s" datatype="property">
+        <parserItem line="0" token="0" name="real" />
+        <parserItem line="0" token="1" name="realuseutil" />
+        <parserItem line="0" token="2" name="virtualused" />
+        <parserItem line="0" token="3" name="virtualutil" />
+      </parserRule>
+    </category>
+    <category name="hostinfo" sysversion="all" description="Windows hostinfo">
+      <commands>
+        <command delay="1000">cscript //T:300 conf/cli-config/scripts/WinHostInfo.vbs</command>
+      </commands>
+      <parserRule start="0" end="0" delimeter="\|\|" datatype="property">
+        <parserItem line="0" token="0" name="processorCount"/>
+        <parserItem line="0" token="1" name="machineType"/>
+        <parserItem line="0" token="2" name="systemName"/>
+        <parserItem line="0" token="3" name="systemVersion"/>
+        <parserItem line="0" token="4" name="memorySize"/>
+        <parserItem line="0" token="5" name="processCount"/>
+        <parserItem line="0" token="6" name="intfList"/>
+        <parserItem line="0" token="7" name="diskInfo"/>
+        <parserItem line="0" token="8" name="hostname"/>
+      </parserRule>
+    </category>
+    
+		<category name="service" sysversion="all" description="Windows Service">
+			<commands>
+				<command>
+					cscript //T:300 conf/cli-config/scripts/WinService.vbs
+				</command>
+			</commands>
+			<parserRule start="0" end="0" datatype="table" delimeter="\|">
+				<parserItem name="name" token="0"/>
+				<parserItem name="caption" token="1"/>
+				<parserItem name="state" token="2"/>
+			</parserRule>
+		</category>    
+		
+		<category name="exchange-basic" sysversion="all" description="">
+			<commands>
+				<command>
+					cscript //T:300 conf/cli-config/scripts/exchange-basic.vbs
+				</command>
+			</commands>
+			<parserRule start="0" end="0" datatype="table" delimeter="\|">
+				<parserItem name="activeConnectionCount" token="0"/>
+				<parserItem name="activeUserCount" token="1"/>
+				<parserItem name="clientRPCsFailed" token="2"/>
+				<parserItem name="clientRPCsSucceeded" token="3"/>
+				<parserItem name="exchmemCurrentBytesAllocated" token="4"/>
+			</parserRule>
+		</category> 
+		 
+		<category name="exchange-mailbox" sysversion="all" description="">
+			<commands>
+				<command>
+					cscript //T:300 conf/cli-config/scripts/exchange-mailbox.vbs
+				</command>
+			</commands>
+			<parserRule start="0" end="0" datatype="table" delimeter="\|">
+				<parserItem name="name" token="0"/>
+				<parserItem name="messagesDelivered" token="1"/>
+				<parserItem name="messagesSent" token="2"/>
+				<parserItem name="messagesSubmitted" token="3"/>
+				<parserItem name="receiveQueueSize" token="4"/>
+			</parserRule>
+		</category>  	
+		
+		<category name="exchange-ldap" sysversion="all" description="">
+			<commands>
+				<command>
+					cscript //T:300 conf/cli-config/scripts/exchange-ldap.vbs
+				</command>
+			</commands>
+			<parserRule start="0" end="0" datatype="table" delimeter="\|">
+				<parserItem name="name" token="0"/>
+				<parserItem name="activeRPCthreads" token="1"/>
+				<parserItem name="ldapSearchcalls" token="2"/>
+				<parserItem name="ldapResults" token="3"/>
+			</parserRule>
+		</category> 
+		
+		<category name="exchange-database" sysversion="all" description="">
+			<commands>
+				<command>
+					cscript //T:300 conf/cli-config/scripts/exchange-database.vbs
+				</command>
+			</commands>
+			<parserRule start="0" end="0" datatype="table" delimeter="\|">
+				<parserItem name="name" token="0"/>
+				<parserItem name="databaseCacheSizeMB" token="1"/>
+				<parserItem name="ioDatabaseReadsPersec" token="2"/>
+				<parserItem name="ioDatabaseWritesPersec" token="3"/>
+				<parserItem name="ioLogReadsPersec" token="4"/>
+				<parserItem name="ioLogWritesPersec" token="5"/>
+				<parserItem name="logBytesWritePersec" token="6"/>
+			</parserRule>
+		</category>  	
+		
+		<category name="exchange2010-pop3" sysversion="all" description="">
+			<commands>
+				<command>
+					cscript //T:300 conf/cli-config/scripts/exchange2010-pop3.vbs
+				</command>
+			</commands>
+			<parserRule start="0" end="0" datatype="table" delimeter="\|">
+				<parserItem name="name" token="0"/>
+				<parserItem name="connectionsCurrent" token="1"/>
+				<parserItem name="connectionsFailed" token="2"/>
+				<parserItem name="connectionsRejected" token="3"/>
+				<parserItem name="connectionsTotal" token="4"/>
+			</parserRule>
+		</category>  		
+		
+		<category name="exchange2010-database" sysversion="all" description="">
+			<commands>
+				<command>
+					cscript //T:300 conf/cli-config/scripts/exchange2010-database.vbs
+				</command>
+			</commands>
+			<parserRule start="0" end="0" datatype="table" delimeter="\|">
+				<parserItem name="name" token="0"/>
+				<parserItem name="streambytesreadPersec" token="1"/>
+				<parserItem name="streambytesreadtotal" token="2"/>
+				<parserItem name="streambyteswrittenPersec" token="3"/>
+				<parserItem name="streambyteswrittentotal" token="4"/>
+				<parserItem name="streamreadPersec" token="5"/>
+				<parserItem name="streamreadtotal" token="6"/>
+				<parserItem name="streamwritesPersec" token="7"/>
+				<parserItem name="streamwritestotal" token="8"/>
+			</parserRule>
+		</category>  	
+		
+		<category name="exchange2010-queue" sysversion="all" description="">
+			<commands>
+				<command>
+					cscript //T:300 conf/cli-config/scripts/exchange2010-queue.vbs
+				</command>
+			</commands>
+			<parserRule start="0" end="0" datatype="table" delimeter="\|">
+				<parserItem name="name" token="0"/>
+				<parserItem name="messagesQueuedforDeliveryPerSecond" token="1"/>
+				<parserItem name="messagesQueuedforDeliveryTotal" token="2"/>
+				<parserItem name="messagesSubmittedPersecond" token="3"/>
+				<parserItem name="messagesSubmittedTotal" token="4"/>
+				<parserItem name="submissionQueueLength" token="5"/>
+			</parserRule>
+		</category>  	
+		
+		<category name="exchange2010-smtpreceived" sysversion="all" description="">
+			<commands>
+				<command>
+					cscript //T:300 conf/cli-config/scripts/exchange2010-smtpreceived.vbs
+				</command>
+			</commands>
+			<parserRule start="0" end="0" datatype="table" delimeter="\|">
+				<parserItem name="name" token="0"/>
+				<parserItem name="bytesReceivedPersec" token="1"/>
+				<parserItem name="bytesReceivedTotal" token="2"/>
+				<parserItem name="messageBytesReceivedPersec" token="3"/>
+				<parserItem name="messageBytesReceivedTotal" token="4"/>
+				<parserItem name="messagesReceivedPersec" token="5"/>
+				<parserItem name="messagesReceivedTotal" token="6"/>
+			</parserRule>
+		</category>  	
+		
+		<category name="exchange2010-smtpsent" sysversion="all" description="">
+			<commands>
+				<command>
+					cscript //T:300 conf/cli-config/scripts/exchange2010-smtpsent.vbs
+				</command>
+			</commands>
+			<parserRule start="0" end="0" datatype="table" delimeter="\|">
+				<parserItem name="name" token="0"/>
+				<parserItem name="bytesSentPersec" token="1"/>
+				<parserItem name="bytesSentTotal" token="2"/>
+				<parserItem name="messageBytesSentPersec" token="3"/>
+				<parserItem name="messageBytesSentTotal" token="4"/>
+				<parserItem name="messagesSentPersec" token="5"/>
+				<parserItem name="messagesSentTotal" token="6"/>
+			</parserRule>
+		</category>
+		
+		<category name="hyperV" sysversion="all" description="Windows hyperV">
+		<commands>
+			<command delay="1000">
+				cscript //T:300 conf/cli-config/scripts/HyperVInfo.vbs
+			</command>
+		</commands>
+		<parserRule start="0" end="0" delimeter="\|" datatype="table">
+			<parserItem token="0" name="Description" />
+			<parserItem token="1" name="ElementName" />
+			<parserItem token="2" name="EnabledState" />
+			<parserItem token="3" name="InstallDate" />
+			<parserItem token="4" name="OnTimeInMilliseconds" />
+			<parserItem token="5" name="Caption" />
+			<parserItem token="6" name="HealthState" />
+			<parserItem token="7" name="TimeOfLastStateChange" />
+			<parserItem token="8" name="GuestOperatingSystem" />
+			<parserItem token="9" name="Notes" />
+			<parserItem token="10" name="MemoryUsage" />
+			<parserItem token="11" name="NumberOfProcessors" />
+			<parserItem token="12" name="UpTime" />
+			<parserItem token="13" name="ProcessorLoad" />
+		</parserRule>
+	</category>
+
+
+	<category name="hyperVCPU" sysversion="all" description="Windows hyperVCpu">
+		<commands>
+			<command delay="1000">
+				cscript //T:300
+				conf/cli-config/scripts/HyperVCPU.vbs
+			</command>
+		</commands>
+		<parserRule start="0" end="0" delimeter="\|" datatype="table">
+			<parserItem token="0" name="LoadPercentage" />
+			<parserItem token="1" name="Name" />
+			<parserItem token="2" name="Caption" />
+		</parserRule>
+	</category>  	
+		 		
+  </cliconfiguration>
+</collection-define>

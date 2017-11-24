@@ -1,0 +1,107 @@
+#!/bin/bash
+{description}
+
+
+ANT_MANAGER_SERVICE={service_name}
+ANT_PYTHON={python}
+ANT_CIRCLED={circled}
+ANT_CIRCLECTL={circlectl}
+ANT_CIRCLED_CONF={circle_conf}
+ANT_CIRCLED_LOG={circle_log}
+ANT_SU_CMD="{ant_su_cmd}"
+
+
+get_pid()
+{{
+    ps -ef | grep "$ANT_PYTHON" |grep 'circled' | grep -v grep | awk '{{print $2}}'
+}}
+
+is_running()
+{{
+    [ -n "$(get_pid)" ]
+}}
+
+status()
+{{
+    echo -e "\033[32m"
+    if is_running; then
+        echo "$ANT_MANAGER_SERVICE is running..."
+    else
+        echo -e "\033[31m"
+        echo "$ANT_MANAGER_SERVICE service is not running..."
+    fi
+    echo -e "\033[0m"
+}}
+
+start()
+{{
+    echo -e "\033[32m"
+    if is_running; then
+        echo -e "\033[31m"
+        echo "$ANT_MANAGER_SERVICE is running..."
+    else
+        if [ -f "$ANT_CIRCLED" ]; then
+            echo "start $ANT_MANAGER_SERVICE..."
+            if [ -n "$ANT_SU_CMD" ]; then
+                $ANT_SU_CMD "'$ANT_PYTHON' '$ANT_CIRCLED' --config '$ANT_CIRCLED_CONF' --log-output '$ANT_CIRCLED_LOG' --daemon"
+            else
+                "$ANT_PYTHON" "$ANT_CIRCLED" --config "$ANT_CIRCLED_CONF" --log-output "$ANT_CIRCLED_LOG" --daemon
+            fi
+            sleep 2
+            if is_running; then
+                echo "$ANT_MANAGER_SERVICE start successfully."
+            else
+                echo -e "\031[0m"
+                echo "$ANT_MANAGER_SERVICE start failed，please try again..."
+                echo -e "\033[0m"
+            fi
+        else
+            echo -e "\033[31m"
+            echo "$ANT_MANAGER_SERVICE could not be found."
+            echo -e "\033[0m"
+        fi
+    fi
+    echo -e "\033[0m"
+}}
+
+stop()
+{{
+    echo -e "\033[32m"
+    if is_running; then
+        echo "stop $ANT_MANAGER_SERVICE..."
+        if [ -n "$ANT_SU_CMD" ]; then
+            $ANT_SU_CMD "'$ANT_PYTHON' '$ANT_CIRCLECTL' quit --wait >/dev/null 2>&1"
+        else
+            "$ANT_PYTHON" "$ANT_CIRCLECTL" quit --wait >/dev/null 2>&1
+        fi
+
+        if is_running; then
+            echo -e "\033[31m"
+            "$ANT_MANAGER_SERVICE stop failed, please try again..."
+            echo -e "\033[0m"
+        else
+            echo "$ANT_MANAGER_SERVICE stop successfully."
+        fi
+    else
+        echo -e "\033[31m"
+        echo "$ANT_MANAGER_SERVICE service is not running..."
+        echo -e "\033[0m"
+    fi
+    echo -e "\033[0m"
+}}
+
+restart()
+{{
+    stop
+    start
+}}
+
+
+case "$1" in
+    status|start|stop|restart)
+        "$1"
+        ;;
+    *)
+        echo "Usage: $0 {{status|start|stop|restart}}"
+        ;;
+esac

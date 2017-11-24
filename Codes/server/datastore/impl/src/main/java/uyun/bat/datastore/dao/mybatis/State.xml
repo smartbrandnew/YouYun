@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="uyun.bat.datastore.dao.StateDao">
+	<resultMap type="uyun.bat.datastore.api.entity.State" id="entityMap">
+		<result property="id" column="id" jdbcType="BINARY" />
+	</resultMap>
+
+	<select id="getByTenantId" resultMap="entityMap">
+		select * from state where tenant_id = #{0, jdbcType=BINARY}
+	</select>
+
+	<select id="get" resultMap="entityMap">
+		select * from state where tenant_id = #{0, jdbcType=BINARY} and name = #{1}
+	</select>
+
+	<insert id="create">
+		insert into state (tenant_id, id, name) values (#{0, jdbcType=BINARY}, #{1.id, jdbcType=BINARY}, #{1.name})
+	</insert>
+
+	<update id="update">
+		update state where name = #{name} where id = #{id}
+	</update>
+
+	<delete id="delete">
+		delete from state where tenant_id = #{0, jdbcType=BINARY} and name = #{1}
+	</delete>
+</mapper>

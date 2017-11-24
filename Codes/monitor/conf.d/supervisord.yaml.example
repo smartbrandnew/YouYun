@@ -1,0 +1,20 @@
+init_config:
+
+instances:
+   - name: server0   
+     host: localhost  
+     port: 9001       
+     user: user      
+     pass: pass      
+     proc_regex:      
+      - 'myprocess-\d\d$'
+     proc_names:     
+      - apache2       
+      - webapp
+      - java
+   - name: server1
+     host: localhost
+     port: 9002
+   - name: server2
+     socket: unix:///var/run//supervisor.sock
+     host: http://127.0.0.1       

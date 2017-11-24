@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="uyun.bat.dashboard.impl.dao.TenantResTemplateDao">
+	<resultMap type="uyun.bat.dashboard.api.entity.TenantResTemplate"
+		id="resTemplateResultMap">
+		<result property="dashboardId" column="dashboard_id"
+			typeHandler="uyun.whale.common.mybatis.type.UUIDTypeHandler" />
+		<result property="resourceId" column="resource_id"
+			typeHandler="uyun.whale.common.mybatis.type.UUIDTypeHandler" />
+		<result property="tenantId" column="tenant_id"
+			typeHandler="uyun.whale.common.mybatis.type.UUIDTypeHandler" />
+		<result property="appName" column="app_name" jdbcType="VARCHAR" />
+	</resultMap>
+
+	<sql id="TenantResTemplate_column">
+		dashboard_id,resource_id,tenant_id,app_name
+	</sql>
+
+	<select id="getTemplate" resultMap="resTemplateResultMap">
+		select
+		<include refid="TenantResTemplate_column" />
+		from tenant_res_template
+		where app_name = #{0} and
+		tenant_id =
+		#{1,typeHandler=uyun.whale.common.mybatis.type.UUIDTypeHandler} and
+		resource_id =
+		#{2,typeHandler=uyun.whale.common.mybatis.type.UUIDTypeHandler}
+	</select>
+
+	<select id="getGlobalTemplate" resultMap="resTemplateResultMap">
+		select
+		<include refid="TenantResTemplate_column" />
+		from tenant_res_template
+		where app_name = #{0} and
+		tenant_id = #{1,
+		typeHandler=uyun.whale.common.mybatis.type.UUIDTypeHandler} and
+		isNull(resource_id)
+	</select>
+
+	<insert id="createTemplate" parameterType="uyun.bat.dashboard.api.entity.TenantResTemplate">
+		insert into
+		tenant_res_template
+		values(#{dashboardId,typeHandler=uyun.whale.common.mybatis.type.UUIDTypeHandler},
+		#{resourceId,typeHandler=uyun.whale.common.mybatis.type.UUIDTypeHandler},
+		#{tenantId,typeHandler=uyun.whale.common.mybatis.type.UUIDTypeHandler},
+		#{appName})
+		on DUPLICATE KEY
+		update
+		dashboard_id =
+		#{dashboardId,typeHandler=uyun.whale.common.mybatis.type.UUIDTypeHandler},
+		resource_id=#{resourceId,typeHandler=uyun.whale.common.mybatis.type.UUIDTypeHandler},
+		tenant_id=#{tenantId,typeHandler=uyun.whale.common.mybatis.type.UUIDTypeHandler},
+		app_name = #{appName}
+	</insert>
+
+	<delete id="delete" parameterType="uyun.bat.dashboard.api.entity.TenantResTemplate">
+		delete from
+		tenant_res_template
+		where dashboard_id =
+		#{dashboardId,typeHandler=uyun.whale.common.mybatis.type.UUIDTypeHandler}
+	</delete>
+
+	<update id="update" parameterType="uyun.bat.dashboard.api.entity.TenantResTemplate">
+		update tenant_res_template
+		<set>
+			<if test="dashboardId!=null">
+				dashboard_id=#{dashboardId,typeHandler=uyun.whale.common.mybatis.type.UUIDTypeHandler},
+			</if>
+				resource_id=#{resourceId,typeHandler=uyun.whale.common.mybatis.type.UUIDTypeHandler},
+			<if test="tenantId!=null">
+				tenant_id=#{tenantId,typeHandler=uyun.whale.common.mybatis.type.UUIDTypeHandler},
+			</if>
+			<if test="appName!=null">
+				app_name = #{appName}
+			</if>
+		</set>
+		where dashboard_id =
+		#{dashboardId,typeHandler=uyun.whale.common.mybatis.type.UUIDTypeHandler}
+	</update>
+</mapper>	 

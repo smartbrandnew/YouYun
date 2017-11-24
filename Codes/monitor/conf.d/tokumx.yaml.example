@@ -1,0 +1,12 @@
+init_config:
+
+instances:
+  - server: mongodb://localhost:27017
+    tags:
+       - optional_tag1
+       - optional_tag2
+    ssl: False
+    ssl_keyfile:
+    ssl_certfile:
+    ssl_cert_reqs:
+    ssl_ca_certs:

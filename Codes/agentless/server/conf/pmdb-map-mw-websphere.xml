@@ -1,0 +1,503 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<pmdb-map>
+	<monitor type="WAS-CACHE-PMI" >
+		<!-- 
+		WAS-CACHE-PMI-1	最大高速缓存数	个
+		WAS-CACHE-PMI-2	当前高速缓存数	个
+		WAS-CACHE-PMI-3	高速缓存使用率	%
+		WAS-CACHE-PMI-4	高速缓存不命中率	%
+		 -->
+		<object local="resource" remote="WebSphere" states="SUCCESSED,FAILED,OVERSTEP">
+		<![CDATA[
+			def state = input.getValue("monitor.state");
+			if (state == com.broada.carrier.monitor.server.api.entity.MonitorState.SUCCESSED
+				|| state == com.broada.carrier.monitor.server.api.entity.MonitorState.OVERSTEP)					
+				state = 1;	
+			else if (state == com.broada.carrier.monitor.server.api.entity.MonitorState.FAILED)
+				state = 0;
+			else
+				state = null;
+			if (state != null)
+				output.setValue(input, "state.available_status", state);
+			util.setOutputValue("WAS-CACHE-PMI-1", "sum", "perf.was-buff.max_inmem_cache_entries");
+			util.setOutputValue("WAS-CACHE-PMI-2", "sum", "perf.was-buff.inmem_cache_entries");
+			util.setOutputValue("WAS-CACHE-PMI-3", "sum", "perf.was-buff.cache_used_pct");
+			util.setOutputValue("WAS-CACHE-PMI-4", "max", "perf.was-buff.cache_miss_ratio");
+		]]>
+		</object>
+	</monitor>
+	
+	<monitor type="WAS-EJB-PMI" >
+		<!-- 
+		WAS-EJB-PMI-1	Bean方法响应时间	毫秒
+		WAS-EJB-PMI-2	Bean活动时间	毫秒
+		WAS-EJB-PMI-3	Bean钝化时间	毫秒
+		WAS-EJB-PMI-4	Bean创建时间	毫秒
+		WAS-EJB-PMI-5	Bean持久化时间	毫秒
+		WAS-EJB-PMI-6	Bean装载时间	毫秒
+		WAS-EJB-PMI-7	Bean调用时间	毫秒
+		 -->
+		<object local="resource" remote="WebSphere">
+		<![CDATA[
+			util.setOutputValue("WAS-EJB-PMI-1", "avg", "perf.was-ejb.method_response_time");
+			util.setOutputValue("WAS-EJB-PMI-2", "avg", "perf.was-ejb.activation_time");
+			util.setOutputValue("WAS-EJB-PMI-3", "avg", "perf.was-ejb.passivation_time");
+			util.setOutputValue("WAS-EJB-PMI-4", "avg", "perf.was-ejb.create_time");
+			util.setOutputValue("WAS-EJB-PMI-5", "avg", "perf.was-ejb.store_time");
+			util.setOutputValue("WAS-EJB-PMI-6", "avg", "perf.was-ejb.load_time");
+			util.setOutputValue("WAS-EJB-PMI-7", "avg", "perf.was-ejb.remove_time");
+		]]>
+		</object>
+	</monitor>
+	
+	<monitor type="WAS-J2C-PMI" >
+		<!-- 
+		WAS-J2C-PMI-1	J2C使用总时间	秒
+		WAS-J2C-PMI-2	J2C使用时间增量	秒
+		 -->
+		<object local="resource" remote="WebSphere">
+		<![CDATA[
+			util.setOutputValue("WAS-J2C-PMI-1", "max", "perf.was-j2c.total_usetime");
+			util.setOutputValue("WAS-J2C-PMI-2", "max", "perf.was-j2c.increased_usetime");
+		]]>
+		</object>
+	</monitor>
+	
+	<monitor type="WAS-TRANS-PMI" >
+		<!-- 
+		WAS-TRANS-PMI-1	全局事务总数	个
+		WAS-TRANS-PMI-2	本地事务总数	个
+		WAS-TRANS-PMI-3	全局事务响应时间	毫秒
+		WAS-TRANS-PMI-4	本地事务响应时间	毫秒
+		WAS-TRANS-PMI-5	超时全局事务数	个
+		WAS-TRANS-PMI-6	超时本地事务数	个
+		WAS-TRANS-PMI-7	并发活动全局事务数	个
+		WAS-TRANS-PMI-8	并发活动本地事务数	个
+		WAS-TRANS-PMI-9	全局超时事务率	%
+		WAS-TRANS-PMI-10	本地超时事务率	%
+		 -->
+		<object local="resource" remote="WebSphere">
+			<item local="perf.WAS-TRANS-PMI-1" remote="perf.was-trans.global_trans_started" />
+			<item local="perf.WAS-TRANS-PMI-2" remote="perf.was-trans.local_trans_started"/>
+			<item local="perf.WAS-TRANS-PMI-3" remote="perf.was-trans.avg_global_trans_duration"/>
+			<item local="perf.WAS-TRANS-PMI-4" remote="perf.was-trans.avg_local_trans_duration"/>
+			<item local="perf.WAS-TRANS-PMI-5" remote="perf.was-trans.global_timeout_trans"/>
+			<item local="perf.WAS-TRANS-PMI-6" remote="perf.was-trans.local_timeout_trans"/>
+			<item local="perf.WAS-TRANS-PMI-7" remote="perf.was-trans.global_active_trans"/>
+			<item local="perf.WAS-TRANS-PMI-8" remote="perf.was-trans.local_active_trans"/>
+			<item local="perf.WAS-TRANS-PMI-9" remote="perf.was-trans.global_timeout_tran_pct"/>
+			<item local="perf.WAS-TRANS-PMI-10" remote="perf.was-trans.local_timeout_tran_pct"/>
+		</object>
+	</monitor>
+	
+	<monitor type="WASJDBC" >
+		<!-- 
+		WASJDBC-1	创建连接数	个
+		WASJDBC-2	关闭连接数	个
+		WASJDBC-3	分配连接数	个
+		WASJDBC-4	返回连接数	个
+		WASJDBC-5	连接池大小	个
+		WASJDBC-6	空闲连接池大小	个
+		WASJDBC-7	并发等待数	个
+		WASJDBC-8	故障数	个
+		WASJDBC-9	使用百分率	%
+		WASJDBC-10	平均使用时间	毫秒
+		WASJDBC-11	平均等待时间	毫秒
+		 -->
+		<object local="instance" remote="WebSphereConnPool">
+			<item local="resource.id" remote="rs.ComponentOf" />
+			<item local="instance.code" remote="attr.code" />
+			<item local="instance.name" remote="attr.name" />											
+			<item local="perf.WASJDBC-5" remote="attr.maxCapacity"/>
+			<item local="perf.WASJDBC-9" remote="perf.connpool.connpool_used_pct"/>
+			<item local="perf.WASJDBC-1" remote="perf.connpool.current_size"/>
+			<item local="perf.WASJDBC-1" remote="perf.was-connpool.connpool_conns_created"/>
+			<item local="perf.WASJDBC-2" remote="perf.was-connpool.connpool_conns_closed"/>
+			<item local="perf.WASJDBC-3" remote="perf.was-connpool.conns_allocated"/>
+			<item local="perf.WASJDBC-4" remote="perf.was-connpool.conns_returned"/>
+			<item local="perf.WASJDBC-5" remote="perf.was-connpool.connpool_size"/>
+			<item local="perf.WASJDBC-6" remote="perf.was-connpool.connpool_free_size"/>
+			<item local="perf.WASJDBC-7" remote="perf.was-connpool.concurrent_waiters"/>
+			<item local="perf.WASJDBC-8" remote="perf.was-connpool.faults"/>
+			<item local="perf.WASJDBC-9" remote="perf.was-connpool.connpool_used_pct"/>
+			<item local="perf.WASJDBC-10" remote="perf.was-connpool.conn_avg_use_time"/>
+			<item local="perf.WASJDBC-11" remote="perf.was-connpool.grant_avg_wait_time"/>		
+		</object>
+	</monitor>	
+	
+	<monitor type="WASJVM" >
+		<!-- 
+		WASJVM-1	JVM堆栈大小	兆字节(MB)
+		WASJVM-2	JVM堆栈利用率	%
+		 -->
+		<object local="resource" remote="WebSphere">
+			<item local="perf.WASJVM-1" remote="attr.jvmHeapSize"/>
+			<item local="perf.WASJVM-1" remote="perf.was-jvm.jvm_heap_size"/>
+			<item local="perf.WASJVM-2" remote="perf.was-jvm.jvm_heap_used_pct"/>
+		</object>
+	</monitor>	
+	
+	<monitor type="WASSERVLET" >
+		<!-- 
+		WASSERVLET-1	创建会话数	个
+		WASSERVLET-2	无效会话数	个
+		WASSERVLET-3	超时会话数	个
+		WASSERVLET-4	新建会话数	个
+		WASSERVLET-5	活动会话数	个
+		 -->
+		<object local="instance" remote="WebSphereServlet">
+			<item local="resource.id" remote="rs.ComponentOf" />
+			<item local="instance.code" remote="attr.code" />
+			<item local="instance.name" remote="attr.name" />	
+			<item local="perf.WASSERVLET-1" remote="perf.was-servlet.sessions_created"/>
+			<item local="perf.WASSERVLET-2" remote="perf.was-servlet.invalid_sessions"/>
+			<item local="perf.WASSERVLET-3" remote="perf.was-servlet.timeout_invalid_sessions"/>
+			<item local="perf.WASSERVLET-4" remote="perf.was-servlet.new_sessions"/>
+			<item local="perf.WASSERVLET-5" remote="perf.was-servlet.active_sessions"/>
+		</object>
+	</monitor>	
+	
+	<monitor type="WASTHREADPOOL" >
+		<!-- 
+		WASTHREADPOOL-1	线程创建数	个
+		WASTHREADPOOL-2	线程销毁数	个
+		WASTHREADPOOL-3	活动线程数	个
+		WASTHREADPOOL-4	线程池大小	个
+		WASTHREADPOOL-5	最大百分数	
+		WASTHREADPOOL-6	未释放线程	个
+		WASTHREADPOOL-7	线程池利用率	%
+		 -->
+		<object local="instance" remote="WebSphereThread">
+			<item local="resource.id" remote="rs.ComponentOf" />
+			<item local="instance.code" remote="attr.code" />
+			<item local="instance.name" remote="attr.name" />											
+			<item local="perf.WASTHREADPOOL-3" remote="perf.threadpool.pool_active_threads"/>
+			<item local="perf.WASTHREADPOOL-4" remote="perf.threadpool.threadpool_size"/>
+			<item local="perf.WASTHREADPOOL-1" remote="perf.was-threadpool.threads_created"/>
+			<item local="perf.WASTHREADPOOL-2" remote="perf.was-threadpool.threads_destroyed"/>
+			<item local="perf.WASTHREADPOOL-6" remote="perf.was-threadpool.locked_threads"/>
+			<item local="perf.WASTHREADPOOL-7" remote="perf.was-threadpool.threadpool_used_pct"/>	
+			<item local="perf.WASTHREADPOOL-5" remote="perf.was-threadpool.max_pct"/>
+		</object>
+	</monitor>	
+	
+	<monitor type="WASWEBAPP" >
+		<!-- 
+		WASWEBAPP-1	装入servlet数	个
+		WASWEBAPP-2	重新装入servlet数	个
+		WASWEBAPP-3	servlet处理请求总数	个
+		WASWEBAPP-4	并发处理请求数	个
+		WASWEBAPP-5	完成servlet请求平均响应时间	毫秒
+		WASWEBAPP-6	servlet/JSP错误总数	个
+		 -->
+		<object local="instance" remote="WebSphereWebApp">
+			<item local="resource.id" remote="rs.ComponentOf" />
+			<item local="instance.code" remote="attr.code" />
+			<item local="instance.name" remote="attr.name" />
+			<item local="perf.WASWEBAPP-1" remote="perf.was-app.loaded_servlets"/>
+			<item local="perf.WASWEBAPP-2" remote="perf.was-app.reloaded_servlets"/>
+			<item local="perf.WASWEBAPP-3" remote="perf.was-app.servlet_reqs"/>
+			<item local="perf.WASWEBAPP-4" remote="perf.was-app.concurrent_reqs"/>
+			<item local="perf.WASWEBAPP-5" remote="perf.was-app.service_time"/>
+			<item local="perf.WASWEBAPP-6" remote="perf.was-app.servlet_jsp_errs"/>
+		</object>
+	</monitor>
+	
+	<monitor type="WMQ-CHANNEL" >
+		<!-- 
+		WMQ-CHANNEL-1	每秒接收字节	byte/s
+		WMQ-CHANNEL-2	每秒发送字节	byte/s
+		WMQ-CHANNEL-3	通道状态	
+		WMQ-CHANNEL-4	发送间隔	秒
+		WMQ-CHANNEL-5	事务数	个
+		 -->
+		<object local="resource" remote="WebSphereMQ" states="SUCCESSED,FAILED,OVERSTEP">
+		<![CDATA[
+			def state = input.getValue("monitor.state");
+			if (state == com.broada.carrier.monitor.server.api.entity.MonitorState.SUCCESSED
+				|| state == com.broada.carrier.monitor.server.api.entity.MonitorState.OVERSTEP)					
+				state = 1;	
+			else if (state == com.broada.carrier.monitor.server.api.entity.MonitorState.FAILED)
+				state = 0;
+			else
+				state = null;
+			if (state != null)
+				output.setValue(input, "state.available_status", state);
+			util.setOutputValue("WMQ-CHANNEL-1", "sum", "perf.was-mq-channel.channel_receive_rate");
+			util.setOutputValue("WMQ-CHANNEL-2", "sum", "perf.was-mq-channel.channel_send_rate");
+			util.setOutputValue("WMQ-CHANNEL-5", "sum", "perf.was-mq-channel.total_channel_trans");
+		]]>
+		</object>
+	</monitor>
+
+	<monitor type="WMQ-QUEUE" >
+		<!-- 
+		WMQ-QUEUE-1	队列深度	个
+		WMQ-QUEUE-2	打开输入计数	个
+		WMQ-QUEUE-3	打开输出计数	个
+		WMQ-QUEUE-4	消息最大字节数	字节
+		WMQ-QUEUE-5	放入消息	
+		WMQ-QUEUE-6	取出消息	
+		 -->
+		<object local="resource" remote="WebSphereMQ">
+		<![CDATA[
+			util.setOutputValue("WMQ-QUEUE-1", "sum", "perf.was-mq-queue.queue_depth");
+			util.setOutputValue("WMQ-QUEUE-2", "sum", "perf.was-mq-queue.open_inputs");
+			util.setOutputValue("WMQ-QUEUE-3", "sum", "perf.was-mq-queue.open_outputs");			
+		]]>
+		</object>
+	</monitor>
+	
+	
+	<!-- WSND start -->
+	<monitor type="WSND-JVM" >
+		<!-- 集群信息 -->
+		<script name="mwcluster">
+			def existsIds = [];
+			for (instance in input.result.rows) {
+				id = "mwcluster." + input.node.ip;
+				if (existsIds.contains(id))
+					continue;
+				existsIds.add(id);
+				output = context.createOutput(id, "MWCluster");
+				output.setValue(input, "rs.runningOn", input.node.id);
+				output.setValue(input, "attr.name", "WebSphere集群-" + input.node.ip);
+				output.setValue(input, "attr.clusterType", "WebSphere集群");
+			}
+		</script>
+		<!-- Application Server信息 -->
+		<script name="websphere">
+			clusterLocalKey = "mwcluster." + input.node.ip;
+			clusterId = util.getFirstRemoteKeyByLocalKey(clusterLocalKey);
+			
+			def existsIds = [];
+			for (instance in input.result.rows) {
+				index = instance.instName.lastIndexOf("->");
+				serverName = instance.instName.substring(0, index);
+			
+				id = "wm.ws." + serverName;
+				if (existsIds.contains(id))
+					continue;
+				existsIds.add(id);
+				
+				output = context.createOutput(id, "WebSphere");
+				output.setValue(input, "rs.virtualizedBy", clusterId);
+				output.localKey = "wm.ws." + serverName;
+				output.setValue(input, "attr.name", serverName);
+				output.setValue(input, "rs.runningOn", input.node.id);
+			}
+		</script>
+		
+		<object local="instance" remote="WebSphere"><!-- JVM是WebSphere的resource，但是由于监测任务没有资源信息，需要使用instance的code来对应CMDB中的资源 -->
+			<![CDATA[
+			code = input.getValue("instance.code");
+			index = code.lastIndexOf("->");
+			code = code.substring(0, index);
+			output.localKey = "wm.ws." + code;
+			
+			output.setValue(input, "attr.jvmHeapSize", input.getValue("WSND-JVM-1"));
+			output.setValue(input, "perf.was-jvm.jvm_heap_size", input.getValue("WSND-JVM-1"));
+			output.setValue(input, "perf.was-jvm.jvm_heap_used_pct", input.getValue("WSND-JVM-2"));
+			output.setValue(input, "perf.was-jvm.jvm_cpu_use", input.getValue("WSND-JVM-3"));
+			]]>
+		</object>
+	</monitor>
+	
+	<monitor type="WSND-CACHE-PMI" >
+		<object local="instance" remote="WebSphere" states="SUCCESSED,FAILED,OVERSTEP">
+		<![CDATA[
+			code = input.getValue("instance.code");
+			index = code.lastIndexOf("->");
+			code = code.substring(0, index);
+			index = code.lastIndexOf("->");
+			code = code.substring(0, index);
+			output.localKey = "wm.ws." + code;
+			
+			def state = input.getValue("monitor.state");
+			if (state == com.broada.carrier.monitor.server.api.entity.MonitorState.SUCCESSED
+				|| state == com.broada.carrier.monitor.server.api.entity.MonitorState.OVERSTEP)					
+				state = 1;	
+			else if (state == com.broada.carrier.monitor.server.api.entity.MonitorState.FAILED)
+				state = 0;
+			else
+				state = null;
+			if (state != null)
+				output.setValue(input, "state.available_status", state);
+			
+			int max_inmem_cache_entries = 0;//求和
+			int inmem_cache_entries = 0;//求和
+			double cache_used_pct = 0.0;//求和
+			double cache_miss_ratio = 0.0;//求最大值
+			
+			for (row in input.result.rows) {
+				if(row.instName.startsWith(code)){
+					max_inmem_cache_entries = max_inmem_cache_entries + (int)(row.getIndicator("WSND-CACHE-PMI-1"));
+					inmem_cache_entries = inmem_cache_entries + (int)(row.getIndicator("WSND-CACHE-PMI-2"));
+					cache_used_pct = cache_used_pct + row.getIndicator("WSND-CACHE-PMI-3");
+					if(cache_miss_ratio < row.getIndicator("WSND-CACHE-PMI-4"))
+						cache_miss_ratio = row.getIndicator("WSND-CACHE-PMI-4");
+				}
+			}
+			output.setValue(input, "perf.was-buff.max_inmem_cache_entries", max_inmem_cache_entries);
+			output.setValue(input, "perf.was-buff.inmem_cache_entries", inmem_cache_entries);
+			output.setValue(input, "perf.was-buff.cache_used_pct", cache_used_pct);
+			output.setValue(input, "perf.was-buff.cache_miss_ratio", cache_miss_ratio);
+		]]>
+		</object>
+	</monitor>
+	
+	<monitor type="WSND-TRANS-PMI" >
+		<object local="instance" remote="WebSphere">
+			<![CDATA[
+			code = input.getValue("instance.code");
+			index = code.lastIndexOf("->");
+			code = code.substring(0, index);
+			output.localKey = "wm.ws." + code;
+			
+			output.setValue(input, "perf.was-trans.global_trans_started", input.getValue("WSND-TRANS-PMI-1"));
+			output.setValue(input, "perf.was-trans.local_trans_started", input.getValue("WSND-TRANS-PMI-2"));
+			output.setValue(input, "perf.was-trans.avg_global_trans_duration", input.getValue("WSND-TRANS-PMI-3"));
+			output.setValue(input, "perf.was-trans.avg_local_trans_duration", input.getValue("WSND-TRANS-PMI-4"));
+			output.setValue(input, "perf.was-trans.global_timeout_trans", input.getValue("WSND-TRANS-PMI-5"));
+			output.setValue(input, "perf.was-trans.local_timeout_trans", input.getValue("WSND-TRANS-PMI-6"));
+			output.setValue(input, "perf.was-trans.global_active_trans", input.getValue("WSND-TRANS-PMI-7"));
+			output.setValue(input, "perf.was-trans.local_active_trans", input.getValue("WSND-TRANS-PMI-8"));
+			output.setValue(input, "perf.was-trans.global_timeout_tran_pct", input.getValue("WSND-TRANS-PMI-9"));
+			output.setValue(input, "perf.was-trans.local_timeout_tran_pct", input.getValue("WSND-TRANS-PMI-10"));
+			]]>
+		</object>
+	</monitor>
+	
+	<monitor type="WSND-SERVLET" >
+		<object local="instance" remote="WebSphereServlet">
+			<![CDATA[
+			name = input.getValue("instance.name");
+			index = name.lastIndexOf("->");
+			serverName = name.substring(0, index);
+			index = serverName.lastIndexOf("->");
+			serverName = serverName.substring(0, index);
+			output.setValue(input, "rs.componentOf", util.getFirstRemoteKeyByLocalKey("wm.ws." + serverName));
+			output.setValue(input, "attr.code", input.getValue("instance.code"));
+			output.setValue(input, "attr.name", input.getValue("instance.name"));
+			output.setValue(input, "perf.was-servlet.sessions_created", input.getValue("WSND-SERVLET-1"));
+			output.setValue(input, "perf.was-servlet.invalid_sessions", input.getValue("WSND-SERVLET-2"));
+			output.setValue(input, "perf.was-servlet.timeout_invalid_sessions", input.getValue("WSND-SERVLET-3"));
+			output.setValue(input, "perf.was-servlet.new_sessions", input.getValue("WSND-SERVLET-4"));
+			output.setValue(input, "perf.was-servlet.active_sessions", input.getValue("WSND-SERVLET-5"));
+			]]>
+		</object>
+	</monitor>
+	
+	<monitor type="WSND-THREADPOOL" >
+		<object local="instance" remote="WebSphereThread">
+			<![CDATA[
+			name = input.getValue("instance.name");
+			index = name.lastIndexOf("->");
+			serverName = name.substring(0, index);
+			index = serverName.lastIndexOf("->");
+			serverName = serverName.substring(0, index);
+			output.setValue(input, "rs.componentOf", util.getFirstRemoteKeyByLocalKey("wm.ws." + serverName));
+			output.setValue(input, "attr.code", input.getValue("instance.code"));
+			output.setValue(input, "attr.name", input.getValue("instance.name"));
+			output.setValue(input, "perf.threadpool.pool_active_threads", input.getValue("WSND-THREADPOOL-3"));
+			output.setValue(input, "perf.threadpool.threadpool_size", input.getValue("WSND-THREADPOOL-4"));
+			output.setValue(input, "perf.was-threadpool.threads_created", input.getValue("WSND-THREADPOOL-1"));
+			output.setValue(input, "perf.was-threadpool.threads_destroyed", input.getValue("WSND-THREADPOOL-2"));
+			output.setValue(input, "perf.was-threadpool.locked_threads", input.getValue("WSND-THREADPOOL-6"));
+			output.setValue(input, "perf.was-threadpool.threadpool_used_pct", input.getValue("WSND-THREADPOOL-7"));
+			output.setValue(input, "perf.was-threadpool.max_pct", input.getValue("WSND-THREADPOOL-5"));
+			]]>
+		</object>
+	</monitor>
+	
+	<monitor type="WSND-JDBC" >
+		<object local="instance" remote="WebSphereConnPool">
+			<![CDATA[
+			name = input.getValue("instance.name");
+			index = name.lastIndexOf("->");
+			serverName = name.substring(0, index);
+			index = serverName.lastIndexOf("->");
+			serverName = serverName.substring(0, index);
+			index = serverName.lastIndexOf("->");
+			serverName = serverName.substring(0, index);
+			output.setValue(input, "rs.componentOf", util.getFirstRemoteKeyByLocalKey("wm.ws." + serverName));
+			output.setValue(input, "attr.code", input.getValue("instance.code"));
+			output.setValue(input, "attr.name", input.getValue("instance.name"));
+			output.setValue(input, "attr.maxCapacity", input.getValue("WSND-JDBC-5"));
+			output.setValue(input, "perf.connpool.connpool_used_pct", input.getValue("WSND-JDBC-9"));
+			output.setValue(input, "perf.connpool.current_size", input.getValue("WSND-JDBC-1"));
+			output.setValue(input, "perf.was-connpool.connpool_conns_created", input.getValue("WSND-JDBC-1"));
+			output.setValue(input, "perf.was-connpool.connpool_conns_closed", input.getValue("WSND-JDBC-2"));
+			output.setValue(input, "perf.was-connpool.conns_allocated", input.getValue("WSND-JDBC-3"));
+			output.setValue(input, "perf.was-connpool.conns_returned", input.getValue("WSND-JDBC-4"));
+			output.setValue(input, "perf.was-connpool.connpool_size", input.getValue("WSND-JDBC-5"));
+			output.setValue(input, "perf.was-connpool.connpool_free_size", input.getValue("WSND-JDBC-6"));
+			output.setValue(input, "perf.was-connpool.concurrent_waiters", input.getValue("WSND-JDBC-7"));
+			output.setValue(input, "perf.was-connpool.faults", input.getValue("WSND-JDBC-8"));
+			output.setValue(input, "perf.was-connpool.connpool_used_pct", input.getValue("WSND-JDBC-9"));
+			output.setValue(input, "perf.was-connpool.conn_avg_use_time", input.getValue("WSND-JDBC-10"));
+			output.setValue(input, "perf.was-connpool.grant_avg_wait_time", input.getValue("WSND-JDBC-11"));
+			]]>
+		</object>
+	</monitor>
+	
+	<monitor type="WSND-WEBAPP" >
+		<!--script name="mwcluster">
+			def existsIds = [];
+			for (instance in input.result.rows) {
+				id = "mwcluster." + input.node.ip;
+				if (existsIds.contains(id))
+					continue;
+				existsIds.add(id);
+				output = context.createOutput(id, "MWCluster");
+				output.setValue(input, "rs.runningOn", input.node.id);
+				output.setValue(input, "attr.name", "WebSphere集群-" + input.node.ip);
+				output.setValue(input, "attr.clusterType", "WebSphere集群");
+			}
+		</script>
+		<script name="websphere">
+			clusterLocalKey = "mwcluster." + input.node.ip;
+			clusterId = util.getFirstRemoteKeyByLocalKey(clusterLocalKey);
+			
+			def existsIds = [];
+			for (instance in input.result.rows) {
+				index = instance.instName.lastIndexOf("->");
+				serverName = instance.instName.substring(0, index);
+				index = serverName.lastIndexOf("->");
+				serverName = serverName.substring(0, index);
+			
+				id = "wm.ws." + serverName;
+				if (existsIds.contains(id))
+					continue;
+				existsIds.add(id);
+				
+				output = context.createOutput(id, "WebSphere");
+				output.setValue(input, "rs.virtualizedBy", clusterId);
+				output.localKey = "wm.ws." + serverName;
+				output.setValue(input, "attr.name", serverName);
+				output.setValue(input, "rs.runningOn", input.node.id);
+			}
+		</script-->
+		
+		<!-- 指标信息 -->
+		<object local="instance" remote="WebSphereWebApp">
+			<![CDATA[
+			name = input.getValue("instance.name");
+			index = name.lastIndexOf("->");
+			serverName = name.substring(0, index);
+			index = serverName.lastIndexOf("->");
+			serverName = serverName.substring(0, index);
+			output.setValue(input, "rs.componentOf", util.getFirstRemoteKeyByLocalKey("wm.ws." + serverName));
+			output.setValue(input, "attr.code", input.getValue("instance.code"));
+			output.setValue(input, "attr.name", input.getValue("instance.name"));
+			output.setValue(input, "perf.was-app.loaded_servlets", input.getValue("WSND-WEBAPP-1"));
+			output.setValue(input, "perf.was-app.reloaded_servlets", input.getValue("WSND-WEBAPP-2"));
+			output.setValue(input, "perf.was-app.servlet_reqs", input.getValue("WSND-WEBAPP-3"));
+			output.setValue(input, "perf.was-app.concurrent_reqs", input.getValue("WSND-WEBAPP-4"));
+			output.setValue(input, "perf.was-app.service_time", input.getValue("WSND-WEBAPP-5"));
+			output.setValue(input, "perf.was-app.servlet_jsp_errs", input.getValue("WSND-WEBAPP-6"));
+			]]>
+		</object>
+	</monitor>
+
+</pmdb-map>

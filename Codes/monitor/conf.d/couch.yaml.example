@@ -1,0 +1,16 @@
+init_config:
+
+instances:
+  - server: http://localhost:5984
+    user: username
+    password: "******"
+    timeout: 5
+    db_whitelist:
+      - db1
+      - db2
+      - db3
+    db_blacklist:
+      - db1
+      - db2
+      - db3
+

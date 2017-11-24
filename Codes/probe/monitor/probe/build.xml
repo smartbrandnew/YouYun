@@ -1,0 +1,257 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<project default="release" xmlns:ivy="antlib:org.apache.ivy.ant" basedir=".">
+	<tstamp>
+		<format property="build.time" pattern="yyyy-MM-dd HH:mm:ss" />
+	</tstamp>
+	<tstamp>
+		<format property="yyyymmdd" pattern="yyyyMMdd" />
+	</tstamp>
+	<property environment="env" />
+	<property file="build.properties" />
+
+	<path id="module.lib">
+		<fileset dir="${ivy.retrieve.lib.dir}" />
+	</path>
+
+	<target name="resolve">
+		<ivy:retrieve pattern="${ivy.retrieve.lib.dir}/[conf]/[artifact].[ext]" sync="true" />
+	</target>
+
+	<target name="publish" depends="_release-jar">
+		<delete file="${module.dist.dir}/ivy.xml" />
+		<ivy:publish artifactspattern="${module.dist.dir}/webapp/WEB-INF/lib/[artifact].[ext]" pubrevision="${module.version}" resolver="${ivy.publish.dest}" status="release" overwrite="${ivy.publish.overwrite}" update="true" />
+	</target>
+
+	<target name="clean">
+		<delete dir="${module.target.dir}" />
+		<delete dir="${module.dist.dir}" />
+		<delete dir="${module.temp.dir}" />
+		<delete dir="${module.lib.dir}" />
+		<delete dir="${ivy.retrieve.lib.dir}" />
+		<delete dir="${module.dist.linux.dir}" />
+		<delete file="${module.build.dist.dir}/dist.zip" />
+		<delete file="${module.build.dist.linux.dir}/monitor-agentless.zip" />
+		<delete file="${module.build.dist.linux.dir}/monitor-agentless-linux.tar.gz" />
+	</target>
+
+	<target name="compile" depends="resolve">
+		<mkdir dir="${module.target.dir}" />
+
+		<javac srcdir="${module.src.dir}" destdir="${module.target.dir}" includeantruntime="no" encoding="UTF-8" debug="on">
+			<classpath refid="module.lib" />
+			<classpath location="${module.dir}/lib/esdk_fc_neadp_1.5_native_java.jar"/>
+		</javac>
+
+		<copy todir="${module.target.dir}" preservelastmodified="true">
+			<fileset dir="${module.src.dir}">
+				<exclude name="**/*.java" />
+				<exclude name="**/.svn" />
+			</fileset>
+			<fileset dir="${module.dir}/test">
+				<exclude name="**/*.java" />
+				<exclude name="**/.svn" />
+			</fileset>
+		</copy>
+	</target>
+
+	<target name="release" depends="_release-jar">
+		<mkdir dir="${module.temp.dir}" />
+		<unzip src="${ivy.retrieve.lib.dir}/full/platform.component.pmservice-env.zip" dest="${module.temp.dir}/pmservice" overwrite="false" />
+		<copy file="${module.temp.dir}/pmservice/pmservice.exe" tofile="${module.dist.dir}/bin/monitor-agentless-service.exe" />
+		<copy todir="${module.dist.dir}/bin">
+			<fileset dir="${module.temp.dir}/pmservice">
+				<include name="*.dll" />
+			</fileset>
+		</copy>
+
+		<unzip src="${ivy.retrieve.lib.dir}/full/platform.research.classprotect-janel.zip" dest="${module.temp.dir}/janel" overwrite="false" />
+		<copy file="${module.temp.dir}/janel/janel console.exe" tofile="${module.dist.dir}/bin/monitor-agentless.exe" />
+		<copy file="${module.temp.dir}/janel/janel console.exe" tofile="${module.dist.dir}/bin/scriptexec.exe" />
+
+		<mkdir dir="${module.temp.dir}/jre" />
+		<unzip src="${ivy.retrieve.lib.dir}/full/jdk.zip" dest="${module.dist.dir}/jre" overwrite="false" />
+
+		<mkdir dir="${module.temp.dir}/tomcat" />
+		<unzip src="${ivy.retrieve.lib.dir}/full/org.apache.tomcat.zip" dest="${module.dist.dir}/tomcat" overwrite="false" />
+
+		<unzip src="${ivy.retrieve.lib.dir}/full/carrier.monitor.impl.env.zip" dest="${module.dist.dir}" overwrite="false" />
+
+		<copy todir="${module.dist.dir}">
+			<fileset dir="${module.dir}">
+				<include name="bin/**" />
+				<include name="conf/**" />
+				<include name="webapp/**" />
+				<exclude name="webapp/WEB-INF/classes/**" />
+				<exclude name="**/.svn" />
+			</fileset>
+		</copy>
+
+		<move todir="${module.dist.dir}" file="${module.dist.dir}/conf/cim.defaults">
+		</move>
+
+		<copy todir="${module.dist.dir}/webapp/WEB-INF/lib">
+			<fileset dir="${ivy.retrieve.lib.dir}/default">
+				<include name="*.jar" />
+			</fileset>
+		</copy>
+		<!--
+		<mkdir dir="${basedir}/../../../build/dist/monitor/upgrade/probe" />
+		<copy todir="${basedir}/../../../build/dist/monitor/upgrade/probe">
+			<fileset dir="${basedir}">
+				<include name="bin/carrier-probe.lap" />
+			</fileset>
+		</copy>
+		-->
+	</target>
+
+	
+	<target name="_release-all" >
+			<ant antfile="build.xml" dir="../server-api" target="publish" inheritAll="false"/>
+			<ant antfile="build.xml" dir="../probe-api" target="publish" inheritAll="false"/>
+			<ant antfile="build.xml" dir="../base" target="publish" inheritAll="false"/>
+			<ant antfile="build.xml" dir="../impl" target="publish" inheritAll="false"/>
+			<!--
+			<ant antfile="build.xml" dir="../server" target="release" inheritAll="false"/>
+			-->
+			<ant antfile="build.xml" dir="../probe" target="release" inheritAll="false"/>
+		    <ant antfile="build.xml" dir="../probe" target="release-linux" inheritAll="false"/>
+			<!--
+			<ant antfile="build.xml" dir="../client" target="release" inheritAll="false"/>
+			-->
+	
+	</target>
+
+	<target name="_release-all_linux">
+				<ant antfile="build.xml" dir="../server-api" target="publish" inheritAll="false"/>
+				<ant antfile="build.xml" dir="../probe-api" target="publish" inheritAll="false"/>
+				<ant antfile="build.xml" dir="../base" target="publish" inheritAll="false"/>
+				<ant antfile="build.xml" dir="../impl" target="publish" inheritAll="false"/>
+				<!--
+				<ant antfile="build.xml" dir="../server" target="release" inheritAll="false"/>
+				-->
+				<ant antfile="build.xml" dir="../probe" target="release-linux" inheritAll="false"/>
+				<!--
+				<ant antfile="build.xml" dir="../client" target="release" inheritAll="false"/>
+				-->
+	</target>
+	
+	<target name="release-linux" depends="_release-jar-linux">
+		<mkdir dir="${module.temp.dir}" />
+		<mkdir dir="${module.temp.dir}/jre" />
+		<mkdir dir="${module.dir}/temp" />
+		<unzip src="${ivy.retrieve.lib.dir}/full/jdk.redhat6.x64.zip" dest="${module.dist.linux.dir}/jre" overwrite="false" />
+		<mkdir dir="${module.temp.dir}/tomcat" />
+		<unzip src="${ivy.retrieve.lib.dir}/full/org.apache.tomcat.zip" dest="${module.dist.linux.dir}/tomcat" overwrite="false" />
+
+		<unzip src="${ivy.retrieve.lib.dir}/full/carrier.monitor.impl.env.zip" dest="${module.dist.linux.dir}" overwrite="false" />
+
+		<copy todir="${module.dist.linux.dir}">
+			<fileset dir="${module.dir}">
+				<include name="bin/**" />
+				<include name="temp/**" />
+				<include name="conf/**" />
+				<include name="webapp/**" />
+				<exclude name="webapp/WEB-INF/classes/**" />
+				<exclude name="**/.svn" />
+				<exclude name="**/*.exe" />
+				<exclude name="**/*.dll" />
+				<exclude name="**/*.bat" />
+				<exclude name="**/*.lap" />
+				<exclude name="**/*.yaml.example" />
+			</fileset>
+		</copy>
+
+		<move todir="${module.dist.linux.dir}" file="${module.dist.linux.dir}/conf/cim.defaults">
+		</move>
+
+		<copy todir="${module.dist.linux.dir}/webapp/WEB-INF/lib">
+			<fileset dir="${ivy.retrieve.lib.dir}/default">
+				<include name="*.jar" />
+			</fileset>
+		</copy>
+	</target>
+
+	<target name="zip-linux" depends="_release-all">
+		<tar destfile="${module.build.dist.linux.dir}/monitor-agentless-linux.tar.gz"  compression="gzip" >
+			<tarfileset dir="${module.dist.linux.dir}" prefix="monitor-agentless">
+		</tarfileset>
+	   </tar>
+	</target>
+
+
+	<target name="zip" depends="zip-linux">
+		<zip destfile="${module.build.dist.dir}/monitor-agentless.zip" update="true">
+			<zipfileset dir="${module.dist.dir}" prefix="probe">
+			</zipfileset>
+		</zip>
+	</target>
+	
+	<target name="msi" depends="zip-linux">
+		<exec executable="${package-cmd}">
+				<arg value="/build" />
+				<arg value="probe.aip" />
+		</exec>
+		<move file="probe.msi" tofile="Monitor_Agentless${module.version}.msi" overwrite="true" />
+		<copy todir="${module.dist.dir}">
+				<fileset dir=".">
+					<include name="Monitor_Agentless${module.version}.msi" />
+				</fileset>
+		</copy>
+		<zip destfile="${module.build.dist.dir}/dist.zip" update="true">
+				<zipfileset dir="${module.dist.dir}" prefix="probe">
+				</zipfileset>
+		</zip>
+		
+		</target>
+
+
+	<target name="_release-dev">
+		<unzip src="${ivy.retrieve.lib.dir}/full/carrier.monitor.impl.env.zip" dest="${module.temp.dir}/debug" overwrite="false" />
+
+		<copy todir="${module.dist.dir}">
+			<fileset dir="${module.dir}">
+				<include name="conf/**" />
+				<include name="webapp/**" />
+				<include name="scripts/**" />
+				<exclude name="**/.svn" />
+			</fileset>
+		</copy>
+	</target>
+
+	<target name="_release-jar" depends="compile">
+		<mkdir dir="${module.dist.dir}/webapp/WEB-INF/lib" />
+
+		<copy todir="${module.dist.dir}/webapp/WEB-INF/lib">
+			<fileset dir="${module.dir}/lib">
+				<include name="com.jcraft.jsch.jar" />
+			</fileset>
+		</copy>
+		<jar destfile="${module.dist.dir}/webapp/WEB-INF/lib/${module.name}.jar">
+			<manifest>
+				<attribute name="Implementation-Version" value="${module.version}" />
+				<attribute name="Build-Time" value="${build.time}" />
+				<attribute name="Build-Machine" value="${env.COMPUTERNAME}" />
+			</manifest>
+			<fileset dir="${module.target.dir}" />
+		</jar>
+	</target>
+
+
+	<target name="_release-jar-linux" depends="compile">
+		<mkdir dir="${module.dist.linux.dir}/webapp/WEB-INF/lib" />
+		<copy todir="${module.dist.linux.dir}/webapp/WEB-INF/lib">
+				<fileset dir="${module.dir}/lib">
+					<include name="com.jcraft.jsch.jar" />
+				</fileset>
+			</copy>
+		<jar destfile="${module.dist.linux.dir}/webapp/WEB-INF/lib/${module.name}.jar">
+			<manifest>
+				<attribute name="Implementation-Version" value="${module.version}" />
+				<attribute name="Build-Time" value="${build.time}" />
+				<attribute name="Build-Machine" value="${env.COMPUTERNAME}" />
+			</manifest>
+			<fileset dir="${module.target.dir}" />
+		</jar>
+	</target>
+</project>

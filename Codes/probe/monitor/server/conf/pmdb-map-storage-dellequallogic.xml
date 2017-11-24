@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<pmdb-map>
+	<monitor type="DELLEQUALLOGIC-DISKDRIVER-INFO">
+		<!-- 
+		DELLEQUALLOGIC-DISKDRIVER-INFO-1	磁盘编号	
+		DELLEQUALLOGIC-DISKDRIVER-INFO-5	磁盘状态	
+		DELLEQUALLOGIC-DISKDRIVER-INFO-8	所属成员设备名称	
+		 -->	
+		<object local="node" remote="logicalDisk">
+			<item local="resource.id" remote="rs.RunningOn" />
+			<item local="perf.DELLEQUALLOGIC-DISKDRIVER-INFO-1" remote="attr.name" />
+			<item local="perf.DELLEQUALLOGIC-DISKDRIVER-INFO-5" remote="state.available_status" />
+		</object>
+	</monitor>
+	
+	<monitor type="DELLEQUALLOGIC-FAN-INFO">
+	<!-- 
+		DELLEQUALLOGIC-FAN-INFO-1	风扇名称	
+		DELLEQUALLOGIC-FAN-INFO-2	风扇状态
+		DELLEQUALLOGIC-FAN-INFO-3	所属成员设备名称	
+		 -->	
+		<object local="node" remote="FAN">
+			<item local="resource.id" remote="rs.RunningOn" />
+			<item local="DELLEQUALLOGIC-FAN-INFO-1" remote="attr.name" />		
+			<item local="DELLEQUALLOGIC-FAN-INFO-2" remote="state.available_status" />		
+		</object>
+	</monitor>
+	
+	<monitor type="DELLEQUALLOGIC-IPCONF-INFO">
+		<!-- 
+		DELLEQUALLOGIC-IPCONF-INFO-1	网络接口编号
+		DELLEQUALLOGIC-IPCONF-INFO-2	网络接口名称
+		DELLEQUALLOGIC-IPCONF-INFO-3	IP地址
+		DELLEQUALLOGIC-IPCONF-INFO-4	子网掩码
+		DELLEQUALLOGIC-IPCONF-INFO-5	状态
+		DELLEQUALLOGIC-IPCONF-INFO-6	所属成员设备名称	
+		 -->	
+		<object local="node" remote="IPAddr">
+			<item local="perf.DELLEQUALLOGIC-IPCONF-INFO-1" remote="attr." />
+			<item local="perf.DELLEQUALLOGIC-IPCONF-INFO-2" remote="attr." />
+			<item local="perf.DELLEQUALLOGIC-IPCONF-INFO-3" remote="attr.ipAddr" />
+			<item local="perf.DELLEQUALLOGIC-IPCONF-INFO-4" remote="perf.cpu-use.cpu_idletime" />
+			<item local="perf.DELLEQUALLOGIC-IPCONF-INFO-5" remote="state.available_status" />
+		</object>
+	</monitor>	
+	
+	<monitor type="DELLEQUALLOGIC-MEMBER-INFO">
+		<!-- 
+		DELLEQUALLOGIC-MEMBER-INFO-1	磁盘名称
+		DELLEQUALLOGIC-MEMBER-INFO-3	状态
+		DELLEQUALLOGIC-MEMBER-INFO-4	型号
+		DELLEQUALLOGIC-MEMBER-INFO-5	序列号
+		DELLEQUALLOGIC-MEMBER-INFO-6	成员设备磁盘数量
+		DELLEQUALLOGIC-MEMBER-INFO-7	磁盘总大小
+		DELLEQUALLOGIC-MEMBER-INFO-8	已使用空间大小
+		DELLEQUALLOGIC-MEMBER-INFO-9	RAID版本
+		 -->	
+		<object local="node" remote="physicalDisk">
+			<item local="resource.id" remote="rs.RunningOn" />
+			<item local="perf.DELLEQUALLOGIC-MEMBER-INFO-1" remote="attr.name" />
+			<item local="perf.DELLEQUALLOGIC-MEMBER-INFO-3" remote="state.available_status" />
+			<item local="perf.DELLEQUALLOGIC-MEMBER-INFO-4" remote="attr.partNum" />
+			<item local="perf.DELLEQUALLOGIC-MEMBER-INFO-5" remote="attr.serial" />
+			<item local="perf.DELLEQUALLOGIC-MEMBER-INFO-7" remote="attr.capacity" />
+			<item local="perf.DELLEQUALLOGIC-MEMBER-INFO-9" remote="attr.raidLev" />
+		</object>
+	</monitor>	
+	
+	<monitor type="DELLEQUALLOGIC-POWERSUPPLY-INFO">
+		<!-- 
+		DELLEQUALLOGIC-POWERSUPPLY-INFO-1	电源名称
+		DELLEQUALLOGIC-POWERSUPPLY-INFO-1	电源状态
+		 -->	
+		<object local="node" remote="PowerSupply">
+			<item local="resource.id" remote="rs.RunningOn" />
+			<item local="DELLEQUALLOGIC-POWERSUPPLY-INFO-1" remote="attr.name" />		
+			<item local="DELLEQUALLOGIC-POWERSUPPLY-INFO-2" remote="state.available_status" />		
+		</object>
+	</monitor>	
+	
+	
+	<monitor type="DELLEQUALLOGIC-CONTORLLER-INFO">
+	<!-- 
+		DELLEQUALLOGIC-CONTORLLER-INFO-1	序列号
+		DELLEQUALLOGIC-CONTORLLER-INFO-2	控制器版本
+		DELLEQUALLOGIC-CONTORLLER-INFO-4	控制器类型
+		DELLEQUALLOGIC-CONTORLLER-INFO-5	处理器温度
+		DELLEQUALLOGIC-CONTORLLER-INFO-6	芯片温度
+		DELLEQUALLOGIC-CONTORLLER-INFO-7 状态
+		 -->	
+		<object local="node" remote="RAIDController">
+			<item local="resource.id" remote="rs.RunningOn" />
+			<item local="perf.DELLEQUALLOGIC-CONTORLLER-INFO-1" remote="attr.serial" />
+			<item local="perf.DELLEQUALLOGIC-CONTORLLER-INFO-2" remote="attr.ctrlVersion" />
+			<item local="perf.DELLEQUALLOGIC-CONTORLLER-INFO-4" remote="attr.ctrlType" />
+			<item local="perf.DELLEQUALLOGIC-CONTORLLER-INFO-5" remote="perf.ctrl-use.processor_temp" />
+			<item local="perf.DELLEQUALLOGIC-CONTORLLER-INFO-6" remote="perf.ctrl-use.chipset_temp" />
+			<item local="perf.DELLEQUALLOGIC-CONTORLLER-INFO-7" remote="state.available_status" />
+		</object>
+	</monitor>	
+	
+</pmdb-map>

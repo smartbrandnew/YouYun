@@ -1,0 +1,7 @@
+init_config:
+
+instances:
+  - address: www.baidu.com
+    # tags:                  # Optional
+    #   - optional_tag1
+    #   - optional_tag2

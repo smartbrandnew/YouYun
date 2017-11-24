@@ -1,0 +1,23 @@
+# 如果需要开启JVM远程调试功能，将以下两行的注释删除即可
+#-Xdebug
+#-Xrunjdwp:transport=dt_socket,address=9142,server=y,suspend=n
+
+# 系统属性设置
+-Duser.dir=${SELF_HOME}
+-Dmonitor.logs.dir=${SELF_HOME}/logs
+-Dlogback.configurationFile=${SELF_HOME}/conf/impexp-logback.xml
+-Dnet.sf.ehcache.skipUpdateCheck=true
+
+# 启动类设置
+janel.main.class=com.broada.carrier.monitor.client.impl.impexp.CmdLine
+janel.classpath.jars.dir=${SELF_HOME}/patch
+janel.classpath.jars.dir=${SELF_HOME}/lib
+janel.classpath.jars.dir=${SELF_HOME}/plugins
+
+# JVM参数设置
+-Xmx900m
+-XX:MaxPermSize=256m
+-nofile
+janel.java.home.path=${SELF_HOME}/jre
+janel.min.java.version=1.6
+janel.max.java.version=1.6

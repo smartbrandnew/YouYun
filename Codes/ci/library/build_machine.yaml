@@ -1,0 +1,81 @@
+"agent-linux64":
+    ip: '10.1.100.101'
+    user: root
+    passwd: ant123456
+    platform: linux
+    system_bit: 64
+    build_system: linux64
+    python_exe: venv/bin/python
+    postfix: 'tar.gz'
+
+"agent-aix64": 
+    ip: '10.1.11.228'
+    user: root
+    passwd: broada123
+    platform: aix
+    system_bit: 64
+    build_system: aix64
+    python_exe: venv/bin/python
+    postfix: tar.gz
+
+"agent-suse10_64":
+    ip: '10.1.100.105'
+    user: root
+    passwd: ant123456
+    platform: suse10
+    system_bit: 64
+    build_system: suse10_64
+    python_exe: venv/bin/python
+    postfix: tar.gz
+
+"python":
+    ip: '10.1.100.104'
+    user: root
+    passwd: ant123456
+    platform: linux
+    system_bit: 64
+    build_system: linux64
+    python_exe: venv/bin/python
+    postfix: tar.gz
+
+"node":
+    ip: '10.1.100.104'
+    user: root
+    passwd: ant123456
+    platform: linux
+    system_bit: 64
+    build_system: linux64
+    python_exe: venv/bin/python
+    postfix: tar.gz
+
+"nginx":
+    ip: '10.1.100.104'
+    user: root
+    passwd: ant123456
+    platform: linux
+    system_bit: 64
+    build_system: linux64
+    python_exe: venv/bin/python
+    postfix: tar.gz
+    
+"dispatcher":
+    ip: '10.1.100.104'
+    user: root
+    passwd: ant123456
+    platform: linux
+    system_bit: 64
+    build_system: linux64
+    python_exe: venv/bin/python
+    postfix: tar.gz
+
+"manager":
+    ip: '10.1.100.104'
+    user: root
+    passwd: ant123456
+    platform: linux
+    system_bit: 64
+    build_system: linux64
+    python_exe: venv/bin/python
+    postfix: tar.gz
+
+

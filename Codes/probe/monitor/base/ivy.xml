@@ -1,0 +1,16 @@
+<ivy-module version="2.0">
+	<info organisation="com.broada.carrier" module="carrier.monitor.base" />
+
+	<configurations>
+		<conf name="default" />
+	</configurations>
+
+	<publications>
+		<artifact name="carrier.monitor.base" type="jar" conf="default" ext="jar" />
+	</publications>
+
+	<dependencies>
+		<dependency org="com.broada.carrier" name="carrier.monitor.server.api" rev="2.0.12" conf="default->default;default->common" changing="true"/>
+		<dependency org="com.broada.carrier" name="carrier.monitor.probe.api" rev="2.0.3" conf="default->default" changing="true"/>
+	</dependencies>
+</ivy-module> 

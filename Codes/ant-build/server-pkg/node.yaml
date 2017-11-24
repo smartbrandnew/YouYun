@@ -1,0 +1,38 @@
+# Module config YAML
+# 各产品的模块须遵守平台模块化规范，非自研的模块（如DB、中间件等）需在安装脚本同级追加 module.yaml 文件
+
+# 产品名称
+product: Platform
+
+# 2、服务名称建议与模块名称保持一致
+name: platform-ant-node
+
+# 版本信息，与产品版本保持一致
+version: 7.8.0
+
+# 是否定制过（0：否，1：是）
+is_customized: 0
+
+author: agent@uyunsoft.cn
+
+# 模块说明信息
+description: agent依赖环境
+
+# 平台要求，当前只支持CentOS 7
+platform: Centos 7
+
+# 内核版本
+kernel: 3.10.0-327.el7
+support_opts: download_log
+type: normal
+
+# 模块安装命令
+installation:
+    install:
+        cmd: install.sh
+commands:
+    exec_status: "node -v && pm2 -v && ls /opt/uyun/platform/dispatcher/node && exit 0 || exit 1"
+
+dependencies:
+    - module: platform-ant-python
+      version: 2.7.13

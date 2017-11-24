@@ -1,0 +1,865 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="uyun.bat.datastore.dao.ResourceDao">
+
+	<resultMap type="uyun.bat.datastore.api.entity.Resource" id="resourceResultMap">
+		<result property="id" column="id" jdbcType="BINARY"
+			typeHandler="uyun.whale.common.mybatis.type.UUIDTypeHandler" />
+		<result property="modified" column="modified" />
+		<result property="hostname" column="hostname" />
+		<result property="ipaddr" column="ipaddr" />
+		<result property="describtion" column="describtion" />
+		<result property="agentId" column="agent_id" />
+		<result property="tenantId" column="tenant_id"
+			typeHandler="uyun.whale.common.mybatis.type.UUIDTypeHandler" />
+		<result property="resourceTypeName" column="type" />
+		<result property="onlineStatusName" column="online_status" />
+		<result property="alertStatusName" column="alert_status" />
+		<result property="lastCollectTime" column="last_collect_time" />
+		<result property="apps" column="res_app" jdbcType="BLOB"
+			typeHandler="uyun.bat.datastore.entity.ListStringTypeHandler" />
+		<result property="resTags" column="res_tag" jdbcType="BLOB"
+			typeHandler="uyun.bat.datastore.entity.ListStringTypeHandler" />
+		<result property="createTime" column="create_time" />
+		<result property="os" column="os" />
+		<result property="userTags" column="user_tag" jdbcType="VARCHAR"
+			typeHandler="uyun.bat.datastore.entity.ListStringTypeHandler" />
+		<result property="agentlessTags" column="agentless_tag" jdbcType="VARCHAR" 
+			typeHandler="uyun.bat.datastore.entity.ListStringTypeHandler" />
+		<result property="storeBuiltinTags" column="store_builtin_tags" jdbcType="VARCHAR"
+				typeHandler="uyun.bat.datastore.entity.ListStringTypeHandler" />
+	</resultMap>
+
+	<resultMap type="uyun.bat.datastore.api.entity.ResourceApp"
+		id="resourceAppResultMap">
+		<result property="id" column="id" jdbcType="BINARY"
+			typeHandler="uyun.whale.common.mybatis.type.UUIDTypeHandler" />
+		<result property="tenantId" column="tenant_id"
+			typeHandler="uyun.whale.common.mybatis.type.UUIDTypeHandler" />
+		<result property="appName" column="app_name" />
+	</resultMap>
+
+	<resultMap type="uyun.bat.datastore.api.entity.ResourceTag"
+		id="resourceTagResultMap">
+		<result property="id" column="id" jdbcType="BINARY"
+			typeHandler="uyun.whale.common.mybatis.type.UUIDTypeHandler" />
+		<result property="tenantId" column="tenant_id"
+			typeHandler="uyun.whale.common.mybatis.type.UUIDTypeHandler" />
+		<result property="key" column="tagk" />
+		<result property="value" column="tagv" />
+	</resultMap>
+
+	<resultMap type="uyun.bat.datastore.api.entity.SimpleResource"
+			   id="simpleResourceMap">
+		<result property="resourceId" column="id" />
+		<result property="resourceName" column="hostname" />
+		<result property="tenantId" column="tenant_id" />
+		<result property="ipaddr" column="ipaddr" />
+		<result property="lastCollectTime" column="last_collect_time" />
+	</resultMap>
+
+	<resultMap type="uyun.bat.datastore.entity.ResTagResult" id="tagResultMap">
+		<result property="tags" column="res_tag" jdbcType="BLOB"
+			typeHandler="uyun.bat.datastore.entity.ListStringTypeHandler" />
+	</resultMap>
+
+<resultMap type="uyun.bat.datastore.entity.ResFieldMappingResult" id="resFieldMappingResultMap">
+		<result property="ipaddr" column="ipaddr"  />
+		<result property="type" column="type"  />
+	</resultMap>
+	
+	
+<select id="getMetricSpanTime" resultType="uyun.bat.datastore.entity.MetricSpanTime">
+	SELECT MIN(UNIX_TIMESTAMP(create_time)) AS startTime,LOWER(HEX(tenant_id)) AS tenantId,MAX(UNIX_TIMESTAMP(last_collect_time)) AS endTime, (MAX(UNIX_TIMESTAMP(last_collect_time))-MIN(UNIX_TIMESTAMP(create_time))) AS spanTime FROM resource GROUP BY tenant_id
+</select>
+
+	<select id="getSimpleResource" resultMap="resourceResultMap"
+			parameterType="uyun.bat.datastore.entity.SimpleResourceQuery">
+		<![CDATA[ 
+		SELECT * from resource where  online_status=#{onlineStatus} and last_collect_time <= #{lastCollectTime}
+			]]>
+	</select>
+
+	<select id="queryResListByCondition" resultMap="resourceResultMap"
+		parameterType="uyun.bat.datastore.api.entity.ResourceOpenApiQuery">
+		select r.* from resource r where
+		r.tenant_id=#{tenantId,typeHandler=uyun.whale.common.mybatis.type.UUIDTypeHandler}
+		<if test="ipaddr!=null">
+			and r.ipaddr LIKE CONCAT(CONCAT('%', #{ipaddr}), '%')
+		</if>
+		<if test="hostname!=null">
+			and r.hostname LIKE CONCAT(CONCAT('%', #{hostname}), '%')
+		</if>
+		<if test="resourceType!=null">
+			and r.type LIKE CONCAT(CONCAT('%', #{resourceType}), '%')
+		</if>
+		<if test="minUpdateTime!=null">
+		<![CDATA[ 
+			and  r.modified > #{minUpdateTime}
+		]]>
+		</if>
+		<if test="tags!=null and tags.size()>0">
+			and
+			<foreach collection="tags" item="item" index="index"
+				separator="and">
+				(r.res_tag LIKE CONCAT(CONCAT('%', #{item}), '%') or
+				r.user_tag LIKE CONCAT(CONCAT('%', #{item}), '%') or
+				r.agentless_tag LIKE CONCAT(CONCAT('%', #{item}), '%'))
+			</foreach>
+		</if>
+		<if test="apps!=null and apps.size()>0">
+			and
+			<foreach collection="apps" item="item" index="index"
+				separator="and">
+				r.res_app LIKE CONCAT(CONCAT('%', #{item}), '%')
+			</foreach>
+		</if>
+		limit #{pageNo},#{pageSize}
+	</select>
+
+	<select id="queryResCountByCondition" resultType="int"
+		parameterType="uyun.bat.datastore.api.entity.ResourceOpenApiQuery">
+		select count(r.id) from resource r where
+		r.tenant_id=#{tenantId,typeHandler=uyun.whale.common.mybatis.type.UUIDTypeHandler}
+		<if test="ipaddr!=null">
+			and r.ipaddr LIKE CONCAT(CONCAT('%', #{ipaddr}), '%')
+		</if>
+		<if test="hostname!=null">
+			and r.hostname LIKE CONCAT(CONCAT('%', #{hostname}), '%')
+		</if>
+		<if test="resourceType!=null">
+			and r.type LIKE CONCAT(CONCAT('%', #{resourceType}), '%')
+		</if>
+		<if test="minUpdateTime!=null">
+		<![CDATA[ 
+			and  r.modified > #{minUpdateTime}
+		]]>
+		</if>
+		<if test="tags!=null and tags.size()>0">
+			and
+			<foreach collection="tags" item="item" index="index"
+				separator="and">
+				r.res_tag LIKE CONCAT(CONCAT('%', #{item}), '%')
+			</foreach>
+		</if>
+		<if test="apps!=null and apps.size()>0">
+			and
+			<foreach collection="apps" item="item" index="index"
+				separator="and">
+				r.res_app LIKE CONCAT(CONCAT('%', #{item}), '%')
+			</foreach>
+		</if>
+	</select>
+
+	<select id="getResIdGroupByTag" resultType="string"
+		parameterType="uyun.bat.datastore.entity.GroupQuery">
+		(SELECT lower(HEX(t.id)) FROM res_tag t WHERE HEX(t.id) IN
+		<foreach collection="resIds" item="item" index="index" open="("
+			close=")" separator=",">
+			#{item}
+		</foreach>
+		AND t.tagk=#{groupBy} AND
+		t.tenant_id=#{tenantId,typeHandler=uyun.whale.common.mybatis.type.UUIDTypeHandler}
+		ORDER
+		BY t.tagv
+		asc limit 100000000) UNION (SELECT lower(HEX(t.id)) FROM
+		res_tag t WHERE
+		t.tagk!=#{groupBy} AND
+		t.tenant_id=#{tenantId,typeHandler=uyun.whale.common.mybatis.type.UUIDTypeHandler}
+		and HEX(t.id) in
+		<foreach collection="resIds" item="item" index="index" open="("
+			close=")" separator=",">
+			#{item}
+		</foreach>
+		) LIMIT #{pageNo},#{pageSize}
+	</select>
+
+	<select id="getResByApp" resultMap="resourceResultMap">
+		SELECT r.* FROM resource r
+		where r.id in (select
+		distinct(a.id) FROM res_app
+		a where
+		a.tenant_id=#{0,typeHandler=uyun.whale.common.mybatis.type.UUIDTypeHandler}
+		and
+		a.app_name=#{1})
+	</select>
+
+	<select id="getAppsById" resultMap="resourceAppResultMap">
+		SELECT * FROM res_app
+		WHERE
+		id=#{value,typeHandler=uyun.whale.common.mybatis.type.UUIDTypeHandler}
+	</select>
+	
+	
+	<select id="getResIdByResServieQuery" resultType="string">
+		SELECT lower(hex(id)) FROM resource
+		WHERE
+		tenant_id=#{tenantId,typeHandler=uyun.whale.common.mybatis.type.UUIDTypeHandler}
+		<if test="hostname!=null">
+		and hostname=#{hostname}
+		</if>
+		<if test="ipaddr!=null">
+		and ipaddr=#{ipaddr}
+		</if>
+		<if test="tags!=null and tags.size()>0">
+			and
+			<foreach collection="tags" item="item" index="index"
+				separator="and">
+				res_tag LIKE CONCAT(CONCAT('%', #{item}), '%')
+			</foreach>
+		</if>
+	</select>
+	
+	
+
+	<select id="getResIdInId" resultType="string" parameterType="list">
+		SELECT DISTINCT(LOWER(HEX(id))) FROM resource
+		WHERE
+		id in
+		<foreach collection="list" item="item" index="index" open="("
+			close=")" separator=",">
+			#{item,typeHandler=uyun.whale.common.mybatis.type.UUIDTypeHandler}
+		</foreach>
+	</select>
+
+	<select id="getAppNamesById" resultType="string">
+		SELECT
+		distinct(app_name) FROM res_app
+		WHERE
+		id=#{value,typeHandler=uyun.whale.common.mybatis.type.UUIDTypeHandler}
+	</select>
+
+	<select id="getTagsById" resultMap="resourceTagResultMap"
+		parameterType="string">
+		SELECT * FROM res_tag
+		WHERE
+		id=#{value,typeHandler=uyun.whale.common.mybatis.type.UUIDTypeHandler}
+		and tagk!=''
+	</select>
+
+	<select id="getAllRes" resultMap="resourceResultMap"
+		parameterType="string">
+		SELECT * FROM resource where
+		tenant_id=#{value,typeHandler=uyun.whale.common.mybatis.type.UUIDTypeHandler}
+	</select>
+
+	<select id="getAllApps" resultType="string">
+		SELECT distinct(app_name)
+		FROM res_app
+	</select>
+
+	<select id="getAllResPage" resultMap="resourceResultMap">
+		SELECT * FROM resource
+		where
+		tenant_id=#{tenantId,typeHandler=uyun.whale.common.mybatis.type.UUIDTypeHandler}
+		<if test="onlineStatus!=null">
+			and online_status=#{onlineStatus}
+		</if>
+		limit
+		#{pageNo},#{pageSize}
+	</select>
+
+	<select id="getAllResNotContainNetwork" resultMap="resourceResultMap"
+		parameterType="string">
+		SELECT * FROM
+		resource where type!='网络设备' and
+		tenant_id=#{value,typeHandler=uyun.whale.common.mybatis.type.UUIDTypeHandler}
+	</select>
+
+	<select id="getResById" resultMap="resourceResultMap"
+		parameterType="string">
+		SELECT * FROM resource
+		WHERE
+		id=#{value,typeHandler=uyun.whale.common.mybatis.type.UUIDTypeHandler}
+	</select>
+
+	<select id="getOnlineCount" resultType="int" parameterType="string">
+		SELECT count(id) FROM resource
+		WHERE
+		tenant_id=#{value,typeHandler=uyun.whale.common.mybatis.type.UUIDTypeHandler}
+		and online_status='在线'
+	</select>
+
+	<select id="getResCountByTenantId" resultType="int"
+		parameterType="string">
+		SELECT
+		count(id) FROM resource
+		WHERE
+		tenant_id=#{value,typeHandler=uyun.whale.common.mybatis.type.UUIDTypeHandler}
+	</select>
+
+	<select id="getAuthorizationResIds" resultType="string">
+		SELECT LOWER(HEX(id)) FROM resource WHERE
+		tenant_id=#{tenantId,typeHandler=uyun.whale.common.mybatis.type.UUIDTypeHandler}
+		<![CDATA[
+		AND online_status='离线' and  DATEDIFF(NOW(),last_collect_time)>#{ttl}
+	    ]]>
+	</select>
+
+	<select id="getOnlineCountByFilter" resultType="int"
+		parameterType="uyun.bat.datastore.entity.FilterQuery">
+		SELECT
+		count(r.id) FROM resource r
+		WHERE
+		r.tenant_id=#{tenantId,typeHandler=uyun.whale.common.mybatis.type.UUIDTypeHandler}
+		and online_status='在线'
+		<if test="filters.size()>0">
+			and
+			<foreach collection="filters" item="item" index="index"
+				separator="and">
+				(r.ipaddr LIKE
+				CONCAT(CONCAT('%', #{item}), '%') or
+				r.hostname
+				like CONCAT(CONCAT('%',
+				#{item}), '%') or r.res_tag like
+				CONCAT(CONCAT('%', #{item}), '%'))
+			</foreach>
+		</if>
+	</select>
+
+	<select id="getResByAgentId" resultMap="resourceResultMap">
+		SELECT * FROM resource
+		WHERE
+		agent_id=#{0} and
+		tenant_id=#{1,typeHandler=uyun.whale.common.mybatis.type.UUIDTypeHandler}
+	</select>
+
+	<select id="getAllResId" resultType="string" parameterType="string">
+		SELECT distinct(lower(HEX(id))) from resource where
+		tenant_id=#{value,typeHandler=uyun.whale.common.mybatis.type.UUIDTypeHandler}
+	</select>
+
+	<select id="getTagByFilter" resultMap="tagResultMap">
+		SELECT distinct(r.res_tag) from resource r where
+		r.tenant_id=#{tenantId,typeHandler=uyun.whale.common.mybatis.type.UUIDTypeHandler}
+		<if test="filters.size()>0">
+			and
+			<foreach collection="filters" item="item" index="index"
+				separator="and">
+				(r.ipaddr LIKE
+				CONCAT(CONCAT('%', #{item}), '%') or
+				r.hostname
+				like CONCAT(CONCAT('%',
+				#{item}), '%') or r.res_tag like
+				CONCAT(CONCAT('%', #{item}), '%')
+				or r.res_app like
+				CONCAT(CONCAT('%',
+				#{item}), '%'))
+			</foreach>
+		</if>
+	</select>
+
+
+	<select id="getResTagsByTag" resultMap="tagResultMap">
+		SELECT distinct(CONCAT(IFNULL(r.user_tag,"*****"),";",IFNULL(r.res_tag,"*****"),";",IFNULL(r.agentless_tag,"*****"))) res_tag from resource r where
+		r.tenant_id=#{tenantId,typeHandler=uyun.whale.common.mybatis.type.UUIDTypeHandler}
+		<if test="tags.size()>0">
+			and
+			<foreach collection="tags" item="item" index="index"
+				separator="and">
+				(r.res_tag LIKE
+				CONCAT(CONCAT('%', #{item}), '%') or
+				r.user_tag
+				like CONCAT(CONCAT('%', #{item}), '%')
+				or r.agentless_tag like CONCAT(CONCAT('%', #{item}), '%'))
+			</foreach>
+		</if>
+	</select>
+	
+	<select id="getAllTags" resultMap="tagResultMap">
+		SELECT distinct(r.res_tag) from resource r where
+		r.tenant_id=#{tenantId,typeHandler=uyun.whale.common.mybatis.type.UUIDTypeHandler}
+	</select>
+
+	<select id="getResByKey" resultMap="resourceResultMap"
+		parameterType="uyun.bat.datastore.entity.FilterQuery">
+		select * from resource r where
+		r.tenant_id=#{tenantId,typeHandler=uyun.whale.common.mybatis.type.UUIDTypeHandler}
+		<if test="filters.size()>0">
+			and
+			<foreach collection="filters" item="item" index="index"
+				separator="and">
+				(r.ipaddr LIKE
+				CONCAT(CONCAT('%', #{item}), '%') or
+				r.hostname
+				like CONCAT(CONCAT('%',
+				#{item}), '%') or r.res_tag like
+				CONCAT(CONCAT('%', #{item}), '%')
+				or r.user_tag like
+				CONCAT(CONCAT('%', #{item}), '%')
+				or r.agentless_tag like
+				CONCAT(CONCAT('%', #{item}), '%'))
+			</foreach>
+		</if>
+		<if test="onlineStatus!=null">
+			and online_status=#{onlineStatus}
+		</if>
+		limit #{pageNo},#{pageSize}
+	</select>
+
+
+	<select id="getResByEmptyTag" resultMap="resourceResultMap"
+		parameterType="uyun.bat.datastore.entity.FilterQuery">
+		select * from resource  where
+		tenant_id=#{tenantId,typeHandler=uyun.whale.common.mybatis.type.UUIDTypeHandler}
+		and (res_tag='' or ISNULL(res_tag)) and (user_tag='' or ISNULL(user_tag)) and (agentless_tag='' or ISNULL(agentless_tag))
+		<if test="onlineStatus!=null">
+			and online_status=#{onlineStatus}
+		</if>
+		limit #{pageNo},#{pageSize}
+	</select>
+
+	<select id="getCountByEmptyTag" resultType="int"
+		parameterType="uyun.bat.datastore.entity.FilterQuery">
+		select count(*) from resource where
+		tenant_id=#{tenantId,typeHandler=uyun.whale.common.mybatis.type.UUIDTypeHandler}
+		and (res_tag='' or ISNULL(res_tag)) and (user_tag='' or ISNULL(user_tag)) and (agentless_tag='' or ISNULL(agentless_tag))
+	</select>
+	
+	<select id="getOnlineCountByEmptyTag" resultType="int"
+		parameterType="uyun.bat.datastore.entity.FilterQuery">
+		select count(*) from resource  where
+		tenant_id=#{tenantId,typeHandler=uyun.whale.common.mybatis.type.UUIDTypeHandler}
+		and (res_tag='' or ISNULL(res_tag)) and (user_tag='' or ISNULL(user_tag)) and (agentless_tag='' or ISNULL(agentless_tag))
+		and online_status='在线'
+	</select>
+
+
+	<select id="getResByKeyAndSort" resultMap="resourceResultMap"
+		parameterType="uyun.bat.datastore.entity.FilterQuery">
+		select * from resource r where
+		r.tenant_id=#{tenantId,typeHandler=uyun.whale.common.mybatis.type.UUIDTypeHandler}
+		<if test="filters.size()>0">
+			and
+			<foreach collection="filters" item="item" index="index"
+				separator="and">
+				(r.ipaddr LIKE
+				CONCAT(CONCAT('%', #{item}), '%') or
+				r.hostname
+				like CONCAT(CONCAT('%',
+				#{item}), '%') or r.res_tag like
+				CONCAT(CONCAT('%', #{item}), '%'))
+			</foreach>
+		</if>
+		<if test="onlineStatus!=null">
+			and online_status=#{onlineStatus}
+		</if>
+		order by ${sortBy} ${orderBy} limit #{pageNo},#{pageSize}
+	</select>
+
+	<select id="getResIdByKey" resultType="string"
+		parameterType="uyun.bat.datastore.entity.FilterQuery">
+		select distinct(HEX(id)) from resource r where
+		r.tenant_id=#{tenantId,typeHandler=uyun.whale.common.mybatis.type.UUIDTypeHandler}
+		<if test="filters.size()>0">
+			and
+			<foreach collection="filters" item="item" index="index"
+				separator="and">
+				(r.ipaddr LIKE
+				CONCAT(CONCAT('%', #{item}), '%') or
+				r.hostname
+				like CONCAT(CONCAT('%',
+				#{item}), '%') or r.res_tag like
+				CONCAT(CONCAT('%', #{item}), '%'))
+			</foreach>
+		</if>
+		<if test="onlineStatus!=null">
+			and online_status=#{onlineStatus}
+		</if>
+	</select>
+	
+		<select id="getCountByKey" resultType="int"
+		parameterType="uyun.bat.datastore.entity.FilterQuery">
+		select count(r.id) from resource r where
+		r.tenant_id=#{tenantId,typeHandler=uyun.whale.common.mybatis.type.UUIDTypeHandler}
+		<if test="filters.size()>0">
+			and
+			<foreach collection="filters" item="item" index="index"
+				separator="and">
+				(r.ipaddr LIKE
+				CONCAT(CONCAT('%', #{item}), '%') or
+				r.hostname
+				like CONCAT(CONCAT('%',
+				#{item}), '%') or r.res_tag like
+				CONCAT(CONCAT('%', #{item}), '%'))
+			</foreach>
+		</if>
+	</select>
+	
+
+	<select id="getAllResTagNames" resultType="string"
+		parameterType="string">
+		select
+		distinct(tagk)
+		from res_tag where
+		tenant_id=#{value,typeHandler=uyun.whale.common.mybatis.type.UUIDTypeHandler}
+		and tagk!=''
+	</select>
+
+	<select id="getResInId" resultMap="resourceResultMap"
+		parameterType="list">
+		select * from resource where id in
+		<foreach collection="list" item="item" index="index" open="("
+			close=")" separator=",">
+			#{item,typeHandler=uyun.whale.common.mybatis.type.UUIDTypeHandler}
+		</foreach>
+	</select>
+	
+	<select id="getAllTenantId" resultType="string">
+		SELECT DISTINCT(LOWER(HEX(tenant_id))) FROM resource
+	</select>
+
+	<select id="getExistsIdInId" resultType="string" parameterType="list">
+		select id from resource where id in
+		<foreach collection="list" item="item" index="index" open="("
+			close=")" separator=",">
+			#{item,typeHandler=uyun.whale.common.mybatis.type.UUIDTypeHandler}
+		</foreach>
+	</select>
+
+	<select id="getResTags" resultMap="resourceTagResultMap"
+		parameterType="string">
+		SELECT distinct tagk, tagv FROM
+		res_tag where
+		tenant_id=#{value,typeHandler=uyun.whale.common.mybatis.type.UUIDTypeHandler}
+		and tagk!=''
+	</select>
+
+	<select id="getResCountByDate" resultType="uyun.bat.datastore.api.entity.ResourceCount">
+		select
+		count(id) as count,
+		lower(hex(tenant_id)) as tenantId
+		from
+		resource where
+		<![CDATA[create_time>=#{startTime} and create_time<=#{endTime}]]>
+		GROUP BY tenant_id
+	</select>
+
+	<select id="getResCount" resultType="uyun.bat.datastore.api.entity.ResourceCount">
+		select
+		count(id) as count,
+		lower(hex(tenant_id)) as tenantId
+		from resource
+		GROUP BY tenant_id
+	</select>
+
+	<select id="getResCountByOnlineStatus" resultType="uyun.bat.datastore.api.entity.ResourceCount">
+		select
+		count(id) as count,
+		lower(hex(tenant_id)) as tenantId
+		from resource
+		where
+		online_status=#{onlineStatus}
+		GROUP BY tenant_id
+	</select>
+
+	<select id="getResStatusCount" resultType="uyun.bat.datastore.api.entity.ResourceStatusCount">
+		select
+		count(id) as
+		count,
+		online_status as label
+		from resource
+		where
+		tenant_id=#{0,typeHandler=uyun.whale.common.mybatis.type.UUIDTypeHandler}
+		GROUP BY online_status
+	</select>
+
+	<insert id="saveRes" parameterType="uyun.bat.datastore.api.entity.Resource">
+		insert into
+		resource(id,modified,hostname,ipaddr,describtion,agent_id,tenant_id,type,online_status,alert_status,last_collect_time,res_app,res_tag,create_time,os,user_tag,agentless_tag,store_builtin_tags)
+		values(#{id,typeHandler=uyun.whale.common.mybatis.type.UUIDTypeHandler},
+		#{modified},#{hostname},#{ipaddr},
+		#{describtion},#{agentId},#{tenantId,typeHandler=uyun.whale.common.mybatis.type.UUIDTypeHandler},#{resourceTypeName},#{onlineStatusName},#{alertStatusName},#{lastCollectTime},#{apps,typeHandler=uyun.bat.datastore.entity.ListStringTypeHandler},#{resTags,typeHandler=uyun.bat.datastore.entity.ListStringTypeHandler},
+		#{createTime},#{os},#{userTags,typeHandler=uyun.bat.datastore.entity.ListStringTypeHandler},#{agentlessTags,typeHandler=uyun.bat.datastore.entity.ListStringTypeHandler},#{storeBuiltinTags,typeHandler=uyun.bat.datastore.entity.ListStringTypeHandler})
+		on DUPLICATE KEY
+		update 
+		id=#{id,typeHandler=uyun.whale.common.mybatis.type.UUIDTypeHandler},
+		modified = #{modified},
+		hostname=#{hostname},
+		ipaddr= #{ipaddr},
+		describtion = #{describtion},
+		agent_id= #{agentId},
+		tenant_id=
+		#{tenantId,typeHandler=uyun.whale.common.mybatis.type.UUIDTypeHandler},
+		type=
+		#{resourceTypeName},
+		online_status=#{onlineStatusName},
+		alert_status=#{alertStatusName},
+		last_collect_time=#{lastCollectTime},
+		res_app=#{apps,typeHandler=uyun.bat.datastore.entity.ListStringTypeHandler},
+		res_tag=#{resTags,typeHandler=uyun.bat.datastore.entity.ListStringTypeHandler},
+		create_time=#{createTime},
+		os=#{os},
+        user_tag=#{userTags,typeHandler=uyun.bat.datastore.entity.ListStringTypeHandler},
+		agentless_tag=#{agentlessTags,typeHandler=uyun.bat.datastore.entity.ListStringTypeHandler},
+		store_builtin_tags=#{storeBuiltinTags,typeHandler=uyun.bat.datastore.entity.ListStringTypeHandler}
+		
+	</insert>
+
+	<insert id="insertResTag" parameterType="uyun.bat.datastore.api.entity.ResourceTag">
+		insert into
+		res_tag(id,tenant_id,tagk,tagv)
+		values(#{id,typeHandler=uyun.whale.common.mybatis.type.UUIDTypeHandler},#{tenantId,typeHandler=uyun.whale.common.mybatis.type.UUIDTypeHandler},
+		#{key},#{value})
+	</insert>
+
+	<insert id="insertResApp" parameterType="uyun.bat.datastore.api.entity.ResourceApp">
+		insert into
+		res_app(id,tenant_id,app_name)
+		values(#{id,typeHandler=uyun.whale.common.mybatis.type.UUIDTypeHandler},#{tenantId,typeHandler=uyun.whale.common.mybatis.type.UUIDTypeHandler},
+		#{appName})
+	</insert>
+
+	<insert id="insertResBatch" parameterType="list">
+		insert into
+		resource(id,modified,hostname,ipaddr,describtion,agent_id,tenant_id,type,online_status,alert_status,last_collect_time,res_app,res_tag,create_time,os,user_tag,agentless_tag,store_builtin_tags)
+		values
+		<foreach collection="list" item="item" index="index"
+			separator=",">
+			(#{item.id,typeHandler=uyun.whale.common.mybatis.type.UUIDTypeHandler},
+			#{item.modified},#{item.hostname},
+			#{item.ipaddr},
+			#{item.describtion},
+			#{item.agentId},
+			#{item.tenantId,typeHandler=uyun.whale.common.mybatis.type.UUIDTypeHandler},
+			#{item.resourceTypeName},
+			#{item.onlineStatusName},
+			#{item.alertStatusName},
+			#{item.lastCollectTime},
+			#{item.apps,typeHandler=uyun.bat.datastore.entity.ListStringTypeHandler},
+			#{item.resTags,typeHandler=uyun.bat.datastore.entity.ListStringTypeHandler},
+			#{item.createTime},
+			#{item.os},
+			#{item.userTags,typeHandler=uyun.bat.datastore.entity.ListStringTypeHandler},
+			#{item.agentlessTags,typeHandler=uyun.bat.datastore.entity.ListStringTypeHandler},
+			#{item.storeBuiltinTags,typeHandler=uyun.bat.datastore.entity.ListStringTypeHandler})
+		</foreach>
+	</insert>
+
+	<insert id="insertResTagBatch" parameterType="list">
+		insert into
+		res_tag(id,tenant_id,tagk,tagv)
+		values
+		<foreach collection="list" item="item" index="index"
+			separator=",">
+			(#{item.id,typeHandler=uyun.whale.common.mybatis.type.UUIDTypeHandler},#{item.tenantId,typeHandler=uyun.whale.common.mybatis.type.UUIDTypeHandler},
+			#{item.key},#{item.value})
+		</foreach>
+		on duplicate key update
+		tenant_id=#{item.tenantId,typeHandler=uyun.whale.common.mybatis.type.UUIDTypeHandler},
+		tagk=#{item.key},
+		tagv=#{item.value}
+	</insert>
+
+	<insert id="insertResAppBatch" parameterType="list">
+		insert into
+		res_app(id,tenant_id,app_name)
+		values
+		<foreach collection="list" item="item" index="index"
+			separator=",">
+			(#{item.id,typeHandler=uyun.whale.common.mybatis.type.UUIDTypeHandler},#{item.tenantId,typeHandler=uyun.whale.common.mybatis.type.UUIDTypeHandler},
+			#{item.appName})
+		</foreach>
+		on duplicate key update
+		tenant_id=#{item.tenantId,typeHandler=uyun.whale.common.mybatis.type.UUIDTypeHandler},
+		app_name=#{item.appName}
+	</insert>
+
+	<update id="updateResTagBatch" parameterType="list">
+		<foreach collection="list" item="item" index="index" open=""
+			close="" separator=";">
+			update res_tag
+			<set>
+				tagv=#{item.value}
+			</set>
+			where
+			id=#{item.id,typeHandler=uyun.whale.common.mybatis.type.UUIDTypeHandler}
+			and
+			tenant_id=#{item.tenantId,typeHandler=uyun.whale.common.mybatis.type.UUIDTypeHandler}
+			and
+			tagk=#{item.key}
+		</foreach>
+	</update>
+
+
+	<update id="updateResBatch" parameterType="list">
+
+		<foreach collection="list" item="item" index="index" open=""
+			close="" separator=";">
+			update resource set
+			modified=#{item.modified},
+			hostname=#{item.hostname},
+			ipaddr=#{item.ipaddr},
+			describtion=#{item.describtion},
+			agent_id=#{item.agentId},
+			tenant_id=#{item.tenantId,typeHandler=uyun.whale.common.mybatis.type.UUIDTypeHandler},
+			type=#{item.resourceTypeName},
+			online_status=#{item.onlineStatusName},
+			alert_status=#{item.alertStatusName},
+			last_collect_time=#{item.lastCollectTime},
+			res_app=#{item.apps,typeHandler=uyun.bat.datastore.entity.ListStringTypeHandler},
+			res_tag=#{item.resTags,typeHandler=uyun.bat.datastore.entity.ListStringTypeHandler},
+			create_time=#{item.createTime},
+			os=#{item.os},
+            user_tag=#{item.userTags,typeHandler=uyun.bat.datastore.entity.ListStringTypeHandler},
+			agentless_tag=#{item.agentlessTags,typeHandler=uyun.bat.datastore.entity.ListStringTypeHandler},
+			store_builtin_tags=#{item.storeBuiltinTags,typeHandler=uyun.bat.datastore.entity.ListStringTypeHandler}
+			where
+			id=#{item.id,typeHandler=uyun.whale.common.mybatis.type.UUIDTypeHandler}
+		</foreach>
+
+
+	</update>
+
+	<update id="updateResTag" parameterType="uyun.bat.datastore.api.entity.ResourceTag">
+		update res_tag set
+		id =
+		#{id,typeHandler=uyun.whale.common.mybatis.type.UUIDTypeHandler},
+		tenant_id=#{tenantId,typeHandler=uyun.whale.common.mybatis.type.UUIDTypeHandler},
+		tagk= #{key},
+		tagv=#{value}
+		where id=
+		#{id,typeHandler=uyun.whale.common.mybatis.type.UUIDTypeHandler}
+		and
+		tenant_id=#{tenantId,typeHandler=uyun.whale.common.mybatis.type.UUIDTypeHandler}
+		and tagk= #{key}
+	</update>
+
+	<delete id="deleteResById">
+		delete from resource
+		where
+		id=#{id,typeHandler=uyun.whale.common.mybatis.type.UUIDTypeHandler}
+	</delete>
+
+	<delete id="deleteResTagById">
+		delete from res_tag
+		where
+		id=#{id,typeHandler=uyun.whale.common.mybatis.type.UUIDTypeHandler}
+	</delete>
+
+	<delete id="deleteResAppById">
+		delete from res_app
+		where
+		id=#{id,typeHandler=uyun.whale.common.mybatis.type.UUIDTypeHandler}
+	</delete>
+
+	<delete id="deleteResAppBatch" parameterType="list">
+		DELETE FROM res_app WHERE id IN
+		<foreach collection="list" index="index" item="item" open="("
+			separator="," close=")">
+			#{item,typeHandler=uyun.whale.common.mybatis.type.UUIDTypeHandler}
+		</foreach>
+	</delete>
+
+	<delete id="deleteResTagBatch" parameterType="list">
+		DELETE FROM res_tag WHERE id IN
+		<foreach collection="list" index="index" item="item" open="("
+			separator="," close=")">
+			#{item,typeHandler=uyun.whale.common.mybatis.type.UUIDTypeHandler}
+		</foreach>
+	</delete>
+
+	<delete id="deleteResBatch" parameterType="list">
+		DELETE FROM resource WHERE id IN
+		<foreach collection="list" index="index" item="item" open="("
+			separator="," close=")">
+			#{item,typeHandler=uyun.whale.common.mybatis.type.UUIDTypeHandler}
+		</foreach>
+	</delete>
+
+	<select id="getSimpleResByTenantIdAndTags" resultMap="simpleResourceMap"
+			parameterType="uyun.bat.datastore.entity.SimpleResourceQuery">
+		SELECT lower(HEX(id)) as id,hostname,ipaddr,last_collect_time
+		from resource
+		where
+		tenant_id=#{tenantId,typeHandler=uyun.whale.common.mybatis.type.UUIDTypeHandler}
+		<if test="hosts.size()>0">
+			and hostname in
+			<foreach collection="hosts" item="item" index="index" open="("
+					 close=")" separator=",">
+				#{item}
+			</foreach>
+		</if>
+		<if test="tags.size()>0">
+			and
+			<foreach collection="tags" item="item" index="index"
+					 separator="and">
+				(res_tag LIKE CONCAT(CONCAT('%', #{item}), '%')
+				or
+				user_tag LIKE CONCAT(CONCAT('%', #{item}), '%')
+				or
+				agentless_tag LIKE CONCAT(CONCAT('%', #{item}), '%')
+				or
+				store_builtin_tags LIKE CONCAT(CONCAT('%', #{item}), '%'))
+			</foreach>
+		</if>
+	</select>
+
+	<select id="getAllResHostAndTags" resultMap="resourceResultMap"
+			parameterType="string">
+		SELECT hostname, res_tag, user_tag, agentless_tag, store_builtin_tags FROM resource where
+		tenant_id=#{value,typeHandler=uyun.whale.common.mybatis.type.UUIDTypeHandler}
+	</select>
+
+	<select id="getResIdByIpaddr" resultType="string">
+		SELECT lower(hex(id)) ipaddr FROM resource where
+		tenant_id=#{0,typeHandler=uyun.whale.common.mybatis.type.UUIDTypeHandler}
+		and ipaddr=#{1}
+		and type=#{2}
+	</select>
+	
+	<select id="getResIpaddrById" resultMap="resFieldMappingResultMap">
+		SELECT lower(hex(id)) as id,ipaddr FROM resource where
+		tenant_id=#{0,typeHandler=uyun.whale.common.mybatis.type.UUIDTypeHandler}
+		and id=#{1,typeHandler=uyun.whale.common.mybatis.type.UUIDTypeHandler}
+	</select>
+	
+	<select id="getResTagsByMetricName" parameterType="java.util.Map" resultType="java.util.Map">
+		select CONCAT(tagk, ':', tagv) as res_tag, lower(HEX(res.id)) as res_id from res_tag res
+		where tenant_id = #{tenantId,typeHandler=uyun.whale.common.mybatis.type.UUIDTypeHandler}
+		and (tagk != '' and tagv != '')
+		and res.id in (
+			select distinct res_id from metric_resource
+			where tenant_id = #{tenantId,typeHandler=uyun.whale.common.mybatis.type.UUIDTypeHandler}
+			<if test="metrics != null and metrics.size() > 0">
+				and
+				<foreach collection="metrics" item="item" separator="or" open="(" close=")">
+					metric_names like CONCAT('%', #{item}, '%')
+				</foreach>
+			</if>
+		)
+		order by convert(res_tag using gbk) ASC
+	</select>
+
+	<select id="getResByCondition" parameterType="java.util.Map" resultMap="resourceResultMap">
+		select id, hostname, ipaddr, user_tag, tenant_id, modified from resource
+		where tenant_id = #{tenantId,typeHandler=uyun.whale.common.mybatis.type.UUIDTypeHandler}
+		<if test="resTags != null and resTags.size() > 0">
+			and
+			<foreach collection="resTags" item="item" index="index" open="("
+					 close=")" separator="or">
+				(res_tag like CONCAT('%', #{item}, '%')
+				 or user_tag like CONCAT('%', #{item}, '%')
+				 or agentless_tag like CONCAT('%', #{item}, '%'))
+			</foreach>
+		</if>
+		<if test="ipaddrs != null and ipaddrs.size() > 0">
+			and ipaddr in
+			<foreach collection="ipaddrs" item="item" open="(" close=")" separator=",">
+				#{item,jdbcType=VARCHAR}
+			</foreach>
+		</if>
+		<if test="sortField == 'hostname'.toString() or sortField == 'ipaddr'.toString()" >
+			order by ${sortField} ${sortOrder}
+		</if>
+	</select>
+
+	<update id="updateUserTagBatchByIpaddr" parameterType="java.util.List">
+		<foreach collection="list" item="item" separator=";" index="index">
+			update resource set user_tag = #{item.userTags,typeHandler=uyun.bat.datastore.entity.ListStringTypeHandler}
+			where tenant_id = #{item.tenantId,typeHandler=uyun.whale.common.mybatis.type.UUIDTypeHandler}
+			and ipaddr = #{item.ipaddr,jdbcType=VARCHAR}
+		</foreach>
+	</update>
+
+</mapper>

@@ -1,0 +1,95 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:dubbo="http://code.alibabatech.com/schema/dubbo"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans  
+        http://www.springframework.org/schema/beans/spring-beans.xsd  
+        http://code.alibabatech.com/schema/dubbo  
+        http://code.alibabatech.com/schema/dubbo/dubbo.xsd">
+
+	<!-- 提供方应用信息，用于计算依赖关系 -->
+	<dubbo:application name="bat-web-provider" />
+
+	<!-- 使用注册中心暴露服务地址 -->
+	<dubbo:registry address="${zk.url}" client="curator" timeout="30000"/>
+
+	<!-- 监控服务 -->
+	<dubbo:monitor protocol="${dubbo.monitor.protocol}" />
+
+	<!-- 用dubbo协议暴露服务 -->
+	<!-- 增加Referer 验证-->
+	<dubbo:protocol name="rest" port="${bat.web.port}" contextpath="api"
+		extension="uyun.bat.web.impl.common.service.rest.RPCExceptionMapper,
+		uyun.bat.web.impl.common.service.rest.RestExceptionMapper,
+		uyun.bat.web.impl.common.service.ext.AuthFilter" />
+
+	<dubbo:annotation package="uyun.bat.web.impl" />
+
+	<dubbo:reference id="dashboardService"
+		interface="uyun.bat.dashboard.api.service.DashboardService" check="false" />
+	<dubbo:reference id="dashwindowService"
+		interface="uyun.bat.dashboard.api.service.DashwindowService" check="false" />
+	<dubbo:reference id="tenantResTemplateService"
+		interface="uyun.bat.dashboard.api.service.TenantResTemplateService"
+		check="false" />
+	<dubbo:reference id="favouriteService"
+		interface="uyun.bat.favourite.api.service.FavouriteService" check="false" />
+	<dubbo:reference id="monitorService"
+		interface="uyun.bat.monitor.api.service.MonitorService" check="false" />
+	<dubbo:reference id="metricService"
+		interface="uyun.bat.datastore.api.service.MetricService" check="false" />
+	<dubbo:reference id="resourceService"
+		interface="uyun.bat.datastore.api.service.ResourceService" check="false" />
+	<dubbo:reference id="pacificService"
+		interface="uyun.bat.datastore.api.service.PacificResourceService" check="false" />
+	<dubbo:reference id="eventService"
+		interface="uyun.bat.event.api.service.EventService" check="false" />
+	<dubbo:reference id="metricMetaDataService"
+		interface="uyun.bat.datastore.api.service.MetricMetaDataService"
+		check="false" />
+	<dubbo:reference id="tagService"
+		interface="uyun.bat.datastore.api.service.TagService" check="false" />
+	<dubbo:reference id="stateService"
+		interface="uyun.bat.datastore.api.service.StateService" check="false" />
+	<dubbo:reference id="stateMetricService"
+		interface="uyun.bat.datastore.api.service.StateMetricService" check="false" />
+	<dubbo:reference id="yamlFileService"
+		interface="uyun.bat.agent.api.service.YamlFileService" check="false" />
+	<dubbo:reference id="agentService"
+		interface="uyun.bat.agent.api.service.AgentService" check="false" />
+	<dubbo:reference id="overviewService"
+		interface="uyun.bat.datastore.api.overview.service.OverviewService"
+		check="false" />
+	<dubbo:reference id="reportService"
+		interface="uyun.bat.report.api.service.ReportService" check="false" />
+
+	<bean class="uyun.bat.web.impl.common.service.ServiceManager"
+		factory-method="getInstance">
+		<property name="dashboardService" ref="dashboardService" />
+		<property name="dashwindowService" ref="dashwindowService" />
+		<property name="favouriteService" ref="favouriteService" />
+		<property name="monitorService" ref="monitorService" />
+		<property name="metricService" ref="metricService" />
+		<property name="resourceService" ref="resourceService" />
+		<property name="pacificResourceService" ref="pacificService" />
+		<property name="eventService" ref="eventService" />
+		<property name="metricMetaDataService" ref="metricMetaDataService" />
+		<property name="tagService" ref="tagService" />
+		<property name="stateService" ref="stateService" />
+		<property name="stateMetricService" ref="stateMetricService" />
+		<property name="yamlFileService" ref="yamlFileService" />
+		<property name="agentService" ref="agentService" />
+		<property name="overviewService" ref="overviewService" />
+		<property name="tenantResTemplateService" ref="tenantResTemplateService" />
+		<property name="reportService" ref="reportService" />
+	</bean>
+
+	<bean class="uyun.bird.tenant.api.entity.Product">
+		<property name="productNum" value="${product.bat.productNum}" />
+		<property name="productName" value="${product.bat.productName}" />
+		<property name="description" value="${product.bat.description}" />
+		<property name="productUrl" value="${product.bat.productUrl}" />
+	</bean>
+	<!-- 在创建完后执行 -->
+	<bean
+		class="uyun.bat.web.impl.common.service.ext.InstantiationTracingBeanPostProcessor" />
+</beans>  

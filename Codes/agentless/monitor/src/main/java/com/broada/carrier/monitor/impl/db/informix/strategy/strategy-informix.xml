@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="GBK"?>
+<!-- type[0:等于;1:不等于;2:大于;3:大于等于;4:小于;5:小于等于] -->
+<strategy-groups>
+  <!-- 结果集后拦截器 -->
+  <intercetors>
+    <intercetor id="secondIntercetor" class="com.broada.carrier.monitor.impl.db.informix.strategy.interceptor.ext.StrategyResultSecondIntercetor" />
+    <intercetor id="minuteIntercetor" class="com.broada.carrier.monitor.impl.db.informix.strategy.interceptor.ext.StrategyResultSecondIntercetor" />
+  </intercetors>
+
+  <!-- 共享内存 -->
+  <strategy-group goupId="INFORMIX-SHM-JDBC" name="共享内存" desc="监测Informix数据库共享内存的使用情况，超过阈值告警."
+                  sql="select name,value from sysprofile where name in ('bufreads','bufreads','dskreads','bufwrites','bufwrites','dskwrites','buffwts','lruwrites','seqscans','latchwts','flushes','fgwrites','chunkwrites')">
+    <strategy itemCode="INFORMIX-SHM-JDBC-1" name="缓冲区读命中率" isCondition="true" type="2" threshold="90" unit="%">
+      <bsh>if(bufreads+dskreads==0){return 100;}else{return 100*(bufreads-dskreads)/bufreads;}</bsh>
+    </strategy>
+    <strategy itemCode="INFORMIX-SHM-JDBC-2" name="缓冲区写命中率" isCondition="true" type="2" threshold="90" unit="%">
+      <bsh>if(bufwrites+dskwrites == 0){return 100;}else{return 100*(bufwrites-dskwrites)/bufwrites;}</bsh>
+    </strategy>
+    <strategy itemCode="INFORMIX-SHM-JDBC-3" name="缓冲区等待速率" isCondition="true" type="4" threshold="100" field="buffwts" unit="次/秒" intercetor="secondIntercetor"/>
+    <strategy itemCode="INFORMIX-SHM-JDBC-4" name="LRU写速率" isCondition="true" type="4" threshold="100" field="lruwrites" unit="次/秒" intercetor="secondIntercetor"/>
+    <strategy itemCode="INFORMIX-SHM-JDBC-5" name="顺序扫描速率" isCondition="true" type="4" threshold="100" field="seqscans" unit="次/秒" intercetor="secondIntercetor"/>
+    <strategy itemCode="INFORMIX-SHM-JDBC-6" name="Latch等待速率" isCondition="true" type="4" threshold="100" field="latchwts" unit="次/秒" intercetor="secondIntercetor"/>
+    <strategy itemCode="INFORMIX-SHM-JDBC-7" name="缓冲刷新到磁盘速率" isCondition="true" type="4" threshold="100" field="flushes" unit="次/秒" intercetor="secondIntercetor"/>
+    <strategy itemCode="INFORMIX-SHM-JDBC-8" name="Foreground写速" isCondition="true" type="4" threshold="100" field="fgwrites" unit="次/秒" intercetor="secondIntercetor"/>
+    <strategy itemCode="INFORMIX-SHM-JDBC-9" name="块写速率" isCondition="true" type="4" threshold="100" field="chunkwrites" unit="次/秒" intercetor="secondIntercetor"/>
+  </strategy-group>
+
+  <!-- 检查点 -->
+  <strategy-group goupId="INFORMIX-CHKPT-JDBC" name="检查点" desc="监测Informix数据库检查点情况，超过阈值告警." sql="select name,value from sysprofile where name in ('ckptwts','numckpts')">
+    <strategy itemCode="INFORMIX-CHKPT-JDBC-1" name="检查点速率" isCondition="true" type="4" threshold="100" field="numckpts" unit="次/秒" intercetor="secondIntercetor"/>
+    <strategy itemCode="INFORMIX-CHKPT-JDBC-2" name="检查点等待速率" isCondition="true" type="4" threshold="100" field="ckptwts" unit="次/秒" intercetor="secondIntercetor"/>
+  </strategy-group>
+
+  <!-- 事务 -->
+  <strategy-group goupId="INFORMIX-TRANS-JDBC" name="事务" desc="监测Informix数据库事务的使用情况，超过阈值告警." sql="select name,value from sysprofile where name in ('iscommits','isrollbacks')">
+    <strategy itemCode="INFORMIX-TRANS-JDBC-1" name="事务提交速率" isCondition="true" type="4" threshold="100" field="iscommits" unit="个/秒" intercetor="secondIntercetor"/>
+    <strategy itemCode="INFORMIX-TRANS-JDBC-2" name="事务回滚速率" isCondition="true" type="4" threshold="100" field="isrollbacks" unit="个/秒" intercetor="secondIntercetor"/>
+  </strategy-group>
+
+  <!-- 锁 -->
+  <strategy-group goupId="INFORMIX-LOCK-JDBC" name="锁" desc="监测Informix数据库锁的使用情况，超过阈值告警." sql="select name,value from sysprofile where name in ('lockreqs','deadlks','lockwts','lktouts')">
+    <strategy itemCode="INFORMIX-LOCK-JDBC-1" name="锁请求速率" isCondition="true" type="4" threshold="20" field="lockreqs" unit="个/秒" intercetor="secondIntercetor"/>
+    <strategy itemCode="INFORMIX-LOCK-JDBC-2" name="死锁率" isCondition="true" type="4" threshold="20" field="deadlks" unit="个/秒" intercetor="secondIntercetor"/>
+    <strategy itemCode="INFORMIX-LOCK-JDBC-3" name="锁等待率" isCondition="true" type="4" threshold="20" field="lockwts" unit="个/秒" intercetor="secondIntercetor"/>
+    <strategy itemCode="INFORMIX-LOCK-JDBC-4" name="锁超时率" isCondition="true" type="4" threshold="20" field="lktouts" unit="个/秒" intercetor="secondIntercetor"/>
+  </strategy-group>
+
+  <!-- 物理读写 -->
+  <strategy-group goupId="INFORMIX-DISK-JDBC" name="磁盘" desc="监测Informix数据库磁盘读写情况，超过阈值告警." sql="select name,value from sysprofile where name in ('dskreads','dskwrites','pagreads','pagwrites')">
+    <strategy itemCode="INFORMIX-DISK-JDBC-1" name="物理磁盘读速率" isCondition="true" type="4" threshold="100" field="dskreads" unit="次/分" intercetor="minuteIntercetor"/>
+    <strategy itemCode="INFORMIX-DISK-JDBC-2" name="物理磁盘写速率" isCondition="true" type="4" threshold="100" field="dskwrites" unit="次/分" intercetor="minuteIntercetor"/>
+    <strategy itemCode="INFORMIX-DISK-JDBC-3" name="页读速率" isCondition="true" type="4" threshold="100" field="pagreads" unit="页/分" intercetor="minuteIntercetor"/>
+    <strategy itemCode="INFORMIX-DISK-JDBC-4" name="页写速率" isCondition="true" type="4" threshold="100" field="pagwrites" unit="页/分" intercetor="minuteIntercetor"/>
+  </strategy-group>
+
+  <!-- 日志 -->
+  <strategy-group goupId="INFORMIX-LOG-JDBC" name="日志" desc="监测Informix数据库日志读写情况，超过阈值告警." sql="select name,value from sysprofile where name in ('llgrecs','llgwrites','llgpagewrites','plgwrites','plgpagewrites')">
+    <strategy itemCode="INFORMIX-LOG-JDBC-1" name="逻辑日志记录写速率" isCondition="true" type="4" threshold="100" field="llgrecs" unit="次/分" intercetor="minuteIntercetor"/>
+    <strategy itemCode="INFORMIX-LOG-JDBC-2" name="逻辑日志写速率" isCondition="true" type="4" threshold="100" field="llgwrites" unit="次/分" intercetor="minuteIntercetor"/>
+    <strategy itemCode="INFORMIX-LOG-JDBC-3" name="逻辑日志页面写速率" isCondition="true" type="4" threshold="100" field="llgpagewrites" unit="页/分" intercetor="minuteIntercetor"/>
+    <strategy itemCode="INFORMIX-LOG-JDBC-4" name="物理日志写速率" isCondition="true" type="4" threshold="100" field="plgwrites" unit="次/分" intercetor="minuteIntercetor"/>
+    <strategy itemCode="INFORMIX-LOG-JDBC-5" name="物理日志页面写速率" isCondition="true" type="4" threshold="100" field="plgpagewrites" unit="次/分" intercetor="minuteIntercetor"/>
+  </strategy-group>
+
+  <!-- 排序 -->
+  <strategy-group goupId="INFORMIX-SORT-JDBC" name="排序" desc="监测Informix数据库排序情况，超过阈值告警." sql="select name,value from sysprofile where name in ('memsorts','disksorts')">
+    <strategy itemCode="INFORMIX-SORT-JDBC-1" name="内存排序速率" isCondition="true" type="4" threshold="500" field="memsorts" unit="次/秒" intercetor="secondIntercetor"/>
+    <strategy itemCode="INFORMIX-SORT-JDBC-2" name="磁盘排序速率" isCondition="true" type="4" threshold="100" field="disksorts" unit="次/秒" intercetor="minuteIntercetor"/>
+  </strategy-group>
+</strategy-groups>

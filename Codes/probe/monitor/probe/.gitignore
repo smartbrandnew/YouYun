@@ -1,0 +1,7 @@
+/.lib/
+/classes/
+/dist/
+/.settings/
+*.msi
+/all/
+/data/

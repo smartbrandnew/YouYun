@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:dubbo="http://code.alibabatech.com/schema/dubbo"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans  
+        http://www.springframework.org/schema/beans/spring-beans.xsd  
+        http://code.alibabatech.com/schema/dubbo  
+        http://code.alibabatech.com/schema/dubbo/dubbo.xsd">
+
+	<dubbo:reference id="stateService"
+		interface="uyun.bat.datastore.api.service.StateService" check="false" />
+
+	<dubbo:reference id="resourceService"
+		interface="uyun.bat.datastore.api.service.ResourceService" check="false" />
+
+	<dubbo:reference id="eventService"
+		interface="uyun.bat.event.api.service.EventService" check="false" />
+
+	<dubbo:reference id="metricService"
+		interface="uyun.bat.datastore.api.service.MetricService" check="false" />
+
+	<dubbo:reference id="metricMetaDataService"
+					 interface="uyun.bat.datastore.api.service.MetricMetaDataService" check="false" />
+
+	<dubbo:reference id="overviewService"
+					 interface="uyun.bat.datastore.api.overview.service.OverviewService" check="false" />
+
+	<bean class="uyun.bat.gateway.api.service.ServiceManager"
+		factory-method="getInstance">
+		<property name="resourceService" ref="resourceService" />
+		<property name="eventService" ref="eventService" />
+		<property name="stateService" ref="stateService" />
+		<property name="metricService" ref="metricService" />
+		<property name="metricMetaDataService" ref="metricMetaDataService" />
+		<property name="overviewService" ref="overviewService" />
+	</bean>
+
+	<bean class="uyun.bat.gateway.api.selfmonitor.ScheduleTask"
+		init-method="init"/>
+
+</beans>  

@@ -1,0 +1,49 @@
+<assembly
+	xmlns="http://maven.apache.org/plugins/maven-assembly-plugin/assembly/1.1.2"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/plugins/maven-assembly-plugin/assembly/1.1.2 http://maven.apache.org/xsd/assembly-1.1.2.xsd">
+
+	<id>windows</id>
+	<formats>
+		<format>zip</format>
+	</formats>
+	<includeBaseDirectory>false</includeBaseDirectory>
+	
+	<!-- windows 打包依赖 -->
+	<dependencySets>
+		<!-- windows 打包特殊依赖 -->
+		<dependencySet>
+			<unpack>true</unpack>
+			<outputDirectory>./monitor-agentless/bin</outputDirectory>
+			<includes>
+				<include>com.broada.platform:platform.windows.service</include>
+			</includes>
+			<scope>runtime</scope>
+		</dependencySet>
+		<!-- windows jdk依赖 -->
+		<dependencySet>
+			<unpack>true</unpack>
+			<outputDirectory>./monitor-agentless/jre</outputDirectory>
+			<includes>
+				<include>com.sun:jdk.windows8.x64</include>
+			</includes>
+			<scope>runtime</scope>
+		</dependencySet>
+		<!-- windows tomcat依赖 -->
+		<dependencySet>
+			<unpack>true</unpack>
+			<outputDirectory>./monitor-agentless/tomcat</outputDirectory>
+			<includes>
+				<include>org.apache.tomcat:apache-tomcat-windows</include>
+			</includes>
+			<scope>runtime</scope>
+		</dependencySet>
+	</dependencySets>
+	
+	<fileSets>
+		<fileSet>
+			<directory>../monitor-agentless</directory>
+			<outputDirectory>./monitor-agentless</outputDirectory>
+		</fileSet>
+	</fileSets>
+</assembly>

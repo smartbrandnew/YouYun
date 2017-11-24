@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<pmdb-map>
+	<monitor type="MySQL-BASE" >
+		<!-- 
+		MySQL-BASE-1	连接数	个
+		MySQL-BASE-2	缓存查询数	个
+		 -->
+		<object local="resource" remote="MySQL" states="SUCCESSED,FAILED,OVERSTEP">
+			<item local="monitor.state" remote="state.available_status" function="monitorState2availableStatus"/>
+			<item local="perf.MySQL-BASE-1" remote="perf.db.current_conns" />
+			<item local="perf.MySQL-BASE-2" remote="perf.mysql.cached_queries" />
+		</object>
+	</monitor>
+	
+	<monitor type="MySQL-SIZE" >
+		<!-- 
+		MySQL-SIZE-1	数据库大小	MB
+		 -->
+		<object local="resource" remote="MySQL">
+		<![CDATA[
+			util.setOutputValue("MySQL-SIZE-1", "sum", "perf.mysql.dbspace_size");
+		]]>		
+		</object>
+		<object local="instance" remote="MySQLInstance">
+			<item local="resource.id" remote="rs.ComponentOf" />
+			<item local="instance.code" remote="attr.code" />
+			<item local="instance.name" remote="attr.name" />					
+			<item local="perf.MySQL-SIZE-1" remote="perf.db-instance.dbspace_size" />
+		</object>		
+	</monitor>	
+</pmdb-map>

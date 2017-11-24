@@ -1,0 +1,293 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<pmdb-map>
+	<monitor type="ORACLE-BASE">
+		<!-- ORACLE-BASE-1 实例状态 ORACLE-BASE-2 主机名 ORACLE-BASE-3 DB名称 ORACLE-BASE-4 
+			DB版本 ORACLE-BASE-5 位长 位 ORACLE-BASE-6 并行状态 ORACLE-BASE-7 例程名 ORACLE-BASE-8 
+			例程开始时间 ORACLE-BASE-9 限制模式 ORACLE-BASE-10 归档模式 ORACLE-BASE-11 归档路径 ORACLE-BASE-12 
+			只读模式 ORACLE-BASE-13 使用spfile启动 ORACLE-BASE-14 当前连接数 -->
+		<object local="resource" remote="Oracle" states="SUCCESSED,FAILED,OVERSTEP">
+			<item local="monitor.state" remote="state.available_status"
+				function="monitorState2availableStatus" />
+			<item local="perf.ORACLE-BASE-4" remote="attr.edition" />
+			<item local="perf.ORACLE-BASE-5" remote="attr.bitLen" />
+			<item local="perf.ORACLE-BASE-7" remote="attr.oracleSID" />
+			<item local="perf.ORACLE-BASE-10" remote="attr.archieveMode" />
+			<item local="perf.ORACLE-BASE-11" remote="attr.archievePath" />
+			<item local="method.port" remote="attr.usePort" />
+			<item local="perf.ORACLE-BASE-14" remote="perf.db.current_conns" />
+		</object>
+	
+		<object local="instance" remote="OracleInstance">
+			<item local="monitor.state" remote="state.available_status"
+				function="monitorState2availableStatus" />
+			<item local="resource.id" remote="rs.ComponentOf" />
+			<item local="perf.ORACLE-BASE-7" remote="attr.code" />
+			<item local="ORACLE-BASE-3" remote="attr.name" />	
+							
+		</object>		
+	</monitor>
+
+
+
+	<monitor type="ORACLE-TABLESPACE">
+		<!-- ORACLE-TABLESPACE-1 已使用量 MB ORACLE-TABLESPACE-2 已使用率 % ORACLE-TABLESPACE-3 
+			最大Extent数量 个 ORACLE-TABLESPACE-4 读时间 秒 ORACLE-TABLESPACE-5 写时间 秒 ORACLE-TABLESPACE-6 
+			当前Extent数量 个 ORACLE-TABLESPACE-7 下一个Extent大小 KB ORACLE-TABLESPACE-8 未使用Extent数量 
+			个 ORACLE-TABLESPACE-9 Segment管理方式 ORACLE-TABLESPACE-10 表空间类型 ORACLE-TABLESPACE-11 
+			未使用量 MB ORACLE-TABLESPACE-12 未使用百分率 % ORACLE-TABLESPACE-13 允许最大空间 MB ORACLE-TABLESPACE-14 
+			是否自动扩展 -->
+		<object local="instance" remote="OracleTablespace">
+			<item local="resource.id" remote="rs.ComponentOf" />
+			<item local="instance.code" remote="attr.code" />
+			<item local="instance.name" remote="attr.name" />
+			<item local="perf.ORACLE-TABLESPACE-1" remote="perf.tablespace.ts_used_size" />
+			<item local="perf.ORACLE-TABLESPACE-2" remote="perf.tablespace.used_pages_pct" />
+			<item local="perf.ORACLE-TABLESPACE-3" remote="attr.otsMaxExtents" />
+			<item local="perf.ORACLE-TABLESPACE-4" remote="perf.oracle-tablespace.ts_avg_read_time" />
+			<item local="perf.ORACLE-TABLESPACE-5" remote="perf.oracle-tablespace.ts_avg_write_time" />
+			<item local="perf.ORACLE-TABLESPACE-6" remote="perf.oracle-tablespace.ts_extents" />
+			<item local="perf.ORACLE-TABLESPACE-7" remote="perf.oracle-tablespace.ts_next_extent_size" />
+			<item local="perf.ORACLE-TABLESPACE-8" remote="perf.oracle-tablespace.ts_extents_not_allocated" />
+			<item local="perf.ORACLE-TABLESPACE-9" remote="attr.segmentManagement"
+				function="oracleSegMan2dict" />
+			<item local="perf.ORACLE-TABLESPACE-10" remote="attr.tsType" />
+			<item local="perf.ORACLE-TABLESPACE-11" remote="perf.tablespace.ts_free" />
+			<item local="perf.ORACLE-TABLESPACE-12" remote="perf.tablespace.free_pages_pct" />
+			<item local="perf.ORACLE-TABLESPACE-13" remote="attr.maxSpace" />
+			<item local="perf.ORACLE-TABLESPACE-14" remote="attr.isAutoExtend"
+				function="yesNo2dict" />
+		</object>
+	</monitor>
+
+	<monitor type="ORACLE-ADVANCEDQUE">
+		<!-- ORACLE-ADVANCEDQUE-1 消息总数 个 ORACLE-ADVANCEDQUE-2 ready消息数 个 ORACLE-ADVANCEDQUE-3 
+			错误的消息数 个 ORACLE-ADVANCEDQUE-4 消息平均访问时间 秒 -->
+		<object local="resource" remote="Oracle">
+		<![CDATA[		
+			util.setOutputValue("ORACLE-ADVANCEDQUE-1", "max", "perf.oracle-queue.total_msgs");
+			util.setOutputValue("ORACLE-ADVANCEDQUE-1", "max", "perf.oracle-queue.total_msgs_ready");
+			util.setOutputValue("ORACLE-ADVANCEDQUE-1", "max", "perf.oracle-queue.propagation_errs");
+			util.setOutputValue("ORACLE-ADVANCEDQUE-1", "avg", "perf.oracle-queue.avg_ready_msg_waittime");
+		]]>
+		</object>
+	</monitor>
+
+	<monitor type="ORACLE-CHECKPOINT">
+		<!-- ORACLE-CHECKPOINT-1 发生检查点数 次 ORACLE-CHECKPOINT-2 完成检查点数 次 -->
+		<object local="resource" remote="Oracle">
+			<item local="perf.ORACLE-CHECKPOINT-1" remote="perf.oracle-chkpt.ckpts_started" />
+			<item local="perf.ORACLE-CHECKPOINT-2" remote="perf.oracle-chkpt.ckpts_completed" />
+		</object>
+	</monitor>
+
+	<monitor type="ORACLE-DATAFILE">
+		<!-- ORACLE-DATAFILE-1 读次数 次 ORACLE-DATAFILE-2 写次数 次 ORACLE-DATAFILE-3 
+			读时间 秒 ORACLE-DATAFILE-4 写时间 秒 ORACLE-DATAFILE-5 文件大小 MB ORACLE-DATAFILE-6 
+			写文件块数 ORACLE-DATAFILE-7 读文件块数 ORACLE-DATAFILE-8 读写文件块数 -->
+		<object local="instance" remote="OracleFile">
+			<item local="resource.id" remote="rs.ComponentOf" />
+			<item local="instance.code" remote="attr.code" />
+			<item local="instance.name" remote="attr.name" />
+			<item local="perf.ORACLE-DATAFILE-1" remote="perf.oracle-file.read_times" />
+			<item local="perf.ORACLE-DATAFILE-2" remote="perf.oracle-file.write_times" />
+			<item local="perf.ORACLE-DATAFILE-3" remote="perf.oracle-file.read_time" />
+			<item local="perf.ORACLE-DATAFILE-4" remote="perf.oracle-file.write_time" />
+			<item local="perf.ORACLE-DATAFILE-6" remote="perf.oracle-file.write_block_number" />
+			<item local="perf.ORACLE-DATAFILE-7" remote="perf.oracle-file.read_block_number" />
+		</object>
+	</monitor>
+
+	<monitor type="ORACLE-FTS">
+		<!-- ORACLE-FTS-1 LTSCANRATIO值 % ORACLE-FTS-2 RSRATIO值 % -->
+		<object local="resource" remote="Oracle">
+			<item local="perf.ORACLE-FTS-1" remote="perf.oracle.long_table_scans_pct" />
+			<item local="perf.ORACLE-FTS-2" remote="perf.oracle.row_source_pct" />
+		</object>
+	</monitor>
+
+	<monitor type="ORACLE-LOCK">
+		<!-- ORACLE-LOCK-1 锁定时长 秒 -->
+		<object local="resource" remote="Oracle">
+			<item local="perf.ORACLE-LOCK-1" remote="perf.oracle.locked_time" />
+		</object>
+	</monitor>
+
+	<monitor type="ORACLE-PATCHRATE">
+		<!-- ORACLE-PATCHRATE-1 FSFI值 % -->
+		<object local="resource" remote="Oracle">
+		<![CDATA[					
+			util.setOutputValue("ORACLE-PATCHRATE-1", "avg", "perf.oracle.free_space_fragmentation");	
+		]]>
+		</object>
+	</monitor>
+
+	<monitor type="ORACLE-PGA">
+		<!-- ORACLE-PGA-1 PGA内存总大小 MB ORACLE-PGA-2 当前可用于自动分配了的PGA大小 MB ORACLE-PGA-3 
+			自动模式下工作区域的最大大小 MB ORACLE-PGA-4 使用的PGA大小 MB ORACLE-PGA-5 分配的PGA大小 MB ORACLE-PGA-6 
+			PGA的最大分配大小 MB ORACLE-PGA-7 空闲的PGA大小 MB ORACLE-PGA-8 释放的PGA大小 MB ORACLE-PGA-9 
+			自动工作区PGA使用大小 MB ORACLE-PGA-10 自动工作区PGA最大使用量 MB ORACLE-PGA-11 手动工作区PGA使用大小 
+			MB ORACLE-PGA-12 手动工作区PGA最大使用量 MB ORACLE-PGA-13 实例启动后PGA分配次数 次 ORACLE-PGA-14 
+			实例启动后处理的字节数 MB ORACLE-PGA-15 实例启动后额外处理（读/写）的字节数 MB ORACLE-PGA-16 Cache命中率 
+			% -->
+		<object local="resource" remote="Oracle">
+		<![CDATA[				
+			output.setValue(input, "perf.oracle-pga.aggregate_pga_target", input.instance.getIndicator("ORACLE-PGA-1"));
+			output.setValue(input, "perf.oracle-pga.aggregate_pga_auto_target", input.instance.getIndicator("ORACLE-PGA-2"));
+			output.setValue(input, "perf.oracle-pga.global_mem_bound", input.instance.getIndicator("ORACLE-PGA-3"));
+			output.setValue(input, "perf.oracle-pga.pga_inuse", input.instance.getIndicator("ORACLE-PGA-4"));
+			output.setValue(input, "perf.oracle-pga.pga_allocated", input.instance.getIndicator("ORACLE-PGA-5"));
+			output.setValue(input, "perf.oracle-pga.max_pga_allocated", input.instance.getIndicator("ORACLE-PGA-6"));
+			output.setValue(input, "perf.oracle-pga.freeable_pga", input.instance.getIndicator("ORACLE-PGA-7"));
+			output.setValue(input, "perf.oracle-pga.pga_freedback", input.instance.getIndicator("ORACLE-PGA-8"));
+			output.setValue(input, "perf.oracle-pga.pgaused_auto_wkareas", input.instance.getIndicator("ORACLE-PGA-9"));
+			output.setValue(input, "perf.oracle-pga.max_pgaused_auto_wkareas", input.instance.getIndicator("ORACLE-PGA-10"));
+			output.setValue(input, "perf.oracle-pga.pgaused_manual_wkareas", input.instance.getIndicator("ORACLE-PGA-11"));
+			output.setValue(input, "perf.oracle-pga.max_pgaused_manual_wkareas", input.instance.getIndicator("ORACLE-PGA-12"));
+			output.setValue(input, "perf.oracle-pga.over_allocations", input.instance.getIndicator("ORACLE-PGA-13"));
+			output.setValue(input, "perf.oracle-pga.bytes_processed", input.instance.getIndicator("ORACLE-PGA-14"));
+			output.setValue(input, "perf.oracle-pga.extra_bytes_processed", input.instance.getIndicator("ORACLE-PGA-15"));
+			output.setValue(input, "perf.oracle-pga.pga_cache_hit_ratio", input.instance.getIndicator("ORACLE-PGA-16"));
+			
+			double aggregate_pga_target = input.instance.getIndicator("ORACLE-PGA-1");
+			double pga_inuse = input.instance.getIndicator("ORACLE-PGA-4");
+			double pga_avaliable_pct = 0;
+			if (aggregate_pga_target > 0)
+				pga_avaliable_pct = (aggregate_pga_target - pga_inuse) / aggregate_pga_target * 100;
+			output.setValue(input, "perf.oracle-pga.pga_avaliable_pct", pga_avaliable_pct);
+		]]>
+		</object>
+	</monitor>
+
+	<monitor type="ORACLE-PROCESS">
+		<!-- ORACLE-PROCESS-1 已分配PGA M ORACLE-PROCESS-2 已使用PGA M ORACLE-PROCESS-3 
+			可用PGA百分比 % ORACLE-PROCESS-4 可用PGA M -->
+		<object local="instance" remote="OracleProcess">
+			<item local="resource.id" remote="rs.ComponentOf" />
+			<item local="instance.code" remote="attr.code" />
+			<item local="instance.name" remote="attr.name" />
+			<item local="perf.ORACLE-PROCESS-1" remote="perf.oracle-process.distributed_pga" />
+			<item local="perf.ORACLE-PROCESS-2" remote="perf.oracle-process.used_pga_pct" />
+			<item local="perf.ORACLE-PROCESS-3" remote="perf.oracle-process.pga_avaliable_pct" />
+			<item local="perf.ORACLE-PROCESS-4" remote="perf.oracle-process.avilable_pga" />
+		</object>
+	</monitor>
+
+	<monitor type="ORACLE-ASM">
+		
+		<object local="instance" remote="OracleAsm">
+			<item local="resource.id" remote="rs.ComponentOf" />
+			<item local="instance.code" remote="attr.code" />
+			<item local="instance.name" remote="attr.name" />
+			<item local="perf.oracle_asm_useRate" remote="perf.oracle-asm.oracle_asm_useRate" />
+			<item local="perf.oracle_asm_availableSize" remote="perf.oracle-asm.availableSize" />
+			<item local="perf.oracle_asm_totalSize" remote="perf.oracle-asm.totalSize" />
+		</object>
+	</monitor>
+	
+	<monitor type="ORACLE-RATIO">
+		<!-- ORACLE-RATIO-1 高速缓存区命中率 % ORACLE-RATIO-2 共享区库缓存区命中率 % ORACLE-RATIO-3 
+			共享区字典缓存区命中率 % ORACLE-RATIO-4 回退段等待次数与获取次数比率 % ORACLE-RATIO-5 磁盘排序与内存排序比率 
+			% ORACLE-RATIO-6 多次解析(重装)的条目比率 % -->
+		<object local="resource" remote="Oracle">
+			<item local="perf.ORACLE-RATIO-1" remote="perf.oracle-buff.buff_cache_hit_ratio" />
+			<item local="perf.ORACLE-RATIO-2" remote="perf.oracle-buff.lib_cache_hit_ratio" />
+			<item local="perf.ORACLE-RATIO-3" remote="perf.oracle-buff.dic_cache_hit_ratio" />
+			<item local="perf.ORACLE-RATIO-4" remote="perf.oracle-buff.header_waits_pct" />
+			<item local="perf.ORACLE-RATIO-5" remote="perf.oracle-buff.disk_to_memsort_ratio" />
+			<item local="perf.ORACLE-RATIO-6" remote="perf.oracle-buff.lib_cache_reloads" />
+		</object>
+	</monitor>
+
+	<monitor type="ORACLE-RECURSION">
+		<!-- ORACLE-RECURSION-1 时间间隔的递归调用百分比 % ORACLE-RECURSION-2 递归调用百分比 % ORACLE-RECURSION-3 
+			递归调用速率 个/秒 ORACLE-RECURSION-4 递归-用户调用比率 比率 ORACLE-RECURSION-5 递归调用数 个 ORACLE-RECURSION-6 
+			用户调用数 个 -->
+		<object local="resource" remote="Oracle">
+			<item local="perf.ORACLE-RECURSION-1" remote="perf.oracle-recursion.rcalls_pct_for_interval" />
+			<item local="perf.ORACLE-RECURSION-2" remote="perf.oracle-recursion.rcalls_pct" />
+			<item local="perf.ORACLE-RECURSION-3" remote="perf.oracle-recursion.rcalls_rate" />
+			<item local="perf.ORACLE-RECURSION-4" remote="perf.oracle-recursion.rcalls_to_ucalls_ratio" />
+			<item local="perf.ORACLE-RECURSION-5" remote="perf.oracle-recursion.rcalls" />
+			<item local="perf.ORACLE-RECURSION-6" remote="perf.oracle-recursion.ucalls" />
+		</object>
+	</monitor>
+
+	<monitor type="ORACLE-REDOLOG">
+		<!-- ORACLE-REDOLOG-1 Willing-to-wait请求latch失败数 次 ORACLE-REDOLOG-2 Willing-to-wait请求latch成功数 
+			次 ORACLE-REDOLOG-3 Immediate请求latch失败数 次 ORACLE-REDOLOG-4 Immediate请求latch成功数 
+			次 ORACLE-REDOLOG-5 Willing-to-wait请求失败与获得的百分比 % ORACLE-REDOLOG-6 Immediate请求失败与获得的百分比 
+			% ORACLE-REDOLOG-7 重做日志缓冲中用户进程不能分配空间的次数 次 ORACLE-REDOLOG-8 归档重做日志文件的数目 次 
+			ORACLE-REDOLOG-9 重做条目的平均大小 MB -->
+		<object local="resource" remote="Oracle">
+			<item local="perf.ORACLE-REDOLOG-1" remote="perf.oracle-redolog.latch_gets" />
+			<item local="perf.ORACLE-REDOLOG-2" remote="perf.oracle-redolog.latch_misses" />
+			<item local="perf.ORACLE-REDOLOG-3" remote="perf.oracle-redolog.latch_immed_misses" />
+			<item local="perf.ORACLE-REDOLOG-4" remote="perf.oracle-redolog.latch_immed_gets" />
+			<item local="perf.ORACLE-REDOLOG-5" remote="perf.oracle-redolog.latch_misses_pct" />
+			<item local="perf.ORACLE-REDOLOG-6" remote="perf.oracle-redolog.latch_immed_misses_pct" />
+			<item local="perf.ORACLE-REDOLOG-7" remote="perf.oracle-redolog.redobuff_alloc_retries" />
+			<item local="perf.ORACLE-REDOLOG-8" remote="perf.oracle-redolog.redofiles" />
+			<item local="perf.ORACLE-REDOLOG-9" remote="perf.oracle-redolog.redofile_avg_size" />
+		</object>
+	</monitor>
+
+	<monitor type="ORACLE-RMAN">
+		<!-- ORACLE-RMAN-1 全备份大小 MB ORACLE-RMAN-2 增量备份大小 MB -->
+		<object local="resource" remote="Oracle">
+			<item local="perf.ORACLE-RMAN-1" remote="perf.oracle-rman.full_backup_size" />
+			<item local="perf.ORACLE-RMAN-2" remote="perf.oracle-rman.incremental_backup_size" />
+		</object>
+	</monitor>
+
+	<monitor type="ORACLE-SGA">
+		<!-- ORACLE-SGA-1 高速缓冲区大小 MB ORACLE-SGA-2 重做日志缓冲区大小 MB ORACLE-SGA-3 共享池大小 
+			MB ORACLE-SGA-4 数据字典缓存大小 MB ORACLE-SGA-5 共享库缓存大小 MB ORACLE-SGA-6 SQL缓存大小 
+			MB -->
+		<object local="resource" remote="Oracle">
+			<item local="perf.ORACLE-SGA-1" remote="perf.oracle-sga.buff_cache_size" />
+			<item local="perf.ORACLE-SGA-2" remote="perf.oracle-sga.redo_buff_size" />
+			<item local="perf.ORACLE-SGA-3" remote="perf.oracle-sga.share_pool_size" />
+			<item local="perf.ORACLE-SGA-4" remote="perf.oracle-sga.dic_cache_size" />
+			<item local="perf.ORACLE-SGA-5" remote="perf.oracle-sga.lib_cache_size" />
+			<item local="perf.ORACLE-SGA-6" remote="perf.oracle-sga.sql_area_size" />
+		</object>
+	</monitor>
+
+	<monitor type="ORACLE-UNDOSTAT">
+		<!-- ORACLE-UNDOSTAT-1 无空间计数 次 ORACLE-UNDOSTAT-2 快照太旧错误计数 次 -->
+		<object local="resource" remote="Oracle">
+			<item local="perf.ORACLE-UNDOSTAT-1" remote="perf.oracle-undo.no_space_cnt" />
+			<item local="perf.ORACLE-UNDOSTAT-2" remote="perf.oracle-undo.snapshot_too_old_cnt" />
+		</object>
+	</monitor>
+
+	<monitor type="ORACLE-WORKQUE">
+		<!-- ORACLE-WORKQUE-1 破损作业数量 个 ORACLE-WORKQUE-2 失败作业数量 个 ORACLE-WORKQUE-3 
+			过期作业数量 个 -->
+		<object local="resource" remote="Oracle">
+			<item local="perf.ORACLE-WORKQUE-1" remote="perf.oracle-workqueue.jobs_broken" />
+			<item local="perf.ORACLE-WORKQUE-2" remote="perf.oracle-workqueue.jobs_failed" />
+			<item local="perf.ORACLE-WORKQUE-3" remote="perf.oracle-workqueue.jobs_expried" />
+		</object>
+	</monitor>
+	
+	<monitor type="ORACLE-RAC">
+		<!-- ORACLE-RAC-1 oracle实例rac状态 -->
+		<object local="instance" remote="OracleRACInstance">
+			<item local="instance.code" remote="attr.code" />
+			<item local="instance.name" remote="attr.name" />
+			<item local="perf.ORACLE-RAC-1" remote="state.rac_status" 
+						function="string2availableStatus"/>
+			<item local="perf.ORACLE-RAC-2" remote="attr.hostname" />
+		</object>
+	</monitor>
+
+	<function name="oracleSegMan2dict">
+	<![CDATA[			
+		if (input.equalsIgnoreCase("AUTO"))					
+			return "6cd3a627-ee2a-4b28-bf6e-3eb1e5d689ed";	
+		else					
+			return "ce9fda02-1e66-4bd2-b090-49c57d651b3f";
+	]]>
+	</function>
+</pmdb-map>

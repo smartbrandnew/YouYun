@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:tx="http://www.springframework.org/schema/tx" xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:mvc="http://www.springframework.org/schema/mvc" xmlns:dubbo="http://code.alibabatech.com/schema/dubbo"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+               http://www.springframework.org/schema/beans/spring-beans-4.0.xsd
+               http://www.springframework.org/schema/context
+               http://www.springframework.org/schema/context/spring-context-4.0.xsd
+               http://www.springframework.org/schema/tx
+               http://www.springframework.org/schema/tx/spring-tx-4.0.xsd
+               http://www.springframework.org/schema/aop
+               http://www.springframework.org/schema/aop/spring-aop-4.0.xsd
+			   http://www.springframework.org/schema/mvc 
+               http://www.springframework.org/schema/mvc/spring-mvc-4.0.xsd  
+               http://code.alibabatech.com/schema/dubbo  
+       		   http://code.alibabatech.com/schema/dubbo/dubbo.xsd">
+
+	<!-- mybatis相关设置spring-dao已统一处理，此增加事务 -->
+	<aop:config>
+		<aop:pointcut
+			expression="execution(* uyun.bat.datastore.overview.logic.*Logic.*(..))"
+			id="overviewLogic" />
+		<aop:advisor advice-ref="txAdvice" pointcut-ref="overviewLogic" />
+	</aop:config>
+
+	<bean id="oTagLogic" class="uyun.bat.datastore.overview.logic.OTagLogic" />
+	<bean id="oTagResourceLogic" class="uyun.bat.datastore.overview.logic.OTagResourceLogic" />
+	<bean id="resourceMonitorRecordLogic"
+		class="uyun.bat.datastore.overview.logic.ResourceMonitorRecordLogic" />
+
+	<bean id="overviewLogicManager" class="uyun.bat.datastore.overview.logic.OverviewLogicManager"
+		factory-method="getInstance">
+		<property name="oTagLogic" ref="oTagLogic" />
+		<property name="oTagResourceLogic" ref="oTagResourceLogic" />
+		<property name="resourceMonitorRecordLogic" ref="resourceMonitorRecordLogic" />
+	</bean>
+
+	<bean id="overviewService" class="uyun.bat.datastore.overview.service.OverviewServiceImpl" />
+	<dubbo:service
+		interface="uyun.bat.datastore.api.overview.service.OverviewService"
+		ref="overviewService" />
+		
+	<dubbo:reference id="monitorService"
+		interface="uyun.bat.monitor.api.service.MonitorService" check="false" />
+		
+	<bean id="overviewServiceManager" class="uyun.bat.datastore.overview.service.OverviewServiceManager"
+		factory-method="getInstance">
+		<property name="monitorService" ref="monitorService" />
+	</bean>
+		
+	<!-- 在创建完后执行 -->
+	<bean class="uyun.bat.datastore.overview.logic.EnsureAccuracy" />
+</beans>  

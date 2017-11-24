@@ -1,0 +1,618 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<pmdb-map>
+	<monitor type="SNMP-HOSTINFO" >
+		<!-- 
+		SNMP-HOSTINFO-1	操作系统	
+		SNMP-HOSTINFO-2	机器型号	
+		SNMP-HOSTINFO-3	主机名	
+		SNMP-HOSTINFO-4	MAC地址	
+		SNMP-HOSTINFO-5	内存大小	MB
+		SNMP-HOSTINFO-6	CPU核数	个
+		SNMP-HOSTINFO-7	端口列表			
+		 -->	
+		<object local="node" remote="BaseDevice">
+			<item local="perf.SNMP-HOSTINFO-1" remote="attr.osName" />
+			<item local="perf.SNMP-HOSTINFO-2" remote="attr.model" />						
+			<item local="perf.SNMP-HOSTINFO-4" remote="attr.macAddr" />
+			<item local="perf.SNMP-HOSTINFO-5" remote="attr.memCapacity" />			
+			<item local="perf.SNMP-HOSTINFO-6" remote="attr.cpuNum" />					
+		</object>
+	</monitor>	
+	
+	<monitor type="CLI-HOSTINFO" >
+		<!-- 
+		CLI-HOSTINFO-1	CPU数目	个
+		CLI-HOSTINFO-2	机器型号
+		CLI-HOSTINFO-3	系统名称	
+		CLI-HOSTINFO-4	系统版本	
+		CLI-HOSTINFO-5	IP地址	
+		CLI-HOSTINFO-6	内存大小	MB
+		CLI-HOSTINFO-7	总进程数目	个	
+		CLI-HOSTINFO-8	端口列表		
+		CLI-HOSTINFO-9	磁盘	
+		 -->	
+		<object local="node" remote="BaseDevice">	
+			<item local="perf.CLI-HOSTINFO-1" remote="attr.cpuNum" />
+			<item local="perf.CLI-HOSTINFO-2" remote="attr.model" />						
+			<item local="perf.CLI-HOSTINFO-3" remote="attr.osName" />
+			<item local="perf.CLI-HOSTINFO-6" remote="attr.memCapacity" />
+			<item local="perf.host-mac-min" remote="attr.macAddr" />
+		</object>
+	</monitor>		
+	
+	<monitor type="WinService">
+		<!--
+		WinService-1	运行状态	
+		-->
+		<object local="instance" remote="OSService">
+			<item local="resource.id" remote="rs.RunningOn" />	
+			<item local="instance.code" remote="attr.name" />			
+			<item local="perf.WinService-1" remote="state.available_status" function="runState2availableStatus" />			
+		</object>
+	</monitor>		
+	
+	<monitor type="WIN-SERVICE">
+		<!--
+		WinService-1	运行状态	
+		-->
+		<object local="instance" remote="OSService">
+			<item local="resource.id" remote="rs.RunningOn" />	
+			<item local="instance.code" remote="attr.name" />			
+			<item local="perf.WinService-1" remote="state.available_status" function="runState2availableStatus" />			
+		</object>
+	</monitor>		
+	
+	<monitor type="PROCESS">
+		<!--
+		PROCESS-1	内存使用量	MB
+		PROCESS-2	内存使用率	%
+		PROCESS-3	CPU使用率	%
+		PROCESS-4	工作状态
+		-->
+		<object local="instance" remote="OSProcess">
+			<item local="resource.id" remote="rs.RunningOn" />	
+			<item local="instance.code" remote="attr.name" />			
+			<item local="instance.name" remote="attr.description" />			
+			<item local="perf.PROCESS-1" remote="perf.process.proc_mem_uesd" />			
+			<item local="perf.PROCESS-2" remote="perf.process.proc_mem_used_pct" />						
+			<item local="perf.PROCESS-3" remote="perf.process.proc_cpu_used_pct" />						
+			<item local="perf.PROCESS-4" remote="state.available_status" function="runState2availableStatus" />			
+		</object>
+	</monitor>		
+	
+	<monitor type="CLI-PROCESS">
+		<!--
+		CLI-PROCESS-1	内存使用量	MB
+		CLI-PROCESS-2	CPU使用率	%
+		CLI-PROCESS-3	内存使用率	%
+		CLI-PROCESS-4	工作状态
+		-->
+		<object local="instance" remote="OSProcess">
+			<item local="resource.id" remote="rs.RunningOn" />	
+			<item local="instance.code" remote="attr.name" />			
+			<item local="instance.name" remote="attr.description" />			
+			<item local="perf.CLI-PROCESS-1" remote="perf.process.proc_mem_uesd" />			
+			<item local="perf.CLI-PROCESS-2" remote="perf.process.proc_cpu_used_pct" />						
+			<item local="perf.CLI-PROCESS-3" remote="perf.process.proc_mem_used_pct" />									
+			<item local="perf.CLI-PROCESS-4" remote="state.available_status" function="runState2availableStatus" />			
+		</object>
+	</monitor>	
+	
+	<monitor type="CLI-PROCESSSTATE" >
+		<!-- 
+		CLI-PROCESSSTATE-1	虚拟内存使用量	KB
+		CLI-PROCESSSTATE-2	启动时间	
+		CLI-PROCESSSTATE-3	运行时间	
+		 -->
+		<object local="instance" remote="OSProcess">
+			<item local="resource.id" remote="rs.RunningOn" />	
+			<item local="instance.code" remote="attr.name" />			
+			<item local="instance.name" remote="attr.description" />		
+			<item local="perf.CLI-PROCESSSTATE-1" remote="perf.process.virtual_mem_used" function="kb2mb" />
+		</object>
+	</monitor>
+	
+	<monitor type="CLI-DISKSPACE">
+		<!--
+		CLI-DISKSPACE-1	分区总空间	MB
+		CLI-DISKSPACE-2	未使用空间	MB
+		CLI-DISKSPACE-3	磁盘使用率	%
+		-->
+		<object local="instance" remote="logicalDisk">
+			<item local="resource.id" remote="rs.ComponentOf" />	
+			<item local="instance.code" remote="attr.partName" />
+			<item local="instance.name" remote="attr.name" />				
+			<item local="perf.CLI-DISKSPACE-1" remote="attr.capacity" function="mb2gb"/>									
+			<item local="perf.CLI-DISKSPACE-2" remote="perf.disk-use.disk_free_size"/>						
+			<item local="perf.CLI-DISKSPACE-3" remote="perf.disk-use.disk_used_pct"/>						
+		</object>
+	</monitor>		
+	
+	<monitor type="CLI-DEVICEIO">
+		<!--
+		CLI-DEVICEIO-1	%busy	
+		CLI-DEVICEIO-2	avque	
+		CLI-DEVICEIO-3	r+w/s	
+		CLI-DEVICEIO-4	blks/s	
+		CLI-DEVICEIO-5	avwait	
+		CLI-DEVICEIO-6	avserv	ms
+		-->
+		<object local="instance" remote="physicalDisk">
+			<item local="node.id" remote="rs.ComponentOf" />				
+			<item local="instance.code" remote="attr.name" />			
+			<item local="perf.CLI-DEVICEIO-1" remote="perf.diskdrive-io.trans_time_pct" />									
+			<item local="perf.CLI-DEVICEIO-2" remote="perf.diskdrive-io.avg_not_completion_count" />									
+			<item local="perf.CLI-DEVICEIO-3" remote="perf.diskdrive-io.read_write_rate" />									
+			<item local="perf.CLI-DEVICEIO-4" remote="perf.diskdrive-io.blocks_Transmit_rate" />									
+		</object>
+	</monitor>			
+	
+	<monitor type="CLI-LINUXDEVICEIO">
+		<!--
+		CLI-LINUXDEVICEIO-1	%util	
+		CLI-LINUXDEVICEIO-2	rrqm/s	
+		CLI-LINUXDEVICEIO-3	wrqm/s	
+		CLI-LINUXDEVICEIO-4	r/s	
+		CLI-LINUXDEVICEIO-5	w/s	
+		CLI-LINUXDEVICEIO-6	rsec/s	
+		CLI-LINUXDEVICEIO-7	wsec/s	
+		CLI-LINUXDEVICEIO-8	rkb/s	
+		CLI-LINUXDEVICEIO-9	wkb/s	
+		CLI-LINUXDEVICEIO-10	avgrq-sz	
+		CLI-LINUXDEVICEIO-11	avgqu-sz	
+		CLI-LINUXDEVICEIO-12	await	ms
+		CLI-LINUXDEVICEIO-13	svctm	ms
+		-->
+		<object local="instance" remote="physicalDisk">
+			<item local="node.id" remote="rs.ComponentOf" />				
+			<item local="instance.code" remote="attr.name" />			
+			<item local="perf.CLI-LINUXDEVICEIO-1" remote="perf.diskdrive-io.read_write_pct" />									
+			<item local="perf.CLI-LINUXDEVICEIO-2" remote="perf.diskdrive-io.merge_read_count_per_sec" />									
+			<item local="perf.CLI-LINUXDEVICEIO-3" remote="perf.diskdrive-io.merge_write_count_per_sec" />									
+			<item local="perf.CLI-LINUXDEVICEIO-4" remote="perf.diskdrive-io.read_count_per_sec" />									
+			<item local="perf.CLI-LINUXDEVICEIO-5" remote="perf.diskdrive-io.write_count_per_sec" />									
+			<item local="perf.CLI-LINUXDEVICEIO-6" remote="perf.diskdrive-io.read_sector_per_sec" />									
+			<item local="perf.CLI-LINUXDEVICEIO-7" remote="perf.diskdrive-io.write_sector_per_sec" />									
+			<item local="perf.CLI-LINUXDEVICEIO-8" remote="perf.diskdrive-io.read_rate" />									
+			<item local="perf.CLI-LINUXDEVICEIO-9" remote="perf.diskdrive-io.write_rate" />									
+			<item local="perf.CLI-LINUXDEVICEIO-10" remote="perf.diskdrive-io.data_size_per_io" />									
+			<item local="perf.CLI-LINUXDEVICEIO-11" remote="perf.diskdrive-io.io_queue_size" />									
+			<item local="perf.CLI-LINUXDEVICEIO-12" remote="perf.diskdrive-io.io_wait_time_avg" />									
+			<item local="perf.CLI-LINUXDEVICEIO-13" remote="perf.diskdrive-io.io_service_time_avg" />		
+		</object>
+	</monitor>				
+	
+	<monitor type="CLI-WINDOWSDEVICEIO">
+		<!--
+		CLI-WINDOWSDEVICEIO-1	cdql	
+		CLI-WINDOWSDEVICEIO-2	r/s	
+		CLI-WINDOWSDEVICEIO-3	w/s	
+		CLI-WINDOWSDEVICEIO-4	rkb/s	
+		CLI-WINDOWSDEVICEIO-5	wkb/s	
+		CLI-WINDOWSDEVICEIO-6	%drt	%
+		CLI-WINDOWSDEVICEIO-7	dwt	%
+		CLI-WINDOWSDEVICEIO-8	%drwt	%
+		CLI-WINDOWSDEVICEIO-9	%idlet	%
+		-->
+		<object local="instance" remote="physicalDisk">
+			<item local="node.id" remote="rs.ComponentOf" />				
+			<item local="instance.code" remote="attr.name" />			
+			<item local="perf.CLI-WINDOWSDEVICEIO-1" remote="perf.diskdrive-io.current_queue_length" />									
+			<item local="perf.CLI-WINDOWSDEVICEIO-2" remote="perf.diskdrive-io.read_count_per_sec" />									
+			<item local="perf.CLI-WINDOWSDEVICEIO-3" remote="perf.diskdrive-io.write_count_per_sec" />									
+			<item local="perf.CLI-WINDOWSDEVICEIO-4" remote="perf.diskdrive-io.read_rate" />									
+			<item local="perf.CLI-WINDOWSDEVICEIO-5" remote="perf.diskdrive-io.write_rate" />									
+			<item local="perf.CLI-WINDOWSDEVICEIO-6" remote="perf.diskdrive-io.read_time_pct" />									
+			<item local="perf.CLI-WINDOWSDEVICEIO-7" remote="perf.diskdrive-io.write_time_pct" />									
+			<item local="perf.CLI-WINDOWSDEVICEIO-8" remote="perf.diskdrive-io.read_write_pct" />									
+			<item local="perf.CLI-WINDOWSDEVICEIO-9" remote="perf.diskdrive-io.free_time_pct" />				
+		</object>
+	</monitor>		
+	
+	
+	<monitor type="DISK">
+		<!--
+		DISK-1	磁盘使用率	%
+		DISK-2	未使用空间	MB
+		DISK-3	分区总空间	MB	
+		-->
+		<object local="instance" remote="logicalDisk">
+			<item local="resource.id" remote="rs.ComponentOf" />	
+			<item local="instance.code" remote="attr.partName" />			
+			<item local="instance.name" remote="attr.name" />
+			<item local="perf.DISK-1" remote="perf.disk-use.disk_used_pct"/>						
+			<item local="perf.DISK-2" remote="perf.disk-use.disk_free_size"/>						
+			<item local="perf.DISK-3" remote="attr.capacity" function="mb2gb"/>									
+		</object>
+	</monitor>			
+	
+	<monitor type="CLI-HOSTFILE">
+		<!--
+		CLI-HOSTFILE-1	文件大小	MB
+		CLI-HOSTFILE-2	修改时间	
+		CLI-HOSTFILE-3	存在状态
+		-->
+		<object local="instance" remote="OSFile">
+			<item local="resource.id" remote="rs.ComponentOf" />	
+			<item local="instance.code" remote="attr.filePath" />			
+			<item local="instance.name" remote="attr.name" />						
+			<item local="perf.CLI-HOSTFILE-1" remote="perf.file.file_size" />									
+			<item local="perf.CLI-HOSTFILE-2" remote="attr.editTime"/>						
+			<item local="perf.CLI-HOSTFILE-3" remote="state.available_status" function="existsState2availableStatus"/>			
+		</object>
+	</monitor>			
+	
+	<monitor type="CLI-WIN-DIRECTORY">
+		<!--
+		CLI-WIN-DIRECTORY-1	文件大小	MB
+		CLI-WIN-DIRECTORY-2	文件增速 %		
+		-->
+		<script name="directory">
+		<![CDATA[
+			def path = com.broada.carrier.monitor.common.util.TextUtil.between(input.task.parameter, "\"path\" : \"", "\",");
+			path = path.replaceAll("\\\\{2}", "/");
+			
+			def size = null;
+			def lastTime = null;
+			for (row in input.result.rows) {
+				temp = row.getIndicator("CLI-WIN-DIRECTORY-1");				
+				if (temp != null) {
+					if (size == null)
+						size = temp;
+					else
+						size += temp;
+				}				
+				
+				temp = row.getIndicator("file-modified");
+				if (temp != null) {					
+					if (lastTime == null)
+						lastTime = temp;
+					else if (lastTime.before(temp))
+						lastTime = temp;						
+				}
+			}
+		
+			output = context.createOutput(input.resource.id + "-" + path, "FileDirectory");
+			output.setValue(input, "rs.componentOf", input.resource.id);
+			output.setValue(input, "attr.name", path);
+			output.setValue(input, "attr.path", path);
+			output.setValue(input, "perf.file-directory.files", input.result.rowCount);
+			if (size != null)
+				output.setValue(input, "perf.file-directory.files_size", size);
+			if (lastTime != null) {
+				def elapsed = (input.result.time.time - lastTime.time) / 1000 / 60.0;
+				output.setValue(input, "perf.file-directory.modified_elapsed_time", elapsed);
+			}
+		]]>
+		</script>		
+		<object local="instance" remote="OSFile">
+			<item local="resource.id" remote="rs.ComponentOf" />	
+			<item local="instance.code" remote="attr.filePath" />			
+			<item local="instance.name" remote="attr.name" />						
+			<item local="perf.CLI-WIN-DIRECTORY-1" remote="perf.file.file_size" />									
+			<item local="perf.CLI-WIN-DIRECTORY-2" remote="perf.file.file_growth_pct"/>									
+		</object>
+	</monitor>	
+	
+	<monitor type="CLI-UNIX-DIRECTORY">
+		<!--
+		CLI-UNIX-DIRECTORY-1	文件大小	MB
+		CLI-UNIX-DIRECTORY-2	文件增速 %		
+		-->
+		<script name="directory">
+		<![CDATA[
+			def path = com.broada.carrier.monitor.common.util.TextUtil.between(input.task.parameter, "\"path\" : \"", "\",");
+			path = path.replaceAll("\\\\{2}", "/");
+			
+			def size = null;
+			def lastTime = null;
+			for (row in input.result.rows) {
+				temp = row.getIndicator("CLI-UNIX-DIRECTORY-1");				
+				if (temp != null) {
+					if (size == null)
+						size = temp;
+					else
+						size += temp;
+				}				
+				
+				temp = row.getIndicator("file-modified");
+				if (temp != null) {					
+					if (lastTime == null)
+						lastTime = temp;
+					else if (lastTime.before(temp))
+						lastTime = temp;						
+				}
+			}
+		
+			output = context.createOutput(input.resource.id + "-" + path, "FileDirectory");
+			output.setValue(input, "rs.componentOf", input.resource.id);
+			output.setValue(input, "attr.name", path);
+			output.setValue(input, "attr.path", path);
+			output.setValue(input, "perf.file-directory.files", input.result.rowCount);
+			if (size != null)
+				output.setValue(input, "perf.file-directory.files_size", size);
+			if (lastTime != null) {
+				def elapsed = (input.result.time.time - lastTime.time) / 1000 / 60.0;
+				output.setValue(input, "perf.file-directory.modified_elapsed_time", elapsed);
+			}
+		]]>
+		</script>			
+		<object local="instance" remote="OSFile">
+			<item local="resource.id" remote="rs.ComponentOf" />	
+			<item local="instance.code" remote="attr.filePath" />			
+			<item local="instance.name" remote="attr.name" />						
+			<item local="perf.CLI-UNIX-DIRECTORY-1" remote="perf.file.file_size" />									
+			<item local="perf.CLI-UNIX-DIRECTORY-2" remote="perf.file.file_growth_pct"/>									
+		</object>
+	</monitor>			
+
+	<monitor type="WIN-ACCOUNTUSER">
+		<!--
+		WIN-ACCOUNTUSER-1	名称	
+		WIN-ACCOUNTUSER-2	全名称	
+		WIN-ACCOUNTUSER-3	域	
+		WIN-ACCOUNTUSER-4	描述		
+		-->
+		<object local="instance" remote="OSUser">
+			<item local="resource.id" remote="rs.ComponentOf" />	
+			<item local="perf.WIN-ACCOUNTUSER-1" remote="attr.name" />			
+			<item local="perf.WIN-ACCOUNTUSER-4" remote="attr.remark" />						
+		</object>
+	</monitor>		
+
+	<monitor type="CLI-USERACCOUNT">
+		<!--
+		CLI-USERACCOUNT-1	用户密码(加密)	
+		CLI-USERACCOUNT-2	用户ID	
+		CLI-USERACCOUNT-3	用户组ID	
+		CLI-USERACCOUNT-4	说明	
+		CLI-USERACCOUNT-5	主目录	
+		-->
+		<object local="instance" remote="OSUser">
+			<item local="resource.id" remote="rs.ComponentOf" />	
+			<item local="instance.code" remote="attr.name" />			
+			<item local="perf.CLI-USERACCOUNT-4" remote="attr.remark" />						
+		</object>
+	</monitor>	
+	
+	<monitor type="CLI-HOSTUSER">
+		<!--
+		CLI-HOSTUSER-1	用户
+		CLI-HOSTUSER-2	登陆IP
+		CLI-HOSTUSER-3	登陆时间
+		-->
+		<object local="instance" remote="OSOnlineUser">
+			<item local="resource.id" remote="rs.ComponentOf" />	
+			<item local="instance.code" remote="attr.terminal" />
+			<item local="perf.CLI-HOSTUSER-1" remote="attr.name" />
+			<item local="perf.CLI-HOSTUSER-2" remote="attr.loginIP" />
+			<item local="perf.CLI-HOSTUSER-3" remote="attr.loginTime" />						
+		</object>
+		<object local="resource" remote="OS">
+		<![CDATA[
+			int count = 0;
+			if (input.result.rows != null)
+				count = input.result.rows.size();
+			output.setValue(input, "perf.os-user.current_users", count);
+		]]>
+		</object>
+	</monitor>	
+	
+	<monitor type="WIN-LOGONUSER">
+		<!--
+		WIN-LOGONUSER-1	计算机
+		WIN-LOGONUSER-2	用户
+		WIN-LOGONUSER-3	会话时间
+		-->
+		<object local="instance" remote="OSOnlineUser">
+			<item local="resource.id" remote="rs.ComponentOf" />
+			<item local="perf.WIN-LOGONUSER-1" remote="attr.terminal" />				
+			<item local="perf.WIN-LOGONUSER-2" remote="attr.name" />			
+			<item local="perf.WIN-LOGONUSER-3" remote="attr.loginTime" />						
+		</object>
+		<object local="resource" remote="OS">
+		<![CDATA[
+			int count = 0;
+			if (input.result.rows != null)
+				count = input.result.rows.size();
+			output.setValue(input, "perf.os-user.current_users", count);
+		]]>
+		</object>		
+	</monitor>	
+	
+	<monitor type="HOSTCPU">
+		<!-- HOSTCPU-1	主机CPU使用率 -->
+		<object local="node" remote="BaseDevice">	
+			<item local="perf.HOSTCPU-1" remote="perf.cpu-use.cpu_usage" />
+		</object>
+		<object local="resource" remote="OS">
+			<item local="perf.HOSTCPU-1" remote="perf.os-cpu-use.cpu_usage" />
+		</object>
+	</monitor>	
+	
+	<monitor type="HOSTRAM">
+		<object local="node" remote="BaseDevice">	
+			<item local="perf.HOSTRAM-1" remote="perf.ram-use.mem_used" />
+			<item local="perf.HOSTRAM-2" remote="perf.ram-use.mem_usage" />
+		</object>
+		<object local="resource" remote="OS">
+			<item local="perf.HOSTRAM-1" remote="perf.os-ram-use.mem_used" />
+			<item local="perf.HOSTRAM-2" remote="perf.os-ram-use.mem_usage" />
+		</object>
+	</monitor>		
+	
+	<monitor type="CLI-HOSTCPU">
+		<!-- 
+		CLI-HOSTCPU-1	CPU总使用率	%
+		CLI-HOSTCPU-2	CPU系统使用率	%
+		CLI-HOSTCPU-3	CPU用户使用率	%
+		-->
+		<object local="node" remote="BaseDevice">	
+			<item local="perf.CLI-HOSTCPU-1" remote="perf.cpu-use.cpu_usage" />
+		</object>
+		<object local="resource" remote="OS">
+			<item local="perf.CLI-HOSTCPU-1" remote="perf.os-cpu-use.cpu_usage" />
+			<item local="perf.CLI-HOSTCPU-2" remote="perf.os-cpu-use.sys_cputime_pct" />
+			<item local="perf.CLI-HOSTCPU-3" remote="perf.os-cpu-use.user_cputime_pct" />
+		</object>
+	</monitor>		
+	
+	<monitor type="CLI-HOSTMEMORY">
+		<!-- 
+		CLI-HOSTMEMORY-1	物理内存使用率	%
+		CLI-HOSTMEMORY-2	虚拟内存使用率	%
+		CLI-HOSTMEMORY-3	物理内存使用量	MB
+		CLI-HOSTMEMORY-4	虚拟内存使用量	MB
+		-->
+		<object local="node" remote="BaseDevice">	
+			<item local="perf.CLI-HOSTMEMORY-1" remote="perf.ram-use.mem_usage" />
+			<item local="perf.CLI-HOSTMEMORY-3" remote="perf.ram-use.mem_used" />
+		</object>
+		<object local="resource" remote="OS">
+			<item local="perf.CLI-HOSTMEMORY-1" remote="perf.os-ram-use.mem_usage" />
+			<item local="perf.CLI-HOSTMEMORY-2" remote="perf.os-ram-use.virtual_mem_usage" />
+			<item local="perf.CLI-HOSTMEMORY-3" remote="perf.os-ram-use.mem_used" />
+			<item local="perf.CLI-HOSTMEMORY-4" remote="perf.os-ram-use.virtual_mem_used" />			
+		</object>
+	</monitor>
+	
+	<monitor type="IPMI-CHASSIS" >
+		<!-- 
+		IPMI-CHASSIS-1	电源启用状态	
+		IPMI-CHASSIS-2	功率过载	
+		IPMI-CHASSIS-3	电源连锁	
+		IPMI-CHASSIS-4	主电源故障	
+		IPMI-CHASSIS-5	功率控制故障	
+		IPMI-CHASSIS-6	机箱启用	
+		IPMI-CHASSIS-7	面板锁定	
+		IPMI-CHASSIS-8	驱动故障	
+		IPMI-CHASSIS-9	散热故障
+		 -->
+		<object local="node" remote="BaseDevice">
+			<item local="perf.IPMI-CHASSIS-1" remote="state.system_power" function="booleanState2Int" />
+			<item local="perf.IPMI-CHASSIS-2" remote="state.power_overload" function="booleanState2Int" />
+			<item local="perf.IPMI-CHASSIS-3" remote="state.power_interlock" function="booleanState2Int" />
+			<item local="perf.IPMI-CHASSIS-4" remote="state.mainpower_fault" function="booleanState2Int" />
+			<item local="perf.IPMI-CHASSIS-5" remote="state.powercontrol_fault" function="booleanState2Int" />
+			<item local="perf.IPMI-CHASSIS-6" remote="state.chassis_intrusion" function="booleanState2Int" />
+			<item local="perf.IPMI-CHASSIS-7" remote="state.panel_lockout" function="booleanState2Int" />
+			<item local="perf.IPMI-CHASSIS-8" remote="state.driver_fault" function="booleanState2Int" />
+			<item local="perf.IPMI-CHASSIS-9" remote="state.radiating_fault" function="booleanState2Int" />
+		</object>
+	</monitor>
+	
+	<monitor type="IPMI-BASIC" >
+		<!-- 
+		IPMI-BASIC-1	厂商	
+		IPMI-BASIC-2	产品	
+		IPMI-BASIC-3	序列号	
+		IPMI-BASIC-4	型号	
+		IPMI-BASIC-5	输入电压	
+		IPMI-BASIC-6	输入频率	
+		IPMI-BASIC-7	额定功率	
+		IPMI-BASIC-8	特性	
+		IPMI-BASIC-9	IP	
+		 -->
+		<object local="instance" remote="FAN">
+		<![CDATA[			
+			String name = input.instance.instName.toLowerCase();			
+			if (name.contains("风扇") || name.contains("fan")) {
+				output.setValue(input, "rs.ComponentOf", input.node.id);				
+				output.setValue(input, "attr.name", input.instance.instName);			
+				output.setValue(input, "attr.mfg", input.instance.getIndicator("IPMI-BASIC-1"));
+				output.setValue(input, "attr.productName", input.instance.getIndicator("IPMI-BASIC-2"));
+				output.setValue(input, "attr.serial", input.instance.getIndicator("IPMI-BASIC-3"));
+				output.setValue(input, "attr.partNum", input.instance.getIndicator("IPMI-BASIC-4"));
+			}
+		]]>
+		</object>
+		<object local="instance" remote="Memory">
+		<![CDATA[
+			String name = input.instance.instName.toLowerCase();
+			if (name.contains("内存") || name.toLowerCase().contains("ram")) {
+				output.setValue(input, "rs.ComponentOf", input.node.id);				
+				output.setValue(input, "attr.name", input.instance.instName);			
+				output.setValue(input, "attr.mfg", input.instance.getIndicator("IPMI-BASIC-1"));
+				output.setValue(input, "attr.productName", input.instance.getIndicator("IPMI-BASIC-2"));
+				output.setValue(input, "attr.serial", input.instance.getIndicator("IPMI-BASIC-3"));
+				output.setValue(input, "attr.partNum", input.instance.getIndicator("IPMI-BASIC-4"));
+			}
+		]]>
+		</object>		
+		<object local="instance" remote="Processor">
+		<![CDATA[
+			String name = input.instance.instName.toLowerCase();
+			if (name.contains("cpu") || name.toLowerCase().contains("process")) {
+				output.setValue(input, "rs.ComponentOf", input.node.id);				
+				output.setValue(input, "attr.name", input.instance.instName);			
+				output.setValue(input, "attr.mfg", input.instance.getIndicator("IPMI-BASIC-1"));
+				output.setValue(input, "attr.productName", input.instance.getIndicator("IPMI-BASIC-2"));
+				output.setValue(input, "attr.serial", input.instance.getIndicator("IPMI-BASIC-3"));
+				output.setValue(input, "attr.partNum", input.instance.getIndicator("IPMI-BASIC-4"));
+			}
+		]]>
+		</object>	
+		<object local="instance" remote="physicalDisk">
+		<![CDATA[
+			String name = input.instance.instName.toLowerCase();
+			if (name.contains("disk") || name.toLowerCase().contains("storage")) {
+				output.setValue(input, "rs.ComponentOf", input.node.id);				
+				output.setValue(input, "attr.name", input.instance.instName);			
+				output.setValue(input, "attr.mfg", input.instance.getIndicator("IPMI-BASIC-1"));
+				output.setValue(input, "attr.productName", input.instance.getIndicator("IPMI-BASIC-2"));
+				output.setValue(input, "attr.serial", input.instance.getIndicator("IPMI-BASIC-3"));
+				output.setValue(input, "attr.partNum", input.instance.getIndicator("IPMI-BASIC-4"));
+			}
+		]]>
+		</object>
+		<object local="instance" remote="PowerSupply">
+		<![CDATA[
+			String name = input.instance.instName.toLowerCase();
+			if (name.contains("电脑") || name.toLowerCase().contains("ps") || name.toLowerCase().contains("power")) {
+				output.setValue(input, "rs.ComponentOf", input.node.id);				
+				output.setValue(input, "attr.name", input.instance.instName);			
+				output.setValue(input, "attr.mfg", input.instance.getIndicator("IPMI-BASIC-1"));
+				output.setValue(input, "attr.productName", input.instance.getIndicator("IPMI-BASIC-2"));
+				output.setValue(input, "attr.serial", input.instance.getIndicator("IPMI-BASIC-3"));
+				output.setValue(input, "attr.partNum", input.instance.getIndicator("IPMI-BASIC-4"));
+				output.setValue(input, "attr.inVoltRange", input.instance.getIndicator("IPMI-BASIC-5"));
+				output.setValue(input, "attr.inFreqRange", input.instance.getIndicator("IPMI-BASIC-6"));
+				output.setValue(input, "attr.capacity", input.instance.getIndicator("IPMI-BASIC-7"));
+				output.setValue(input, "attr.flags", input.instance.getIndicator("IPMI-BASIC-8"));
+			}
+		]]>
+		</object>	
+		<object local="instance" remote="motherboard">
+		<![CDATA[
+			String name = input.instance.instName.toLowerCase();
+			if (name.contains("主板") || name.toLowerCase().contains("board")) {
+				output.setValue(input, "rs.ComponentOf", input.node.id);				
+				output.setValue(input, "attr.name", input.instance.instName);			
+				output.setValue(input, "attr.mfg", input.instance.getIndicator("IPMI-BASIC-1"));
+				output.setValue(input, "attr.productName", input.instance.getIndicator("IPMI-BASIC-2"));
+				output.setValue(input, "attr.serial", input.instance.getIndicator("IPMI-BASIC-3"));
+				output.setValue(input, "attr.partNum", input.instance.getIndicator("IPMI-BASIC-4"));
+			}
+		]]>
+		</object>									
+	</monitor>
+	
+	<monitor type="TCP" >
+		<!-- 
+		TCP-1	端口状态	
+		TCP-2	响应时间	毫秒
+		 -->
+		<object local="instance" remote="ProtocolEndPoint" states="SUCCESSED,FAILED,OVERSTEP">
+		<![CDATA[
+			output.setValue(input, "rs.runningOn", input.instance.id);
+			output.setValue(input, "attr.port", input.instance.instCode);
+			output.setValue(input, "attr.name", input.instance.instName);
+			output.setValue(input, "attr.protocol", "TCP");
+			output.setValue(input, "attr.ipAddr", input.node.ip);
+			if (input.instance.getIndicator("TCP-1") != null)
+				output.setValue(input, "state.available_status", input.instance.getIndicator("TCP-1").getId());
+			output.setValue(input, "perf.protocol-end-point.response_time", input.instance.getIndicator("TCP-2"));			
+		]]>
+		</object>				
+	</monitor>			
+</pmdb-map>

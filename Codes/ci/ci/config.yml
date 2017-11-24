@@ -1,0 +1,100 @@
+gitlab:
+  url: https://git.uyunsoft.cn/api/v3/projects/
+  branches: [master, develop, release/*]
+
+dingding:
+  url: https://oapi.dingtalk.com/robot/send?access_token=99340b06a5bb690cbb3273bfd01189472211bc8fae97c63d6d568d0f3a251cbc
+
+deploy_machine:
+  agent:
+    - 10.1.100.101
+    - 10.1.100.102
+    - 10.1.100.103
+    - 10.1.100.105
+    - 10.1.11.228
+  manager:
+    - 10.1.100.220
+  manager-web:
+    - 10.1.100.104
+  dispatcher:
+    - 10.1.100.104
+  nginx:
+    - 10.1.100.104
+  node:
+    - 10.1.100.104
+  python:
+    - 10.1.100.104
+
+test_machine:
+  agent:
+    - 10.1.100.112
+    - 10.1.100.123
+    - 10.1.11.228
+  manager:
+  manager-web:
+  dispatcher:
+
+projects:
+  ant-build: 'git@git.uyunsoft.cn:antman/ant-build.git'
+
+chinese_names:
+  yeting: 大婷婷
+  ting ye: 大婷婷
+  zhengyd: 永定
+  yongding zheng: 永定
+  xuzg: 志刚
+  zhigang xu: 志刚
+  zhuxd: 夏栋
+  xiadong zhu: 夏栋
+  qiuting: 邱婷
+  ting qiu: 邱婷
+  qinchao: 超超
+  chao qin: 超超
+  kelc: 老柯
+  lianchun ke: 老柯
+  suncong: 聪聪
+  cong sun: 聪聪
+  zhongjw: 小威
+  jinwei zhong: 小威
+  wangbx: 老王
+  deyu liao: 得宇
+  zhangcheng: 小诚
+  dongqing wang: 冬情
+  wangdq: 冬情
+  shenjf: 剑芬
+  jianfen: 剑芬
+  shizb: 振波
+  zhenbo shi: 振波
+  dongchen: 晨晨
+  chen dong: 晨晨
+
+full_name:
+  yeting: 叶婷
+  ting ye:  叶婷
+  zhengyd: 郑永定
+  yongding zheng: 郑永定
+  xuzg: 徐志刚
+  zhigang xu: 徐志刚
+  zhuxd: 竺夏栋
+  xiadong zhu: 竺夏栋
+  qiuting: 邱婷
+  ting qiu: 邱婷
+  qinchao: 秦超
+  chao qin: 秦超
+  kelc: 柯连春
+  lianchun ke: 柯连春
+  suncong: 孙聪
+  cong sun: 孙聪
+  zhongjw: 钟锦威
+  jinwei zhong: 钟威
+  wangbx: 老王
+  deyu liao: 得宇
+  zhangcheng: 小诚
+  dongqing wang: 冬情
+  wangdq: 冬情
+  shenjf: 剑芬
+  jianfen: 剑芬
+  shizb: 振波
+  zhenbo shi: 振波
+  dongchen: 晨晨
+  chen dong: 晨晨

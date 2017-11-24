@@ -1,0 +1,6 @@
+init_config:
+
+instances:
+    - db_user: user
+      db_password: "******"
+      instance: name

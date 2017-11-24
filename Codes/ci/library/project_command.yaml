@@ -1,0 +1,25 @@
+"nginx":
+    exec_start: /opt/uyun/platform/nginx/sbin/nginx -p /opt/uyun/platform/nginx -c /opt/uyun/platform/nginx/conf/nginx.conf
+    exec_stop:  /opt/uyun/platform/nginx/sbin/nginx -s quit -p /opt/uyun/platform/nginx
+    exec_status: "[[ `ps aux | grep /opt/uyun/platform/nginx | grep -v grep |wc -l` -gt 0 ]] >log.txt;echo $?"
+    exec_uninstall: sh /opt/uyun/platform/nginx/uninstall.sh
+
+"python":
+    exec_status: ls /opt/uyun/platform/dispatcher/embedded/bin/python >log.txt;echo $?
+    exec_uninstall: sh /opt/uyun/platform/dispatcher/embedded/uninstall.sh
+
+"node":
+    exec_status: ls /opt/uyun/platform/dispatcher/node >log.txt;echo $?
+    exec_uninstall: sh /opt/uyun/platform/dispatcher/node/uninstall.sh
+
+"dispatcher":
+    exec_start: cd /opt/uyun/platform/dispatcher && su uyun -c "/usr/local/bin/pm2 start process.json"
+    exec_stop:  su uyun -c "/usr/local/bin/pm2 delete all"
+    exec_status: sh /opt/uyun/platform/dispatcher/check_status.sh >log.txt;echo $?
+    exec_uninstall: sh /opt/uyun/platform/dispatcher/uninstall.sh
+
+"manager":
+    exec_start: source /etc/profile && su - uyun -c "sh /opt/uyun/platform/manager/bin/start.sh"
+    exec_stop: sh /opt/uyun/platform/manager/bin/stop.sh
+    exec_status: "[[ `ps aux | grep 'uyun.ant.manager' | grep -v 'grep' | wc -l` -gt 0 ]] >log.txt;echo $?"
+    exec_uninstall: sh /opt/uyun/platform/manager/uninstall.sh

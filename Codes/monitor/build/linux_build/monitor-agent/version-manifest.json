@@ -1,0 +1,485 @@
+{
+  "manifest_format": 1,
+  "software": {
+    "libgcc": {
+      "locked_version": "0.0.1",
+      "locked_source": null,
+      "source_type": "project_local",
+      "described_version": "0.0.1"
+    },
+    "ncurses": {
+      "locked_version": "5.9",
+      "locked_source": {
+        "url": "http://ftp.gnu.org/gnu/ncurses/ncurses-5.9.tar.gz",
+        "md5": "8cb9c412e5f2d96bc6f459aa8c6282a1"
+      },
+      "source_type": "url",
+      "described_version": "5.9"
+    },
+    "zlib": {
+      "locked_version": "1.2.8",
+      "locked_source": {
+        "md5": "44d667c142d7cda120332623eab69f40",
+        "url": "http://zlib.net/zlib-1.2.8.tar.gz"
+      },
+      "source_type": "url",
+      "described_version": "1.2.8"
+    },
+    "cacerts": {
+      "locked_version": "2016.01.20",
+      "locked_source": {
+        "md5": "06629db7f712ff3a75630eccaecc1fe4",
+        "url": "http://s3.amazonaws.com/dd-agent-omnibus/cacert.pem"
+      },
+      "source_type": "url",
+      "described_version": "2016.01.20"
+    },
+    "xproto": {
+      "locked_version": "7.0.27",
+      "locked_source": {
+        "url": "http://xorg.freedesktop.org/releases/individual/proto/xproto-7.0.27.tar.gz",
+        "md5": "f04f535b090f3fd05073370740e99193"
+      },
+      "source_type": "url",
+      "described_version": "7.0.27"
+    },
+    "util-macros": {
+      "locked_version": "1.19.0",
+      "locked_source": {
+        "url": "http://xorg.freedesktop.org/releases/individual/util/util-macros-1.19.0.tar.gz",
+        "md5": "40e1caa49a71a26e0aa68ddd00203717"
+      },
+      "source_type": "url",
+      "described_version": "1.19.0"
+    },
+    "libiconv": {
+      "locked_version": "1.14",
+      "locked_source": {
+        "url": "http://ftp.gnu.org/pub/gnu/libiconv/libiconv-1.14.tar.gz",
+        "md5": "e34509b1623cec449dfeb73d7ce9c6c6"
+      },
+      "source_type": "url",
+      "described_version": "1.14"
+    },
+    "pkg-config": {
+      "locked_version": "0.28",
+      "locked_source": {
+        "md5": "aa3c86e67551adc3ac865160e34a2a0d",
+        "url": "http://pkgconfig.freedesktop.org/releases/pkg-config-0.28.tar.gz"
+      },
+      "source_type": "url",
+      "described_version": "0.28"
+    },
+    "makedepend": {
+      "locked_version": "1.0.5",
+      "locked_source": {
+        "url": "http://xorg.freedesktop.org/releases/individual/util/makedepend-1.0.5.tar.gz",
+        "md5": "efb2d7c7e22840947863efaedc175747"
+      },
+      "source_type": "url",
+      "described_version": "1.0.5"
+    },
+    "openssl": {
+      "locked_version": "1.0.1s",
+      "locked_source": {
+        "url": "http://www.openssl.org/source/openssl-1.0.1s.tar.gz",
+        "sha256": "e7e81d82f3cd538ab0cdba494006d44aab9dd96b7f6233ce9971fb7c7916d511"
+      },
+      "source_type": "url",
+      "described_version": "1.0.1s"
+    },
+    "bzip2": {
+      "locked_version": "1.0.6",
+      "locked_source": {
+        "url": "http://www.bzip.org/1.0.6/bzip2-1.0.6.tar.gz",
+        "md5": "00b516f4704d4a7cb50a1d97e6e8e15b"
+      },
+      "source_type": "url",
+      "described_version": "1.0.6"
+    },
+    "libsqlite3": {
+      "locked_version": "56786cab18673a14c64bf4a04e38eef70f692b73",
+      "locked_source": {
+        "git": "git://github.com/LuaDist/libsqlite3.git"
+      },
+      "source_type": "git",
+      "described_version": "3.7.7.1"
+    },
+    "python": {
+      "locked_version": "2.7.11",
+      "locked_source": {
+        "url": "http://python.org/ftp/python/2.7.11/Python-2.7.11.tgz",
+        "md5": "6b6076ec9e93f05dd63e47eb9c15728b"
+      },
+      "source_type": "url",
+      "described_version": "2.7.11"
+    },
+    "setuptools": {
+      "locked_version": "0.7.7",
+      "locked_source": {
+        "url": "https://pypi.python.org/packages/source/s/setuptools/setuptools-0.7.7.tar.gz",
+        "md5": "0d7bc0e1a34b70a97e706ef74aa7f37f"
+      },
+      "source_type": "url",
+      "described_version": "0.7.7"
+    },
+    "pip": {
+      "locked_version": "6.1.1",
+      "locked_source": {
+        "url": "https://pypi.python.org/packages/source/p/pip/pip-6.1.1.tar.gz",
+        "md5": "6b19e0a934d982a5a4b798e957cb6d45"
+      },
+      "source_type": "url",
+      "described_version": "6.1.1"
+    },
+    "libtool": {
+      "locked_version": "2.4.2",
+      "locked_source": {
+        "md5": "d2f3b7d4627e69e13514a40e72a24d50",
+        "url": "http://ftp.gnu.org/gnu/libtool/libtool-2.4.2.tar.gz"
+      },
+      "source_type": "url",
+      "described_version": "2.4.2"
+    },
+    "libffi": {
+      "locked_version": "3.0.13",
+      "locked_source": {
+        "url": "ftp://sourceware.org/pub/libffi/libffi-3.0.13.tar.gz",
+        "md5": "45f3b6dbc9ee7c7dfbbbc5feba571529"
+      },
+      "source_type": "url",
+      "described_version": "3.0.13"
+    },
+    "libyaml": {
+      "locked_version": "0.1.6",
+      "locked_source": {
+        "url": "http://dd-agent-omnibus.s3.amazonaws.com/yaml-0.1.6.tar.gz",
+        "md5": "5fe00cda18ca5daeb43762b80c38e06e"
+      },
+      "source_type": "url",
+      "described_version": "0.1.6"
+    },
+    "curl": {
+      "locked_version": "7.41.0",
+      "locked_source": {
+        "url": "http://s3.amazonaws.com/dd-agent-omnibus/curl-7.41.0.tar.gz",
+        "md5": "7321a0a3012f8eede729b5a44ebef5bd"
+      },
+      "source_type": "url",
+      "described_version": "7.41.0"
+    },
+    "pycurl": {
+      "locked_version": "7.19.5.1",
+      "locked_source": null,
+      "source_type": "project_local",
+      "described_version": "7.19.5.1"
+    },
+    "futures": {
+      "locked_version": "2.2.0",
+      "locked_source": null,
+      "source_type": "project_local",
+      "described_version": "2.2.0"
+    },
+    "pyro4": {
+      "locked_version": "4.35",
+      "locked_source": null,
+      "source_type": "project_local",
+      "described_version": "4.35"
+    },
+    "libedit": {
+      "locked_version": "20120601-3.0",
+      "locked_source": {
+        "md5": "e50f6a7afb4de00c81650f7b1a0f5aea",
+        "url": "http://www.thrysoee.dk/editline/libedit-20120601-3.0.tar.gz"
+      },
+      "source_type": "url",
+      "described_version": "20120601-3.0"
+    },
+    "libpq": {
+      "locked_version": "9.4.0",
+      "locked_source": {
+        "url": "http://ftp.postgresql.org/pub/source/v9.4.0/postgresql-9.4.0.tar.gz",
+        "md5": "349552802c809c4e8b09d8045a437787"
+      },
+      "source_type": "url",
+      "described_version": "9.4.0"
+    },
+    "pysnmp-mibs": {
+      "locked_version": "0.1.4",
+      "locked_source": null,
+      "source_type": "project_local",
+      "described_version": "0.1.4"
+    },
+    "google-apputils": {
+      "locked_version": "0.4.2",
+      "locked_source": null,
+      "source_type": "project_local",
+      "described_version": "0.4.2"
+    },
+    "flex": {
+      "locked_version": "2.6.0",
+      "locked_source": {
+        "url": "https://fossies.org/linux/misc/flex-2.6.0.tar.gz",
+        "md5": "5724bcffed4ebe39e9b55a9be80859ec"
+      },
+      "source_type": "url",
+      "described_version": "2.6.0"
+    },
+    "bison": {
+      "locked_version": "3.0.4",
+      "locked_source": {
+        "url": "http://ftp.gnu.org/gnu/bison/bison-3.0.4.tar.gz",
+        "md5": "a586e11cd4aff49c3ff6d3b6a4c9ccf8"
+      },
+      "source_type": "url",
+      "described_version": "3.0.4"
+    },
+    "libpcap": {
+      "locked_version": "1.7.4",
+      "locked_source": {
+        "md5": "b2e13142bbaba857ab1c6894aedaf547",
+        "url": "http://www.tcpdump.org/release/libpcap-1.7.4.tar.gz"
+      },
+      "source_type": "url",
+      "described_version": "1.7.4"
+    },
+    "procps-ng": {
+      "locked_version": "3.3.9",
+      "locked_source": {
+        "url": "http://dd-agent-omnibus.s3.amazonaws.com/procps-ng-3.3.9.tar.xz",
+        "md5": "0980646fa25e0be58f7afb6b98f79d74"
+      },
+      "source_type": "url",
+      "described_version": "3.3.9"
+    },
+    "sysstat": {
+      "locked_version": "11.1.3",
+      "locked_source": {
+        "url": "http://perso.orange.fr/sebastien.godard/sysstat-11.1.3.tar.xz",
+        "md5": "27385bcb6c1e585de8ba7cb25ac67aef"
+      },
+      "source_type": "url",
+      "described_version": "11.1.3"
+    },
+    "preparation": {
+      "locked_version": "1.0.0",
+      "locked_source": null,
+      "source_type": "project_local",
+      "described_version": "1.0.0"
+    },
+    "boto": {
+      "locked_version": "2.36.0",
+      "locked_source": null,
+      "source_type": "project_local",
+      "described_version": "2.36.0"
+    },
+    "docker-py": {
+      "locked_version": "1.3.1",
+      "locked_source": null,
+      "source_type": "project_local",
+      "described_version": "1.3.1"
+    },
+    "ntplib": {
+      "locked_version": "0.3.3",
+      "locked_source": null,
+      "source_type": "project_local",
+      "described_version": "0.3.3"
+    },
+    "pycrypto": {
+      "locked_version": "2.6.1",
+      "locked_source": null,
+      "source_type": "project_local",
+      "described_version": "2.6.1"
+    },
+    "pyopenssl": {
+      "locked_version": "0.14",
+      "locked_source": null,
+      "source_type": "project_local",
+      "described_version": "0.14"
+    },
+    "pyyaml": {
+      "locked_version": "3.11",
+      "locked_source": null,
+      "source_type": "project_local",
+      "described_version": "3.11"
+    },
+    "simplejson": {
+      "locked_version": "3.6.5",
+      "locked_source": null,
+      "source_type": "project_local",
+      "described_version": "3.6.5"
+    },
+    "supervisor": {
+      "locked_version": "3.1.3",
+      "locked_source": null,
+      "source_type": "project_local",
+      "described_version": "3.1.3"
+    },
+    "tornado": {
+      "locked_version": "3.2.2",
+      "locked_source": null,
+      "source_type": "project_local",
+      "described_version": "3.2.2"
+    },
+    "uptime": {
+      "locked_version": "3.0.1",
+      "locked_source": null,
+      "source_type": "project_local",
+      "described_version": "3.0.1"
+    },
+    "uuid": {
+      "locked_version": "1.30",
+      "locked_source": null,
+      "source_type": "project_local",
+      "described_version": "1.30"
+    },
+    "adodbapi": {
+      "locked_version": "2.6.0.7",
+      "locked_source": null,
+      "source_type": "project_local",
+      "described_version": "2.6.0.7"
+    },
+    "dnspython": {
+      "locked_version": "1.12.0",
+      "locked_source": null,
+      "source_type": "project_local",
+      "described_version": "1.12.0"
+    },
+    "httplib2": {
+      "locked_version": "0.9",
+      "locked_source": null,
+      "source_type": "project_local",
+      "described_version": "0.9"
+    },
+    "kafka-python": {
+      "locked_version": "0.9.3",
+      "locked_source": null,
+      "source_type": "project_local",
+      "described_version": "0.9.3"
+    },
+    "kazoo": {
+      "locked_version": "1.3.1",
+      "locked_source": null,
+      "source_type": "project_local",
+      "described_version": "1.3.1"
+    },
+    "paramiko": {
+      "locked_version": "1.15.2",
+      "locked_source": null,
+      "source_type": "project_local",
+      "described_version": "1.15.2"
+    },
+    "pg8000": {
+      "locked_version": "1.10.1",
+      "locked_source": null,
+      "source_type": "project_local",
+      "described_version": "1.10.1"
+    },
+    "psutil": {
+      "locked_version": "3.3.0",
+      "locked_source": null,
+      "source_type": "project_local",
+      "described_version": "3.3.0"
+    },
+    "psycopg2": {
+      "locked_version": "2.6",
+      "locked_source": null,
+      "source_type": "project_local",
+      "described_version": "2.6"
+    },
+    "pymongo": {
+      "locked_version": "3.2",
+      "locked_source": null,
+      "source_type": "project_local",
+      "described_version": "3.2"
+    },
+    "pymysql": {
+      "locked_version": "0.6.6",
+      "locked_source": null,
+      "source_type": "project_local",
+      "described_version": "0.6.6"
+    },
+    "pysnmp": {
+      "locked_version": "4.2.5",
+      "locked_source": null,
+      "source_type": "project_local",
+      "described_version": "4.2.5"
+    },
+    "python-gearman": {
+      "locked_version": "2.0.2",
+      "locked_source": null,
+      "source_type": "project_local",
+      "described_version": "2.0.2"
+    },
+    "python-memcached": {
+      "locked_version": "1.53",
+      "locked_source": null,
+      "source_type": "project_local",
+      "described_version": "1.53"
+    },
+    "python-redis": {
+      "locked_version": "2.10.3",
+      "locked_source": null,
+      "source_type": "project_local",
+      "described_version": "2.10.3"
+    },
+    "python-rrdtool": {
+      "locked_version": "1.3.8",
+      "locked_source": null,
+      "source_type": "project_local",
+      "described_version": "1.3.8"
+    },
+    "pyvmomi": {
+      "locked_version": "6.0.0",
+      "locked_source": null,
+      "source_type": "project_local",
+      "described_version": "6.0.0"
+    },
+    "requests": {
+      "locked_version": "2.6.0",
+      "locked_source": null,
+      "source_type": "project_local",
+      "described_version": "2.6.0"
+    },
+    "snakebite": {
+      "locked_version": "1.3.11",
+      "locked_source": null,
+      "source_type": "project_local",
+      "described_version": "1.3.11"
+    },
+    "datadogpy": {
+      "locked_version": "0.10.0",
+      "locked_source": null,
+      "source_type": "project_local",
+      "described_version": "0.10.0"
+    },
+    "datadog-gohai": {
+      "locked_version": "5.7.x-agent",
+      "locked_source": null,
+      "source_type": "project_local",
+      "described_version": "5.7.x-agent"
+    },
+    "datadog-metro": {
+      "locked_version": "last-stable",
+      "locked_source": null,
+      "source_type": "project_local",
+      "described_version": "last-stable"
+    },
+    "datadog-agent": {
+      "locked_version": "ccddf75e6d5425752c9928ff4b6b0011c812b108",
+      "locked_source": {
+        "git": "https://github.com/DataDog/dd-agent.git"
+      },
+      "source_type": "git",
+      "described_version": "5.7.x"
+    },
+    "version-manifest": {
+      "locked_version": "0.0.1",
+      "locked_source": null,
+      "source_type": "project_local",
+      "described_version": "0.0.1"
+    }
+  },
+  "build_version": "5.7.4",
+  "build_git_revision": "79ec15635d8bff9d522a3dc1a4cf294b849264a1"
+}

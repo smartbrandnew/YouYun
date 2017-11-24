@@ -1,0 +1,11 @@
+init_config:
+
+instances:
+  - tags:
+    - name:mars_cluster
+
+    ceph_cmd: /usr/bin/ceph
+    ceph_cluster: ceph
+
+    use_sudo: True
+

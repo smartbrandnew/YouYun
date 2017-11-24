@@ -1,0 +1,23 @@
+init_config:
+
+instances:
+    - name: instance_1
+      auth_scope:
+      project:
+         id: my_project_id
+
+         project:
+              name: my_project_name
+              domain:
+                  id: default
+      user:
+          password: "******"
+          name: datamonitor
+          domain:
+              id: default
+
+      append_tenant_id: false
+
+      exclude_server_ids:
+         - server_1
+         - server_2

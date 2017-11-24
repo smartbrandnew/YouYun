@@ -1,0 +1,45 @@
+<assembly
+	xmlns="http://maven.apache.org/plugins/maven-assembly-plugin/assembly/1.1.2"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/plugins/maven-assembly-plugin/assembly/1.1.2 http://maven.apache.org/xsd/assembly-1.1.2.xsd">
+
+	<id>bin</id>
+	<includeBaseDirectory>false</includeBaseDirectory>
+	<formats>
+		<format>zip</format>
+	</formats>
+
+	<dependencySets>
+		<dependencySet>
+			<useProjectArtifact>true</useProjectArtifact>
+			<outputDirectory>lib</outputDirectory>
+			<includes>
+				<include>uyun.bat:bat-datastore*</include>
+				<include>uyun.3rd:kairosdb-client</include>
+				<include>org.apache.cassandra:cassandra-thrift</include>
+				<include>org.apache.httpcomponents:httpclient-cache</include>
+				<include>org.apache.httpcomponents:httpmime</include>
+				<include>org.hectorclient:hector-core</include>
+				<include>org.apache.thrift:libthrift</include>
+				<include>javax.servlet:servlet-api</include>
+				<include>com.github.stephenc.eaio-uuid:uuid</include>
+				<include>com.ecyrd.speed4j:speed4j</include>
+				<include>com.yammer.metrics:metrics-core</include>
+				<include>com.netflix.*:*</include>
+				<include>io.reactivex:*</include>
+				<include>commons-configuration:commons-configuration</include>
+				<include>com.google.code.findbugs:annotations</include>
+			</includes>
+			<outputFileNameMapping>${artifact.artifactId}.${artifact.extension}
+			</outputFileNameMapping>
+			<scope>runtime</scope>
+		</dependencySet>
+	</dependencySets>
+
+	<fileSets>
+		<fileSet>
+			<directory>src/main/resources</directory>
+			<outputDirectory>.</outputDirectory>
+		</fileSet>
+	</fileSets>
+</assembly>

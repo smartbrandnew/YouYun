@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="uyun.bat.dashboard.impl.dao.DashboardDao">
+	<resultMap type="uyun.bat.dashboard.api.entity.Dashboard" id="dashboardResultMap">
+		<result property="id" column="id"
+			typeHandler="uyun.whale.common.mybatis.type.UUIDTypeHandler" />
+		<result property="name" column="name" jdbcType="VARCHAR" />
+		<result property="dashwindowIdList" column="dashwindows"
+			jdbcType="BLOB" typeHandler="uyun.bat.dashboard.impl.dao.mybatis.ListBlobTypeHandler" />
+		<result property="type" column="type" jdbcType="VARCHAR" />
+		<result property="template" column="template" jdbcType="BIT" />
+		<result property="modified" column="modified" jdbcType="TIMESTAMP" />
+		<result property="userId" column="user_id"
+			typeHandler="uyun.whale.common.mybatis.type.UUIDTypeHandler" />
+		<result property="tenantId" column="tenant_id"
+			typeHandler="uyun.whale.common.mybatis.type.UUIDTypeHandler" />
+		<result property="descr" column="descr" jdbcType="VARCHAR" />
+		<result property="createTime" column="create_time" jdbcType="TIMESTAMP" />
+		<result property="isResource" column="is_resource" jdbcType="BIT"/>
+	</resultMap>
+
+	<sql id="dashboard_column">
+		id, name, dashwindows, type, template, modified, user_id,
+		tenant_id, descr,create_time,is_resource
+	</sql>
+
+	<select id="searchDashboardByName" resultMap="dashboardResultMap">
+		select
+		<include refid="dashboard_column" />
+		from dashboard
+		where tenant_id = #{0,
+		typeHandler=uyun.whale.common.mybatis.type.UUIDTypeHandler} and
+		isNull(is_resource)  and
+		name
+		like CONCAT('%',#{1},'%'
+		)order by convert(name using gbk) asc limit #{2}
+	</select>
+
+	<select id="getDashboardById" parameterType="java.lang.Long"
+		resultMap="dashboardResultMap">
+		select
+		<include refid="dashboard_column" />
+		from dashboard
+		where id =
+		#{id,typeHandler=uyun.whale.common.mybatis.type.UUIDTypeHandler}
+	</select>
+
+	<select id="getDashboardByName" resultMap="dashboardResultMap">
+		select
+		<include refid="dashboard_column" />
+		from dashboard
+		where name = #{0} and tenant_id =
+		#{1,typeHandler=uyun.whale.common.mybatis.type.UUIDTypeHandler}
+		and isNull(is_resource)
+	</select>
+
+	<select id="getDashboardByTemplateName" resultMap="dashboardResultMap">
+		select
+		<include refid="dashboard_column" />
+		from dashboard
+		where name = #{0} and template = true
+	</select>
+
+	<insert id="create" parameterType="uyun.bat.dashboard.api.entity.Dashboard">
+
+		insert into dashboard
+		values(#{id,typeHandler=uyun.whale.common.mybatis.type.UUIDTypeHandler},
+		#{name},
+		#{dashwindowIdList,typeHandler=uyun.bat.dashboard.impl.dao.mybatis.ListBlobTypeHandler},
+		#{type},
+		#{template},
+		#{modified},
+		#{userId,typeHandler=uyun.whale.common.mybatis.type.UUIDTypeHandler},
+		#{tenantId,typeHandler=uyun.whale.common.mybatis.type.UUIDTypeHandler},
+		#{descr},#{createTime},#{isResource})
+	</insert>
+
+	<delete id="delete" parameterType="uyun.bat.dashboard.api.entity.Dashboard">
+		delete from dashboard where id
+		=
+		#{id,typeHandler=uyun.whale.common.mybatis.type.UUIDTypeHandler} and
+		tenant_id
+		=#{tenantId,typeHandler=uyun.whale.common.mybatis.type.UUIDTypeHandler}
+	</delete>
+
+	<update id="update" parameterType="uyun.bat.dashboard.api.entity.Dashboard">
+		update dashboard
+		<set>
+			<if test="name != null">
+				name = #{name},
+			</if>
+			<if test="dashwindowIdList != null">
+				dashwindows =
+				#{dashwindowIdList,typeHandler=uyun.bat.dashboard.impl.dao.mybatis.ListBlobTypeHandler},
+			</if>
+			<if test="modified != null">
+				modified = #{modified},
+			</if>
+		</set>
+		where id =
+		#{id,typeHandler=uyun.whale.common.mybatis.type.UUIDTypeHandler} and
+		tenant_id
+		=#{tenantId,typeHandler=uyun.whale.common.mybatis.type.UUIDTypeHandler}
+	</update>
+
+	<select id="getDashboardCountByDate" resultType="uyun.bat.dashboard.api.entity.DashboardCount">
+		select
+		count(id) as count,
+		lower(hex(tenant_id)) as tenantId
+		from
+		dashboard where
+		<![CDATA[create_time>=#{0} and create_time<=#{1}]]>
+		GROUP BY tenant_id
+	</select>
+
+	<select id="getDashboardCount" resultType="uyun.bat.dashboard.api.entity.DashboardCount">
+		select
+		count(id) as
+		count,
+		lower(hex(tenant_id)) as tenantId
+		from dashboard
+		GROUP BY
+		tenant_id
+	</select>
+</mapper>

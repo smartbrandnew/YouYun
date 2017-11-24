@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+	<appender name="stdout" class="ch.qos.logback.core.ConsoleAppender">
+		<encoder>
+			<pattern>
+				%-5level %msg%n
+			</pattern>
+		</encoder>
+	</appender>
+
+	<appender name="file" class="ch.qos.logback.core.rolling.RollingFileAppender">
+		<file>${monitor.logs.dir}/impexp.log</file>
+		<rollingPolicy class="ch.qos.logback.core.rolling.FixedWindowRollingPolicy">
+			<FileNamePattern>${monitor.logs.dir}/impexp.%i.log</FileNamePattern>
+			<minIndex>1</minIndex>
+			<maxIndex>1</maxIndex>
+		</rollingPolicy>
+		<triggeringPolicy class="ch.qos.logback.core.rolling.SizeBasedTriggeringPolicy">
+			<maxFileSize>30MB</maxFileSize>
+		</triggeringPolicy>
+		<encoder>
+			<charset>UTF-8</charset>
+			<Pattern>
+				%d{yy-MM-dd HH:mm:ss.SSS} %-5level [%logger{36}] %msg%n
+			</Pattern>
+		</encoder>
+	</appender>
+
+	<!-- 默认 -->
+	<root>
+		<level value="WARN" />
+		<appender-ref ref="stdout" />
+		<appender-ref ref="file" />
+	</root>
+	<logger name="com.broada" level="INFO" />
+	
+	<!-- 常用：如果需要进行一些特别的日志输出，可以将以下相应内容复制到注释外
+	1. HTTP请求与回复
+	<logger name="com.broada.carrier.monitor.common.restful.BaseClient" level="DEBUG" />
+	-->
+</configuration>

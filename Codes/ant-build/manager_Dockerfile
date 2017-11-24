@@ -1,0 +1,14 @@
+# Pull base image
+FROM dockerhub.uyuntest.cn:5000/centos7-jdk:v1.1.0
+MAINTAINER ant@uyunsoft.cn
+
+ARG VERSION
+ADD platform-ant-manager-V2.0.$VERSION.tar.gz   /opt/uyun/platform
+ADD init.sh /opt/uyun
+
+
+RUN cp -rf  /opt/uyun/platform/platform-ant-manager /opt/uyun/platform/manager && \
+    rm -rf  /opt/uyun/platform/platform*
+
+EXPOSE 7595
+ENV LANG zh_CN.UTF-8

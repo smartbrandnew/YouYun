@@ -1,0 +1,543 @@
+<?xml version="1.0" encoding="GBK"?>
+<websphere-groups>
+  <versions>
+    <version url="http://${host}:${port}/wasPerfTool/servlet/perfservlet?connetctor=${connector_type}&amp;port=${connector_port}" eleId="" value="version" default="true"/>
+  </versions>
+  <websphere version="5.1.0">
+    <type id="WASJDBC" url="http://${host}:${port}/wasPerfTool/servlet/perfservlet?connetctor=${connector_type}&amp;port=${connector_port}&amp;Module=connectionPoolModule"
+      attr="name" parsePath="Node:${node}>Server:${server}>connectionPoolModule>*_JDBC_Provider">
+      <item id="CreateCount" code="WASJDBC-1" name="创建连接数" eleId="numCreates>PerfNumericInfo" value="val" />
+      <item id="CloseCount" code="WASJDBC-2" name="关闭连接数" eleId="numDestroys>PerfNumericInfo" value="val" />
+      <item id="AllocateCount" code="WASJDBC-3" name="分配连接数" eleId="numAllocates>PerfNumericInfo" value="val" />
+      <item id="ReturnCount" code="WASJDBC-4" name="返回连接数" eleId="numReturns>PerfNumericInfo" value="val" />
+      <item id="PoolSize" code="WASJDBC-5" name="连接池大小" eleId="poolSize>PerfLoadInfo" value="currentValue" />
+      <item id="FreePoolSize" code="WASJDBC-6" name="空连接池大小" eleId="freePoolSize>PerfLoadInfo" value="currentValue" />
+      <item id="WaitingThreadCount" code="WASJDBC-7" name="并发等待数" eleId="concurrentWaiters>PerfLoadInfo" value="currentValue" />
+      <item id="FaultCount" code="WASJDBC-8" name="故障数" eleId="faults>PerfNumericInfo" value="val" />
+      <item id="PercentUsed" code="WASJDBC-9" name="使用百分率" eleId="percentUsed>PerfLoadInfo" value="currentValue" />
+      <item id="UseTime" code="WASJDBC-10" name="平均使用时间" eleId="avgUseTime>PerfStatInfo" value="total" />
+      <item id="WaitTime" code="WASJDBC-11" name="平均等待时间" eleId="avgWaitTime>PerfStatInfo" value="total" />
+    </type>
+    <type id="WASJVM" url="http://${host}:${port}/wasPerfTool/servlet/perfservlet?connetctor=${connector_type}&amp;port=${connector_port}&amp;Module=jvmRuntimeModule"
+      attr="name" parsePath="Node:${node}>Server:${server}">
+      <item id="HeapSize" code="WASJVM-1" name="JVM堆栈大小" eleId="totalMemory>PerfLoadInfo" value="currentValue" convertors="kb2MbConvertor;doubleDecimalFormattor"/>
+      <item id="UsedMemory" code="WASJVM-2" name="JVM堆栈利用率" eleId="usedMemory>PerfNumericInfo" value="val" bsh="if(HeapSize==0){return 0d;}else{return UsedMemory*100/HeapSize;}" convertors="doubleDecimalFormattor"/>
+    </type>
+    <type id="WASTHREADPOOL" url="http://${host}:${port}/wasPerfTool/servlet/perfservlet?connetctor=${connector_type}&amp;port=${connector_port}&amp;Module=threadPoolModule" attr="name"
+      parsePath="Node:${node}>Server:${server}>threadPoolModule">
+      <item id="CreateCount" code="WASTHREADPOOL-1" name="线程创建数" eleId="threadCreates>PerfNumericInfo" value="val" />
+      <item id="DestroyCount" code="WASTHREADPOOL-2" name="线程销毁数" eleId="threadDestroys>PerfNumericInfo" value="val" />
+      <item id="ActiveCount" code="WASTHREADPOOL-3" name="活动线程数" eleId="activeThreads>PerfLoadInfo" value="currentValue" />
+      <item id="PoolSize" code="WASTHREADPOOL-4" name="线程池大小" eleId="poolSize>PerfLoadInfo" value="currentValue" />
+      <item id="PercentMaxed" code="WASTHREADPOOL-5" name="最大百分数" eleId="percentMaxed>PerfLoadInfo" value="currentValue" />
+      <item id="LockCount" code="WASTHREADPOOL-6" name="未释放线程" eleId="threadCreates>PerfNumericInfo" value="val" bsh="CreateCount-DestroyCount-ActiveCount" />
+      <item id="PoolUsedRate" code="WASTHREADPOOL-7" name="线程池利用率" eleId="threadCreates>PerfNumericInfo" value="val" bsh="if(CreateCount-DestroyCount==0){return 0d;}else{return ActiveCount*100/(CreateCount-DestroyCount);}" convertors="doubleDecimalFormattor"/>
+    </type>
+    <type id="WASWEBAPP" url="http://${host}:${port}/wasPerfTool/servlet/perfservlet?connetctor=${connector_type}&amp;port=${connector_port}&amp;Module=webAppModule"
+      attr="name" parsePath="Node:${node}>Server:${server}>webAppModule" instAttr="name">
+      <item id="LoadedServletCount" code="WASWEBAPP-1" name="装入Servlet数" eleId="numLoadedServlets>PerfNumericInfo" value="val" />
+      <item id="ReloadCount" code="WASWEBAPP-2" name="重新装入Servlet数" eleId="numReloads>PerfNumericInfo" value="val" />
+      <item id="RequestCount" code="WASWEBAPP-3" name="Servlet处理请求总数" eleId="webAppModule.servlets>totalRequests>PerfNumericInfo" value="val" />
+      <item id="ConcurrentRequests" code="WASWEBAPP-4" name="并发处理请求数" eleId="webAppModule.servlets>concurrentRequests>PerfLoadInfo" value="currentValue" />
+      <item id="ServiceTime" code="WASWEBAPP-5" name="完成Servlet请求平均响应时间" eleId="webAppModule.servlets>responseTime>PerfStatInfo" value="total" />
+      <item id="ServiceTime" code="WASWEBAPP-6" name="Servlet/Jsp错误总数" eleId="webAppModule.servlets>numErrors>PerfNumericInfo" value="val" />
+    </type>
+    <type id="WASSERVLET" url="http://${host}:${port}/wasPerfTool/servlet/perfservlet?connetctor=${connector_type}&amp;port=${connector_port}&amp;Module=servletSessionsModule" attr="name"
+      parsePath="Node:${node}>Server:${server}">
+      <item id="CreateCount" code="WASSERVLET-1" name="创建会话数数" eleId="createdSessions>PerfNumericInfo" value="val" />
+      <item id="InvalidateCount" code="WASSERVLET-2" name="无效会话数" eleId="invalidatedSessions>PerfNumericInfo" value="val" />
+      <item id="TimeoutInvalidationCount" code="WASSERVLET-3" name="超时会话数" eleId="invalidatedViaTimeout>PerfNumericInfo" value="val"/>
+      <item id="NewCount" code="WASSERVLET-4" name="新建会话数" eleId="createdSessions>PerfNumericInfo" value="val" bsh="CreateCount-InvalidateCount+TimeoutInvalidationCount"/>
+      <item id="ActiveCount" code="WASSERVLET-5" name="活动会话数" eleId="activeSessions>PerfLoadInfo" value="currentValue" convertors="kb2MbConvertor;doubleDecimalFormattor"/>
+    </type>
+    <type id="WAS-TRANS-PMI" url="http://${host}:${port}/wasPerfTool/servlet/perfservlet?connetctor=${connector_type}&amp;port=${connector_port}&amp;Module=transactionModule"
+      attr="name" parsePath="Node:${node}>Server:${server}" >
+      <item id="GlobalBegunCount" code="WAS-TRANS-PMI-1" name="全局事务总数" eleId="globalTransBegun>PerfNumericInfo" value="val" />
+      <item id="LocalBegunCount" code="WAS-TRANS-PMI-2" name="本地事务的总数" eleId="localTransBegun>PerfNumericInfo" value="val" />
+      <item id="GlobalTranTime" code="WAS-TRANS-PMI-3" name="全局事务响应时间" eleId="globalTranDuration>PerfStatInfo" value="mean" />
+      <item id="LocalTranTime" code="WAS-TRANS-PMI-4" name="本地事务响应时间" eleId="localTranDuration>PerfStatInfo" value="mean" />
+      <item id="GlobalTimeoutCount" code="WAS-TRANS-PMI-5" name="超时全局事务数" eleId="globalTransTimeout>PerfNumericInfo" value="val" />
+      <item id="LocalTimeoutCount" code="WAS-TRANS-PMI-6" name="超时本地事务数" eleId="localTransTimeout>PerfNumericInfo" value="val" />
+      <item id="ActiveCount" code="WAS-TRANS-PMI-7" name="并发活动全局事务数" eleId="activeGlobalTrans>PerfNumericInfo" value="val" />
+      <item id="LocalActiveCount" code="WAS-TRANS-PMI-8" name="并发活动本地事务数" eleId="activeLocalTrans>PerfNumericInfo" value="val" />
+      <item id="GlobalTimeoutRate" code="WAS-TRANS-PMI-9" name="全局超时事务率" eleId="globalTransBegun>PerfNumericInfo" value="val" bsh="if(GlobalBegunCount==0){return 0d;}else{return GlobalTimeoutCount*100/GlobalBegunCount;}" convertors="doubleDecimalFormattor"/>
+      <item id="LocalTimeoutRate" code="WAS-TRANS-PMI-10" name="本地超时事务率" eleId="globalTransBegun>PerfNumericInfo" value="val" bsh="if(LocalBegunCount==0){return 0d;}else{return LocalTimeoutCount*100/LocalBegunCount;}" convertors="doubleDecimalFormattor"/>
+    </type>
+    <type id="WAS-J2C-PMI" url="http://${host}:${port}/wasPerfTool/servlet/perfservlet?connetctor=${connector_type}&amp;port=${connector_port}&amp;Module=j2cModule" attr="name"
+      parsePath="Node:${node}>Server:${server}>j2cModule>*">
+      <item id="TotalTime" code="WAS-J2C-PMI-1" name="J2C使用总时间" eleId="useTime>PerfStatInfo" value="total" convertors="msel2SecConvertor;doubleDecimalFormattor"/>
+      <item id="IncreasedTime" code="WAS-J2C-PMI-2" name="J2C使用时间增量" eleId="useTime>PerfStatInfo" value="total" convertors="msel2SecConvertor;doubleDecimalFormattor"/>
+    </type>    
+    <type id="WAS-EJB-PMI" url="http://${host}:${port}/wasPerfTool/servlet/perfservlet?connetctor=${connector_type}&amp;port=${connector_port}&amp;Module=beanModule" attr="name"
+      parsePath="Node:${node}>Server:${server}>beanModule" instAttr="name">
+      <item id="MethodResponseTime" code="WAS-EJB-PMI-1" name="Bean方法响应时间(毫秒)" eleId="ejb.entity>avgMethodRt>PerfStatInfo" value="mean" />
+      <item id="ActivationTime" code="WAS-EJB-PMI-2" name="Bean活动时间(毫秒)" eleId="ejb.entity>activationTime>PerfStatInfo" value="mean" />
+      <item id="PassivationTime" code="WAS-EJB-PMI-3" name="Bean钝化时间(毫秒)" eleId="ejb.entity>passivationTime>PerfStatInfo" value="mean" />
+      <item id="CreateTime" code="WAS-EJB-PMI-4" name="Bean创建时间(毫秒)" eleId="ejb.entity>creates>PerfNumericInfo" value="val" />
+      <item id="StoreTime" code="WAS-EJB-PMI-5" name="Bean持久化时间(毫秒)" eleId="ejb.entity>stores>PerfNumericInfo" value="val" />
+      <item id="LoadTime" code="WAS-EJB-PMI-6" name="Bean装载时间(毫秒)" eleId="ejb.entity>loads>PerfNumericInfo" value="val"/>
+      <item id="RemoveTime" code="WAS-EJB-PMI-7" name="Bean调用时间(毫秒)" eleId="ejb.entity>removes>PerfNumericInfo" value="val"/>
+    </type>
+    <type id="WAS-CACHE-PMI" url="http://${host}:${port}/wasPerfTool/servlet/perfservlet?connetctor=${connector_type}&amp;port=${connector_port}&amp;Module=cacheModule" attr="name"
+      parsePath="Node:${node}>Server:${server}">
+      <item id="MaxInMemoryCacheEntryCount" code="WAS-CACHE-PMI-1" name="最大高速缓存数" eleId="maxInMemoryCacheSize>PerfNumericInfo" value="val" />
+      <item id="InMemoryCacheEntryCount" code="WAS-CACHE-PMI-2" name="当前高速缓存数" eleId="inMemoryCacheSize>PerfNumericInfo" value="val" />
+      <item id="CacheUsedRate" code="WAS-CACHE-PMI-3" name="高速缓存使用率" eleId="maxInMemoryCacheSize>PerfNumericInfo" value="val" bsh="if(MaxInMemoryCacheEntryCount==0){return 0d;}else{return InMemoryCacheEntryCount*100/MaxInMemoryCacheEntryCount;}" convertors="doubleDecimalFormattor"/>
+      <item id="CacheUnHitRate" code="WAS-CACHE-PMI-4" name="高速缓存不命中率" eleId="maxInMemoryCacheSize>PerfNumericInfo" value="val" bsh="return 0d;" convertors="doubleDecimalFormattor"/>
+    </type>
+  </websphere>
+  <websphere version="6.0.0">
+    <type id="WASJDBC" url="http://${host}:${port}/wasPerfTool/servlet/oldperfservlet?connetctor=${connector_type}&amp;port=${connector_port}&amp;Module=connectionPoolModule"
+      attr="name" parsePath="Node:${node}>Server:${server}>connectionPoolModule>*" >
+      <item id="CreateCount" code="WASJDBC-1" name="创建连接数" eleId="CreateCount>PerfNumericInfo" value="val" />
+      <item id="CloseCount" code="WASJDBC-2" name="关闭连接数" eleId="CloseCount>PerfNumericInfo" value="val" />
+      <item id="AllocateCount" code="WASJDBC-3" name="分配连接数" eleId="AllocateCount>PerfNumericInfo" value="val" />
+      <item id="ReturnCount" code="WASJDBC-4" name="返回连接数" eleId="ReturnCount>PerfNumericInfo" value="val" />
+      <item id="PoolSize" code="WASJDBC-5" name="连接池大小" eleId="PoolSize>PerfLoadInfo" value="currentValue" />
+      <item id="FreePoolSize" code="WASJDBC-6" name="空连接池大小" eleId="FreePoolSize>PerfLoadInfo" value="currentValue" />
+      <item id="WaitingThreadCount" code="WASJDBC-7" name="并发等待数" eleId="WaitingThreadCount>PerfLoadInfo" value="currentValue" />
+      <item id="FaultCount" code="WASJDBC-8" name="故障数" eleId="FaultCount>PerfNumericInfo" value="val" />
+      <item id="PercentUsed" code="WASJDBC-9" name="使用百分率" eleId="PercentUsed>PerfLoadInfo" value="currentValue" />
+      <item id="UseTime" code="WASJDBC-10" name="平均使用时间" eleId="UseTime>PerfStatInfo" value="total" />
+      <item id="WaitTime" code="WASJDBC-11" name="平均等待时间" eleId="WaitTime>PerfStatInfo" value="total" />
+    </type>
+    <type id="WASJVM" url="http://${host}:${port}/wasPerfTool/servlet/oldperfservlet?connetctor=${connector_type}&amp;port=${connector_port}&amp;Module=jvmRuntimeModule"
+      attr="name" parsePath="Node:${node}>Server:${server}">
+      <item id="HeapSize" code="WASJVM-1" name="JVM堆栈大小" eleId="HeapSize>PerfLoadInfo" value="currentValue" convertors="kb2MbConvertor;doubleDecimalFormattor"/>
+      <item id="UsedMemory" code="WASJVM-2" name="JVM堆栈利用率" eleId="UsedMemory>PerfNumericInfo" value="val" bsh="if(HeapSize==0){return 0d;}else{return UsedMemory*100/HeapSize;}" convertors="doubleDecimalFormattor"/>
+    </type>
+    <type id="WASTHREADPOOL" url="http://${host}:${port}/wasPerfTool/servlet/oldperfservlet?connetctor=${connector_type}&amp;port=${connector_port}&amp;Module=threadPoolModule" attr="name"
+      parsePath="Node:${node}>Server:${server}>threadPoolModule">
+      <item id="CreateCount" code="WASTHREADPOOL-1" name="线程创建数" eleId="CreateCount>PerfNumericInfo" value="val" />
+      <item id="DestroyCount" code="WASTHREADPOOL-2" name="线程销毁数" eleId="DestroyCount>PerfNumericInfo" value="val" />
+      <item id="ActiveCount" code="WASTHREADPOOL-3" name="活动线程数" eleId="ActiveCount>PerfLoadInfo" value="currentValue" />
+      <item id="PoolSize" code="WASTHREADPOOL-4" name="线程池大小" eleId="PoolSize>PerfLoadInfo" value="currentValue" />
+      <item id="PercentMaxed" code="WASTHREADPOOL-5" name="最大百分数" eleId="PercentMaxed>PerfLoadInfo" value="currentValue" />
+      <item id="LockCount" code="WASTHREADPOOL-6" name="未释放线程" eleId="CreateCount>PerfNumericInfo" value="val" bsh="CreateCount-DestroyCount-ActiveCount" />
+      <item id="PoolUsedRate" code="WASTHREADPOOL-7" name="线程池利用率" eleId="CreateCount>PerfNumericInfo" value="val" bsh="if(CreateCount-DestroyCount==0){return 0d;}else{return ActiveCount*100/(CreateCount-DestroyCount);}" convertors="msel2SecConvertor;doubleDecimalFormattor"/>
+    </type>
+    <type id="WASWEBAPP" url="http://${host}:${port}/wasPerfTool/servlet/oldperfservlet?connetctor=${connector_type}&amp;port=${connector_port}&amp;Module=webAppModule"
+      attr="name" parsePath="Node:${node}>Server:${server}>webAppModule" instAttr="name">
+      <item id="LoadedServletCount" code="WASWEBAPP-1" name="装入Servlet数" eleId="LoadedServletCount>PerfNumericInfo" value="val" />
+      <item id="ReloadCount" code="WASWEBAPP-2" name="重新装入Servlet数" eleId="ReloadCount>PerfNumericInfo" value="val" />
+      <item id="RequestCount" code="WASWEBAPP-3" name="Servlet处理请求总数" eleId="webAppModule.servlets>RequestCount>PerfNumericInfo" value="val" />
+      <item id="ConcurrentRequests" code="WASWEBAPP-4" name="并发处理请求数" eleId="webAppModule.servlets>ConcurrentRequests>PerfLoadInfo" value="currentValue" />
+      <item id="ServiceTime" code="WASWEBAPP-5" name="完成Servlet请求平均响应时间" eleId="webAppModule.servlets>ServiceTime>PerfStatInfo" value="total" />
+      <item id="ServiceTime" code="WASWEBAPP-6" name="Servlet/Jsp错误总数" eleId="webAppModule.servlets>ErrorCount>PerfNumericInfo" value="val" />
+    </type>
+    <type id="WASSERVLET" url="http://${host}:${port}/wasPerfTool/servlet/perfservlet?connetctor=${connector_type}&amp;port=${connector_port}&amp;Module=servletSessionsModule" attr="name"
+      parsePath="Node:${node}>Server:${server}>Stat" instAttr="name" itemAttr="name">
+      <item id="CreateCount" code="WASSERVLET-1" name="创建会话数数" eleId="CountStatistic" attr="CreateCount" value="count" />
+      <item id="InvalidateCount" code="WASSERVLET-2" name="无效会话数" eleId="CountStatistic" attr="InvalidateCount" value="count" />
+      <item id="TimeoutInvalidationCount" code="WASSERVLET-3" name="超时会话数" eleId="CountStatistic" attr="TimeoutInvalidationCount" value="count"/>
+      <item id="NewCount" code="WASSERVLET-4" name="新建会话数" eleId="RangeStatistic" attr="ActiveCount" value="value" bsh="CreateCount-InvalidateCount+TimeoutInvalidationCount"/>
+      <item id="ActiveCount" code="WASSERVLET-5" name="活动会话数" eleId="RangeStatistic" attr="ActiveCount" value="value" />
+    </type>
+    <type id="WAS-TRANS-PMI" url="http://${host}:${port}/wasPerfTool/servlet/oldperfservlet?connetctor=${connector_type}&amp;port=${connector_port}&amp;Module=transactionModule"
+      attr="name" parsePath="Node:${node}>Server:${server}" >
+      <item id="GlobalBegunCount" code="WAS-TRANS-PMI-1" name="全局事务总数" eleId="GlobalBegunCount>PerfNumericInfo" value="val" />
+      <item id="LocalBegunCount" code="WAS-TRANS-PMI-2" name="本地事务的总数" eleId="LocalBegunCount>PerfNumericInfo" value="val" />
+      <item id="GlobalTranTime" code="WAS-TRANS-PMI-3" name="全局事务响应时间" eleId="GlobalTranTime>PerfStatInfo" value="mean" />
+      <item id="LocalTranTime" code="WAS-TRANS-PMI-4" name="本地事务响应时间" eleId="LocalTranTime>PerfStatInfo" value="mean" />
+      <item id="GlobalTimeoutCount" code="WAS-TRANS-PMI-5" name="超时全局事务数" eleId="GlobalTimeoutCount>PerfNumericInfo" value="val" />
+      <item id="LocalTimeoutCount" code="WAS-TRANS-PMI-6" name="超时本地事务数" eleId="LocalTimeoutCount>PerfNumericInfo" value="val" />
+      <item id="ActiveCount" code="WAS-TRANS-PMI-7" name="并发活动全局事务数" eleId="ActiveCount>PerfNumericInfo" value="val" />
+      <item id="LocalActiveCount" code="WAS-TRANS-PMI-8" name="并发活动本地事务数" eleId="LocalActiveCount>PerfNumericInfo" value="val" />
+      <item id="GlobalTimeoutRate" code="WAS-TRANS-PMI-9" name="全局超时事务率" eleId="GlobalTimeoutCount>PerfNumericInfo" value="val" bsh="if(GlobalBegunCount==0){return 0d;}else{return GlobalTimeoutCount*100/GlobalBegunCount;}" convertors="doubleDecimalFormattor"/>
+      <item id="LocalTimeoutRate" code="WAS-TRANS-PMI-10" name="本地超时事务率" eleId="LocalTimeoutCount>PerfNumericInfo" value="val" bsh="if(LocalBegunCount==0){return 0d;}else{return LocalTimeoutCount*100/LocalBegunCount;}" convertors="doubleDecimalFormattor"/>
+    </type>
+    <type id="WAS-J2C-PMI" url="http://${host}:${port}/wasPerfTool/servlet/oldperfservlet?connetctor=${connector_type}&amp;port=${connector_port}&amp;Module=j2cModule" attr="name"
+      parsePath="Node:${node}>Server:${server}>j2cModule>*">
+      <item id="TotalTime" code="WAS-J2C-PMI-1" name="J2C使用总时间" eleId="UseTime>PerfStatInfo" value="total" convertors="msel2SecConvertor;doubleDecimalFormattor"/>
+      <item id="IncreasedTime" code="WAS-J2C-PMI-2" name="J2C使用时间增量" eleId="UseTime>PerfStatInfo" value="total" convertors="msel2SecConvertor;doubleDecimalFormattor"/>
+    </type>
+    <type id="WAS-CACHE-PMI" url="http://${host}:${port}/wasPerfTool/servlet/oldperfservlet?connetctor=${connector_type}&amp;port=${connector_port}&amp;Module=cacheModule" attr="name"
+      parsePath="Node:${node}>Server:${server}>cacheModule">
+      <item id="MaxInMemoryCacheEntryCount" code="WAS-CACHE-PMI-1" name="最大高速缓存数" eleId="MaxInMemoryCacheEntryCount>PerfNumericInfo" value="val" />
+      <item id="InMemoryCacheEntryCount" code="WAS-CACHE-PMI-2" name="当前高速缓存数" eleId="InMemoryCacheEntryCount>PerfNumericInfo" value="val" />
+      <item id="CacheUsedRate" code="WAS-CACHE-PMI-3" name="高速缓存使用率" eleId="MaxInMemoryCacheEntryCount>PerfNumericInfo" value="val" bsh="if(MaxInMemoryCacheEntryCount==0){return 0d;}else{return InMemoryCacheEntryCount*100/MaxInMemoryCacheEntryCount;}" convertors="doubleDecimalFormattor"/>
+      <item id="CacheUnHitRate" code="WAS-CACHE-PMI-4" name="高速缓存不命中率" eleId="MaxInMemoryCacheEntryCount>PerfNumericInfo" value="val" bsh="return 0d;" convertors="doubleDecimalFormattor"/>
+    </type>
+  </websphere>
+  <websphere version="6.0.1">
+    <type id="WASJDBC" url="http://${host}:${port}/wasPerfTool/servlet/perfservlet?connetctor=${connector_type}&amp;port=${connector_port}&amp;Module=connectionPoolModule"
+      attr="name" parsePath="Node:${node}>Server:${server}>Stat:JDBC 连接池>Stat:*" instAttr="name" itemAttr="name">
+      <item id="CreateCount" code="WASJDBC-1" name="创建连接数" eleId="CountStatistic" attr="CreateCount" value="count" />
+      <item id="CloseCount" code="WASJDBC-2" name="关闭连接数" eleId="CountStatistic" attr="CloseCount" value="count" />
+      <item id="AllocateCount" code="WASJDBC-3" name="分配连接数" eleId="CountStatistic" attr="AllocateCount" value="count" />
+      <item id="ReturnCount" code="WASJDBC-4" name="返回连接数" eleId="CountStatistic" attr="ReturnCount" value="count" />
+      <item id="PoolSize" code="WASJDBC-5" name="连接池大小" eleId="BoundedRangeStatistic" attr="PoolSize" value="value" />
+      <item id="FreePoolSize" code="WASJDBC-6" name="空连接池大小" eleId="BoundedRangeStatistic" attr="FreePoolSize" value="value" />
+      <item id="WaitingThreadCount" code="WASJDBC-7" name="并发等待数" eleId="RangeStatistic" attr="WaitingThreadCount" value="value" />
+      <item id="FaultCount" code="WASJDBC-8" name="故障数" eleId="CountStatistic" attr="FaultCount" value="count" />
+      <item id="PercentUsed" code="WASJDBC-9" name="使用百分率" eleId="RangeStatistic" attr="PercentUsed" value="value" />
+      <item id="UseTime" code="WASJDBC-10" name="平均使用时间" eleId="TimeStatistic" attr="UseTime" value="totalTime" />
+      <item id="WaitTime" code="WASJDBC-11" name="平均等待时间" eleId="TimeStatistic" attr="WaitTime" value="totalTime" />
+    </type>
+    <type id="WASJVM" url="http://${host}:${port}/wasPerfTool/servlet/perfservlet?connetctor=${connector_type}&amp;port=${connector_port}&amp;Module=jvmRuntimeModule"
+      attr="name" parsePath="Node:${node}>Server:${server}" instAttr="name" itemAttr="name">
+      <item id="HeapSize" code="WASJVM-1" name="JVM堆栈大小" eleId="BoundedRangeStatistic" attr="HeapSize" value="value" convertors="kb2MbConvertor;doubleDecimalFormattor"/>
+      <item id="UsedMemory" code="WASJVM-2" name="JVM堆栈利用率" eleId="CountStatistic" attr="UsedMemory" value="count" bsh="if(HeapSize==0){return 0d;}else{return UsedMemory*100/HeapSize;}" convertors="doubleDecimalFormattor"/>
+    </type>
+    <type id="WASTHREADPOOL" url="http://${host}:${port}/wasPerfTool/servlet/perfservlet?connetctor=${connector_type}&amp;port=${connector_port}&amp;Module=threadPoolModule" attr="name"
+      parsePath="Node:${node}>Server:${server}>Stat:线程池" instAttr="name" itemAttr="name">
+      <item id="CreateCount" code="WASTHREADPOOL-1" name="线程创建数" eleId="CountStatistic" attr="CreateCount" value="count" />
+      <item id="DestroyCount" code="WASTHREADPOOL-2" name="线程销毁数" eleId="CountStatistic" attr="DestroyCount" value="count" />
+      <item id="ActiveCount" code="WASTHREADPOOL-3" name="活动线程数" eleId="BoundedRangeStatistic" attr="ActiveCount" value="value" />
+      <item id="PoolSize" code="WASTHREADPOOL-4" name="线程池大小" eleId="BoundedRangeStatistic" attr="PoolSize" value="value" />
+      <item id="PercentMaxed" code="WASTHREADPOOL-5" name="最大百分数" eleId="BoundedRangeStatistic" attr="PercentMaxed" value="value" />
+      <item id="LockCount" code="WASTHREADPOOL-6" name="未释放线程" eleId="CountStatistic" attr="CreateCount" value="count" bsh="CreateCount-DestroyCount-ActiveCount" />
+      <item id="PoolUsedRate" code="WASTHREADPOOL-7" name="线程池利用率" eleId="CountStatistic" attr="CreateCount" value="count" bsh="if(CreateCount-DestroyCount==0){return 0d;}else{return ActiveCount*100/(CreateCount-DestroyCount);}" convertors="doubleDecimalFormattor"/>
+    </type>
+    <type id="WASWEBAPP" url="  http://${host}:${port}/wasPerfTool/servlet/perfservlet?connetctor=${connector_type}&amp;port=${connector_port}&amp;Module=webAppModule"
+      attr="name" parsePath="Node:${node}>Server:${server}>Stat:Web Applications" instAttr="name" itemAttr="name">
+      <item id="LoadedServletCount" code="WASWEBAPP-1" name="装入Servlet数" eleId="CountStatistic" attr="LoadedServletCount" value="count" />
+      <item id="ReloadCount" code="WASWEBAPP-2" name="重新装入Servlet数" eleId="CountStatistic" attr="ReloadCount" value="count" />
+      <item id="RequestCount" code="WASWEBAPP-3" name="Servlet处理请求总数" eleId="Stat:Servlets>CountStatistic" attr="RequestCount" value="count" />
+      <item id="ConcurrentRequests" code="WASWEBAPP-4" name="并发处理请求数" eleId="Stat:Servlets>RangeStatistic" attr="ConcurrentRequests" value="value" />
+      <item id="ServiceTime" code="WASWEBAPP-5" name="完成Servlet请求平均响应时间" eleId="Stat:Servlets>TimeStatistic" attr="ServiceTime" value="totalTime" />
+      <item id="ServiceTime" code="WASWEBAPP-6" name="Servlet/Jsp错误总数" eleId="Stat:Servlets>CountStatistic" attr="ErrorCount" value="count" />
+    </type>
+    <type id="WASSERVLET" url="http://${host}:${port}/wasPerfTool/servlet/perfservlet?connetctor=${connector_type}&amp;port=${connector_port}&amp;Module=servletSessionsModule" attr="name"
+      parsePath="Node:${node}>Server:${server}>Stat:Servlet 会话管理器" instAttr="name" itemAttr="name">
+      <item id="CreateCount" code="WASSERVLET-1" name="创建会话数数" eleId="CountStatistic" attr="CreateCount" value="count" />
+      <item id="InvalidateCount" code="WASSERVLET-2" name="无效会话数" eleId="CountStatistic" attr="InvalidateCount" value="count" />
+      <item id="TimeoutInvalidationCount" code="WASSERVLET-3" name="超时会话数" eleId="CountStatistic" attr="TimeoutInvalidationCount" value="count"/>
+      <item id="NewCount" code="WASSERVLET-4" name="新建会话数" eleId="RangeStatistic" attr="ActiveCount" value="value" bsh="CreateCount-InvalidateCount+TimeoutInvalidationCount"/>
+      <item id="ActiveCount" code="WASSERVLET-5" name="活动会话数" eleId="RangeStatistic" attr="ActiveCount" value="value" />
+    </type>
+    <type id="WAS-TRANS-PMI" url="http://${host}:${port}/wasPerfTool/servlet/perfservlet?connetctor=${connector_type}&amp;port=${connector_port}&amp;Module=transactionModule"
+      attr="name" parsePath="Node:${node}>Server:${server}" instAttr="name" itemAttr="name">
+      <item id="GlobalBegunCount" code="WAS-TRANS-PMI-1" name="全局事务总数" eleId="CountStatistic" attr="GlobalBegunCount" value="count" />
+      <item id="LocalBegunCount" code="WAS-TRANS-PMI-2" name="本地事务的总数" eleId="CountStatistic" attr="LocalBegunCount" value="count" />
+      <item id="GlobalTranTime" code="WAS-TRANS-PMI-3" name="全局事务响应时间" eleId="TimeStatistic" attr="GlobalTranTime" value="totalTime" />
+      <item id="LocalTranTime" code="WAS-TRANS-PMI-4" name="本地事务响应时间" eleId="TimeStatistic" attr="LocalTranTime" value="totalTime" />
+      <item id="GlobalTimeoutCount" code="WAS-TRANS-PMI-5" name="超时全局事务数" eleId="CountStatistic" attr="GlobalTimeoutCount" value="count" />
+      <item id="LocalTimeoutCount" code="WAS-TRANS-PMI-6" name="超时本地事务数" eleId="CountStatistic" attr="LocalTimeoutCount" value="count" />
+      <item id="ActiveCount" code="WAS-TRANS-PMI-7" name="并发活动全局事务数" eleId="CountStatistic" attr="ActiveCount" value="count" />
+      <item id="LocalActiveCount" code="WAS-TRANS-PMI-8" name="并发活动本地事务数" eleId="CountStatistic" attr="LocalActiveCount" value="count" />
+      <item id="GlobalTimeoutRate" code="WAS-TRANS-PMI-9" name="全局超时事务率" eleId="CountStatistic" attr="GlobalBegunCount" value="count" bsh="if(GlobalBegunCount==0){return 0d;}else{return GlobalTimeoutCount*100/GlobalBegunCount;}" convertors="doubleDecimalFormattor"/>
+      <item id="LocalTimeoutRate" code="WAS-TRANS-PMI-10" name="本地超时事务率" eleId="CountStatistic" attr="GlobalBegunCount" value="count" bsh="if(LocalBegunCount==0){return 0d;}else{return LocalTimeoutCount*100/LocalBegunCount;}" convertors="doubleDecimalFormattor"/>
+    </type>
+    <type id="WAS-J2C-PMI" url="http://${host}:${port}/wasPerfTool/servlet/perfservlet?Module=j2cModule" attr="name"
+      parsePath="Node:${node}>Server:${server}>Stat:JCA 连接池>Stat:*" instAttr="name" itemAttr="name">
+      <item id="TotalTime" code="WAS-J2C-PMI-1" name="J2C使用总时间" eleId="TimeStatistic" attr="UseTime" value="totalTime" convertors="msel2SecConvertor;doubleDecimalFormattor"/>
+      <item id="IncreasedTime" code="WAS-J2C-PMI-2" name="J2C使用时间增量" eleId="TimeStatistic" attr="UseTime" value="totalTime" convertors="msel2SecConvertor;doubleDecimalFormattor"/>
+    </type>
+    <type id="WAS-CACHE-PMI" url="http://${host}:${port}/wasPerfTool/servlet/perfservlet?connetctor=${connector_type}&amp;port=${connector_port}&amp;Module=cacheModule" attr="name"
+      parsePath="Node:${node}>Server:${server}>Stat:动态高速缓存" instAttr="name" itemAttr="name">
+      <item id="MaxInMemoryCacheEntryCount" code="WAS-CACHE-PMI-1" name="最大高速缓存数" eleId="CountStatistic" attr="MaxInMemoryCacheEntryCount" value="count" />
+      <item id="InMemoryCacheEntryCount" code="WAS-CACHE-PMI-2" name="当前高速缓存数" eleId="CountStatistic" attr="InMemoryCacheEntryCount" value="count" />
+      <item id="CacheUsedRate" code="WAS-CACHE-PMI-3" name="高速缓存使用率" eleId="CountStatistic" attr="MaxInMemoryCacheEntryCount" value="count" bsh="if(MaxInMemoryCacheEntryCount==0){return 0d;}else{return InMemoryCacheEntryCount*100/MaxInMemoryCacheEntryCount;}" convertors="doubleDecimalFormattor"/>
+      <item id="CacheUnHitRate" code="WAS-CACHE-PMI-4" name="高速缓存不命中率" eleId="CountStatistic" attr="MaxInMemoryCacheEntryCount"  value="count" bsh="return 0d;" convertors="doubleDecimalFormattor"/>
+    </type>
+  </websphere>
+  <websphere version="6.0.2">
+    <type id="WASJDBC" url="http://${host}:${port}/wasPerfTool/servlet/perfservlet?connetctor=${connector_type}&amp;port=${connector_port}&amp;Module=connectionPoolModule"
+      attr="name" parsePath="Node:${node}>Server:${server}>Stat:JDBC 连接池>Stat:*" instAttr="name" itemAttr="name">
+      <item id="CreateCount" code="WASJDBC-1" name="创建连接数" eleId="CountStatistic" attr="CreateCount" value="count" />
+      <item id="CloseCount" code="WASJDBC-2" name="关闭连接数" eleId="CountStatistic" attr="CloseCount" value="count" />
+      <item id="AllocateCount" code="WASJDBC-3" name="分配连接数" eleId="CountStatistic" attr="AllocateCount" value="count" />
+      <item id="ReturnCount" code="WASJDBC-4" name="返回连接数" eleId="CountStatistic" attr="ReturnCount" value="count" />
+      <item id="PoolSize" code="WASJDBC-5" name="连接池大小" eleId="BoundedRangeStatistic" attr="PoolSize" value="value" />
+      <item id="FreePoolSize" code="WASJDBC-6" name="空连接池大小" eleId="BoundedRangeStatistic" attr="FreePoolSize" value="value" />
+      <item id="WaitingThreadCount" code="WASJDBC-7" name="并发等待数" eleId="RangeStatistic" attr="WaitingThreadCount" value="value" />
+      <item id="FaultCount" code="WASJDBC-8" name="故障数" eleId="CountStatistic" attr="FaultCount" value="count" />
+      <item id="PercentUsed" code="WASJDBC-9" name="使用百分率" eleId="RangeStatistic" attr="PercentUsed" value="value" />
+      <item id="UseTime" code="WASJDBC-10" name="平均使用时间" eleId="TimeStatistic" attr="UseTime" value="totalTime" />
+      <item id="WaitTime" code="WASJDBC-11" name="平均等待时间" eleId="TimeStatistic" attr="WaitTime" value="totalTime" />
+    </type>
+    <type id="WASJVM" url="http://${host}:${port}/wasPerfTool/servlet/perfservlet?connetctor=${connector_type}&amp;port=${connector_port}&amp;Module=jvmRuntimeModule"
+      attr="name" parsePath="Node:${node}>Server:${server}" instAttr="name" itemAttr="name">
+      <item id="HeapSize" code="WASJVM-1" name="JVM堆栈大小" eleId="BoundedRangeStatistic" attr="HeapSize" value="value" convertors="kb2MbConvertor;doubleDecimalFormattor"/>
+      <item id="UsedMemory" code="WASJVM-2" name="JVM堆栈利用率" eleId="CountStatistic" attr="UsedMemory" value="count" bsh="if(HeapSize==0){return 0d;}else{return UsedMemory*100/HeapSize;}" convertors="doubleDecimalFormattor"/>
+    </type>
+    <type id="WASTHREADPOOL" url="http://${host}:${port}/wasPerfTool/servlet/perfservlet?connetctor=${connector_type}&amp;port=${connector_port}&amp;Module=threadPoolModule" attr="name"
+      parsePath="Node:${node}>Server:${server}>Stat:线程池" instAttr="name" itemAttr="name">
+      <item id="CreateCount" code="WASTHREADPOOL-1" name="线程创建数" eleId="CountStatistic" attr="CreateCount" value="count" />
+      <item id="DestroyCount" code="WASTHREADPOOL-2" name="线程销毁数" eleId="CountStatistic" attr="DestroyCount" value="count" />
+      <item id="ActiveCount" code="WASTHREADPOOL-3" name="活动线程数" eleId="BoundedRangeStatistic" attr="ActiveCount" value="value" />
+      <item id="PoolSize" code="WASTHREADPOOL-4" name="线程池大小" eleId="BoundedRangeStatistic" attr="PoolSize" value="value" />
+      <item id="PercentMaxed" code="WASTHREADPOOL-5" name="最大百分数" eleId="BoundedRangeStatistic" attr="PercentMaxed" value="value" />
+      <item id="LockCount" code="WASTHREADPOOL-6" name="未释放线程" eleId="CountStatistic" attr="CreateCount" value="count" bsh="CreateCount-DestroyCount-ActiveCount" />
+      <item id="PoolUsedRate" code="WASTHREADPOOL-7" name="线程池利用率" eleId="CountStatistic" attr="CreateCount" value="count" bsh="if(CreateCount-DestroyCount==0){return 0d;}else{return ActiveCount*100/(CreateCount-DestroyCount);}" convertors="doubleDecimalFormattor"/>
+    </type>
+    <type id="WASWEBAPP" url="  http://${host}:${port}/wasPerfTool/servlet/perfservlet?connetctor=${connector_type}&amp;port=${connector_port}&amp;Module=webAppModule"
+      attr="name" parsePath="Node:${node}>Server:${server}>Stat:Web Applications" instAttr="name" itemAttr="name">
+      <item id="LoadedServletCount" code="WASWEBAPP-1" name="装入Servlet数" eleId="CountStatistic" attr="LoadedServletCount" value="count" />
+      <item id="ReloadCount" code="WASWEBAPP-2" name="重新装入Servlet数" eleId="CountStatistic" attr="ReloadCount" value="count" />
+      <item id="RequestCount" code="WASWEBAPP-3" name="Servlet处理请求总数" eleId="Stat:Servlets>CountStatistic" attr="RequestCount" value="count" />
+      <item id="ConcurrentRequests" code="WASWEBAPP-4" name="并发处理请求数" eleId="Stat:Servlets>RangeStatistic" attr="ConcurrentRequests" value="value" />
+      <item id="ServiceTime" code="WASWEBAPP-5" name="完成Servlet请求平均响应时间" eleId="Stat:Servlets>TimeStatistic" attr="ServiceTime" value="totalTime" />
+      <item id="ServiceTime" code="WASWEBAPP-6" name="Servlet/Jsp错误总数" eleId="Stat:Servlets>CountStatistic" attr="ErrorCount" value="count" />
+    </type>
+    <type id="WASSERVLET" url="http://${host}:${port}/wasPerfTool/servlet/perfservlet?connetctor=${connector_type}&amp;port=${connector_port}&amp;Module=servletSessionsModule" attr="name"
+      parsePath="Node:${node}>Server:${server}>Stat:Servlet 会话管理器" instAttr="name" itemAttr="name">
+      <item id="CreateCount" code="WASSERVLET-1" name="创建会话数数" eleId="CountStatistic" attr="CreateCount" value="count" />
+      <item id="InvalidateCount" code="WASSERVLET-2" name="无效会话数" eleId="CountStatistic" attr="InvalidateCount" value="count" />
+      <item id="TimeoutInvalidationCount" code="WASSERVLET-3" name="超时会话数" eleId="CountStatistic" attr="TimeoutInvalidationCount" value="count"/>
+      <item id="NewCount" code="WASSERVLET-4" name="新建会话数" eleId="RangeStatistic" attr="ActiveCount" value="value" bsh="CreateCount-InvalidateCount+TimeoutInvalidationCount"/>
+      <item id="ActiveCount" code="WASSERVLET-5" name="活动会话数" eleId="RangeStatistic" attr="ActiveCount" value="value" />
+    </type>
+    <type id="WAS-TRANS-PMI" url="http://${host}:${port}/wasPerfTool/servlet/perfservlet?connetctor=${connector_type}&amp;port=${connector_port}&amp;Module=transactionModule"
+      attr="name" parsePath="Node:${node}>Server:${server}" instAttr="name" itemAttr="name">
+      <item id="GlobalBegunCount" code="WAS-TRANS-PMI-1" name="全局事务总数" eleId="CountStatistic" attr="GlobalBegunCount" value="count" />
+      <item id="LocalBegunCount" code="WAS-TRANS-PMI-2" name="本地事务的总数" eleId="CountStatistic" attr="LocalBegunCount" value="count" />
+      <item id="GlobalTranTime" code="WAS-TRANS-PMI-3" name="全局事务响应时间" eleId="TimeStatistic" attr="GlobalTranTime" value="totalTime" />
+      <item id="LocalTranTime" code="WAS-TRANS-PMI-4" name="本地事务响应时间" eleId="TimeStatistic" attr="LocalTranTime" value="totalTime" />
+      <item id="GlobalTimeoutCount" code="WAS-TRANS-PMI-5" name="超时全局事务数" eleId="CountStatistic" attr="GlobalTimeoutCount" value="count" />
+      <item id="LocalTimeoutCount" code="WAS-TRANS-PMI-6" name="超时本地事务数" eleId="CountStatistic" attr="LocalTimeoutCount" value="count" />
+      <item id="ActiveCount" code="WAS-TRANS-PMI-7" name="并发活动全局事务数" eleId="CountStatistic" attr="ActiveCount" value="count" />
+      <item id="LocalActiveCount" code="WAS-TRANS-PMI-8" name="并发活动本地事务数" eleId="CountStatistic" attr="LocalActiveCount" value="count" />
+      <item id="GlobalTimeoutRate" code="WAS-TRANS-PMI-9" name="全局超时事务率" eleId="CountStatistic" attr="GlobalBegunCount" value="count" bsh="if(GlobalBegunCount==0){return 0d;}else{return GlobalTimeoutCount*100/GlobalBegunCount;}" convertors="doubleDecimalFormattor"/>
+      <item id="LocalTimeoutRate" code="WAS-TRANS-PMI-10" name="本地超时事务率" eleId="CountStatistic" attr="GlobalBegunCount" value="count" bsh="if(LocalBegunCount==0){return 0d;}else{return LocalTimeoutCount*100/LocalBegunCount;}" convertors="doubleDecimalFormattor"/>
+    </type>
+    <type id="WAS-J2C-PMI" url="http://${host}:${port}/wasPerfTool/servlet/perfservlet?Module=j2cModule" attr="name"
+      parsePath="Node:${node}>Server:${server}>Stat:JCA 连接池>Stat:*" instAttr="name" itemAttr="name">
+      <item id="TotalTime" code="WAS-J2C-PMI-1" name="J2C使用总时间" eleId="TimeStatistic" attr="UseTime" value="totalTime" convertors="msel2SecConvertor;doubleDecimalFormattor"/>
+      <item id="IncreasedTime" code="WAS-J2C-PMI-2" name="J2C使用时间增量" eleId="TimeStatistic" attr="UseTime" value="totalTime" convertors="msel2SecConvertor;doubleDecimalFormattor"/>
+    </type>
+    <type id="WAS-CACHE-PMI" url="http://${host}:${port}/wasPerfTool/servlet/perfservlet?connetctor=${connector_type}&amp;port=${connector_port}&amp;Module=cacheModule" attr="name"
+      parsePath="Node:${node}>Server:${server}>Stat:动态高速缓存" instAttr="name" itemAttr="name">
+      <item id="MaxInMemoryCacheEntryCount" code="WAS-CACHE-PMI-1" name="最大高速缓存数" eleId="CountStatistic" attr="MaxInMemoryCacheEntryCount" value="count" />
+      <item id="InMemoryCacheEntryCount" code="WAS-CACHE-PMI-2" name="当前高速缓存数" eleId="CountStatistic" attr="InMemoryCacheEntryCount" value="count" />
+      <item id="CacheUsedRate" code="WAS-CACHE-PMI-3" name="高速缓存使用率" eleId="CountStatistic" attr="MaxInMemoryCacheEntryCount" value="count" bsh="if(MaxInMemoryCacheEntryCount==0){return 0d;}else{return InMemoryCacheEntryCount*100/MaxInMemoryCacheEntryCount;}" convertors="doubleDecimalFormattor"/>
+      <item id="CacheUnHitRate" code="WAS-CACHE-PMI-4" name="高速缓存不命中率" eleId="CountStatistic" attr="MaxInMemoryCacheEntryCount"  value="count" bsh="return 0d;" convertors="doubleDecimalFormattor"/>
+    </type>
+  </websphere>
+  <websphere version="6.1.0">
+    <type id="WASJDBC" url="http://${host}:${port}/wasPerfTool/servlet/perfservlet?connetctor=${connector_type}&amp;port=${connector_port}&amp;Module=connectionPoolModule"
+      attr="name" parsePath="Node:${node}>Server:${server}>Stat:JDBC 连接池>Stat:*" instAttr="name" itemAttr="name">
+      <item id="CreateCount" code="WASJDBC-1" name="创建连接数" eleId="CountStatistic" attr="CreateCount" value="count" />
+      <item id="CloseCount" code="WASJDBC-2" name="关闭连接数" eleId="CountStatistic" attr="CloseCount" value="count" />
+      <item id="AllocateCount" code="WASJDBC-3" name="分配连接数" eleId="CountStatistic" attr="AllocateCount" value="count" />
+      <item id="ReturnCount" code="WASJDBC-4" name="返回连接数" eleId="CountStatistic" attr="ReturnCount" value="count" />
+      <item id="PoolSize" code="WASJDBC-5" name="连接池大小" eleId="BoundedRangeStatistic" attr="PoolSize" value="value" />
+      <item id="FreePoolSize" code="WASJDBC-6" name="空连接池大小" eleId="BoundedRangeStatistic" attr="FreePoolSize" value="value" />
+      <item id="WaitingThreadCount" code="WASJDBC-7" name="并发等待数" eleId="RangeStatistic" attr="WaitingThreadCount" value="value" />
+      <item id="FaultCount" code="WASJDBC-8" name="故障数" eleId="CountStatistic" attr="FaultCount" value="count" />
+      <item id="PercentUsed" code="WASJDBC-9" name="使用百分率" eleId="RangeStatistic" attr="PercentUsed" value="value" />
+      <item id="UseTime" code="WASJDBC-10" name="平均使用时间" eleId="TimeStatistic" attr="UseTime" value="totalTime" />
+      <item id="WaitTime" code="WASJDBC-11" name="平均等待时间" eleId="TimeStatistic" attr="WaitTime" value="totalTime" />
+    </type>
+    <type id="WASJVM" url="http://${host}:${port}/wasPerfTool/servlet/perfservlet?connetctor=${connector_type}&amp;port=${connector_port}&amp;Module=jvmRuntimeModule"
+      attr="name" parsePath="Node:${node}>Server:${server}" instAttr="name" itemAttr="name">
+      <item id="HeapSize" code="WASJVM-1" name="JVM堆栈大小" eleId="BoundedRangeStatistic" attr="HeapSize" value="value" convertors="kb2MbConvertor;doubleDecimalFormattor"/>
+      <item id="UsedMemory" code="WASJVM-2" name="JVM堆栈利用率" eleId="CountStatistic" attr="UsedMemory" value="count" bsh="if(HeapSize==0){return 0d;}else{return UsedMemory*100/HeapSize;}" convertors="doubleDecimalFormattor"/>
+    </type>
+    <type id="WASTHREADPOOL" url="http://${host}:${port}/wasPerfTool/servlet/perfservlet?connetctor=${connector_type}&amp;port=${connector_port}&amp;Module=threadPoolModule" attr="name"
+      parsePath="Node:${node}>Server:${server}>Stat:线程池" instAttr="name" itemAttr="name">
+      <item id="CreateCount" code="WASTHREADPOOL-1" name="线程创建数" eleId="CountStatistic" attr="CreateCount" value="count" />
+      <item id="DestroyCount" code="WASTHREADPOOL-2" name="线程销毁数" eleId="CountStatistic" attr="DestroyCount" value="count" />
+      <item id="ActiveCount" code="WASTHREADPOOL-3" name="活动线程数" eleId="BoundedRangeStatistic" attr="ActiveCount" value="value" />
+      <item id="PoolSize" code="WASTHREADPOOL-4" name="线程池大小" eleId="BoundedRangeStatistic" attr="PoolSize" value="value" />
+      <item id="PercentMaxed" code="WASTHREADPOOL-5" name="最大百分数" eleId="BoundedRangeStatistic" attr="PercentMaxed" value="value" />
+      <item id="LockCount" code="WASTHREADPOOL-6" name="未释放线程" eleId="CountStatistic" attr="CreateCount" value="count" bsh="CreateCount-DestroyCount-ActiveCount" />
+      <item id="PoolUsedRate" code="WASTHREADPOOL-7" name="线程池利用率" eleId="CountStatistic" attr="CreateCount" value="count" bsh="if(PoolSize==0){return 0d;}else{return ActiveCount*100/PoolSize;}" convertors="doubleDecimalFormattor"/>
+    </type>
+    <type id="WASWEBAPP" url="  http://${host}:${port}/wasPerfTool/servlet/perfservlet?connetctor=${connector_type}&amp;port=${connector_port}&amp;Module=webAppModule"
+      attr="name" parsePath="Node:${node}>Server:${server}>Stat:Web Applications" instAttr="name" itemAttr="name">
+      <item id="LoadedServletCount" code="WASWEBAPP-1" name="装入Servlet数" eleId="CountStatistic" attr="LoadedServletCount" value="count" />
+      <item id="ReloadCount" code="WASWEBAPP-2" name="重新装入Servlet数" eleId="CountStatistic" attr="ReloadCount" value="count" />
+      <item id="RequestCount" code="WASWEBAPP-3" name="Servlet处理请求总数" eleId="Stat:Servlets>CountStatistic" attr="RequestCount" value="count" />
+      <item id="ConcurrentRequests" code="WASWEBAPP-4" name="并发处理请求数" eleId="Stat:Servlets>RangeStatistic" attr="ConcurrentRequests" value="value" />
+      <item id="ServiceTimeTotal" code="WASWEBAPP-7" name="完成Servlet请求总响应时间" eleId="Stat:Servlets>TimeStatistic" attr="ServiceTime" value="totalTime" />
+      <item id="ServiceTimeAvg" code="WASWEBAPP-5" name="完成Servlet请求平均响应时间" eleId="Stat:Servlets>TimeStatistic" attr="ServiceTime" bsh="if (ConcurrentRequests==0){return 0.0;}else{return ServiceTimeTotal * 1.0/RequestCount;}" value="totalTime" convertors="doubleDecimalFormattor"/>
+      <item id="ErrorCount" code="WASWEBAPP-6" name="Servlet/Jsp错误总数" eleId="Stat:Servlets>CountStatistic" attr="ErrorCount" value="count" />
+    </type>
+    <type id="WASSERVLET" url="http://${host}:${port}/wasPerfTool/servlet/perfservlet?connetctor=${connector_type}&amp;port=${connector_port}&amp;Module=servletSessionsModule" attr="name"
+      parsePath="Node:${node}>Server:${server}>Stat:Servlet 会话管理器" instAttr="name" itemAttr="name">
+      <item id="CreateCount" code="WASSERVLET-1" name="创建会话数数" eleId="CountStatistic" attr="CreateCount" value="count" />
+      <item id="InvalidateCount" code="WASSERVLET-2" name="无效会话数" eleId="CountStatistic" attr="InvalidateCount" value="count" />
+      <item id="TimeoutInvalidationCount" code="WASSERVLET-3" name="超时会话数" eleId="CountStatistic" attr="TimeoutInvalidationCount" value="count"/>
+      <item id="NewCount" code="WASSERVLET-4" name="新建会话数" eleId="RangeStatistic" attr="ActiveCount" value="value" bsh="CreateCount-InvalidateCount+TimeoutInvalidationCount"/>
+      <item id="ActiveCount" code="WASSERVLET-5" name="活动会话数" eleId="RangeStatistic" attr="ActiveCount" value="value" />
+    </type>
+    <type id="WAS-TRANS-PMI" url="http://${host}:${port}/wasPerfTool/servlet/perfservlet?connetctor=${connector_type}&amp;port=${connector_port}&amp;Module=transactionModule"
+      attr="name" parsePath="Node:${node}>Server:${server}" instAttr="name" itemAttr="name">
+      <item id="GlobalBegunCount" code="WAS-TRANS-PMI-1" name="全局事务总数" eleId="CountStatistic" attr="GlobalBegunCount" value="count" />
+      <item id="LocalBegunCount" code="WAS-TRANS-PMI-2" name="本地事务的总数" eleId="CountStatistic" attr="LocalBegunCount" value="count" />
+      <item id="GlobalTranTime" code="WAS-TRANS-PMI-3" name="全局事务响应时间" eleId="TimeStatistic" attr="GlobalTranTime" value="totalTime" />
+      <item id="LocalTranTime" code="WAS-TRANS-PMI-4" name="本地事务响应时间" eleId="TimeStatistic" attr="LocalTranTime" value="totalTime" />
+      <item id="GlobalTimeoutCount" code="WAS-TRANS-PMI-5" name="超时全局事务数" eleId="CountStatistic" attr="GlobalTimeoutCount" value="count" />
+      <item id="LocalTimeoutCount" code="WAS-TRANS-PMI-6" name="超时本地事务数" eleId="CountStatistic" attr="LocalTimeoutCount" value="count" />
+      <item id="ActiveCount" code="WAS-TRANS-PMI-7" name="并发活动全局事务数" eleId="CountStatistic" attr="ActiveCount" value="count" />
+      <item id="LocalActiveCount" code="WAS-TRANS-PMI-8" name="并发活动本地事务数" eleId="CountStatistic" attr="LocalActiveCount" value="count" />
+      <item id="GlobalTimeoutRate" code="WAS-TRANS-PMI-9" name="全局超时事务率" eleId="CountStatistic" attr="GlobalBegunCount" value="count" bsh="if(GlobalBegunCount==0){return 0d;}else{return GlobalTimeoutCount*100/GlobalBegunCount;}" convertors="doubleDecimalFormattor"/>
+      <item id="LocalTimeoutRate" code="WAS-TRANS-PMI-10" name="本地超时事务率" eleId="CountStatistic" attr="GlobalBegunCount" value="count" bsh="if(LocalBegunCount==0){return 0d;}else{return LocalTimeoutCount*100/LocalBegunCount;}" convertors="doubleDecimalFormattor"/>
+    </type>
+    <type id="WAS-J2C-PMI" url="http://${host}:${port}/wasPerfTool/servlet/perfservlet?Module=j2cModule" attr="name"
+      parsePath="Node:${node}>Server:${server}>Stat:JCA 连接池>Stat:*" instAttr="name" itemAttr="name">
+      <item id="TotalTime" code="WAS-J2C-PMI-1" name="J2C使用总时间" eleId="TimeStatistic" attr="UseTime" value="totalTime" convertors="msel2SecConvertor;doubleDecimalFormattor"/>
+      <item id="IncreasedTime" code="WAS-J2C-PMI-2" name="J2C使用时间增量" eleId="TimeStatistic" attr="UseTime" value="totalTime" convertors="msel2SecConvertor;doubleDecimalFormattor"/>
+    </type>
+    <type id="WAS-EJB-PMI" url="http://${host}:${port}/wasPerfTool/servlet/oldperfservlet?connetctor=${connector_type}&amp;port=${connector_port}&amp;Module=beanModule" attr="name"
+      parsePath="Node:${node}>Server:${server}>beanModule" instAttr="name">
+      <item id="MethodResponseTime" code="WAS-EJB-PMI-1" name="Bean方法响应时间(毫秒)" eleId="MethodResponseTime>PerfStatInfo" value="mean" />
+      <item id="ActivationTime" code="WAS-EJB-PMI-2" name="Bean活动时间(毫秒)" eleId="ActivationTime>PerfStatInfo" value="mean" />
+      <item id="PassivationTime" code="WAS-EJB-PMI-3" name="Bean钝化时间(毫秒)" eleId="PassivationTime>PerfStatInfo" value="mean" />
+      <item id="CreateTime" code="WAS-EJB-PMI-4" name="Bean创建时间(毫秒)" eleId="CreateCount>PerfNumericInfo" value="val" />
+      <item id="StoreTime" code="WAS-EJB-PMI-5" name="Bean持久化时间(毫秒)" eleId="StoreCount>PerfNumericInfo" value="val" />
+      <item id="LoadTime" code="WAS-EJB-PMI-6" name="Bean装载时间(毫秒)" eleId="LoadCount>PerfNumericInfo" value="val"/>
+      <item id="RemoveTime" code="WAS-EJB-PMI-7" name="Bean调用时间(毫秒)" eleId="RemoveCount>PerfNumericInfo" value="val"/>
+    </type>	
+    <type id="WAS-CACHE-PMI" url="http://${host}:${port}/wasPerfTool/servlet/perfservlet?connetctor=${connector_type}&amp;port=${connector_port}&amp;Module=cacheModule" attr="name"
+      parsePath="Node:${node}>Server:${server}>Stat:动态高速缓存" instAttr="name" itemAttr="name">
+      <item id="MaxInMemoryCacheEntryCount" code="WAS-CACHE-PMI-1" name="最大高速缓存数" eleId="CountStatistic" attr="MaxInMemoryCacheEntryCount" value="count" />
+      <item id="InMemoryCacheEntryCount" code="WAS-CACHE-PMI-2" name="当前高速缓存数" eleId="CountStatistic" attr="InMemoryCacheEntryCount" value="count" />
+      <item id="CacheUsedRate" code="WAS-CACHE-PMI-3" name="高速缓存使用率" eleId="CountStatistic" attr="MaxInMemoryCacheEntryCount" value="count" bsh="if(MaxInMemoryCacheEntryCount==0){return 0d;}else{return InMemoryCacheEntryCount*100/MaxInMemoryCacheEntryCount;}" convertors="doubleDecimalFormattor"/>
+      <item id="CacheUnHitRate" code="WAS-CACHE-PMI-4" name="高速缓存不命中率" eleId="CountStatistic" attr="MaxInMemoryCacheEntryCount"  value="count" bsh="return 0d;" convertors="doubleDecimalFormattor"/>
+    </type>
+  </websphere>
+  <websphere version="7.0.0">
+    <type id="WASJDBC" url="http://${host}:${port}/wasPerfTool/servlet/perfservlet?connetctor=${connector_type}&amp;port=${connector_port}&amp;Module=connectionPoolModule"
+      attr="name" parsePath="Node:${node}>Server:${server}>Stat:JDBC 连接池>Stat:*" instAttr="name" itemAttr="name">
+      <item id="CreateCount" code="WASJDBC-1" name="创建连接数" eleId="CountStatistic" attr="CreateCount" value="count" />
+      <item id="CloseCount" code="WASJDBC-2" name="关闭连接数" eleId="CountStatistic" attr="CloseCount" value="count" />
+      <item id="AllocateCount" code="WASJDBC-3" name="分配连接数" eleId="CountStatistic" attr="AllocateCount" value="count" />
+      <item id="ReturnCount" code="WASJDBC-4" name="返回连接数" eleId="CountStatistic" attr="ReturnCount" value="count" />
+      <item id="PoolSize" code="WASJDBC-5" name="连接池大小" eleId="BoundedRangeStatistic" attr="PoolSize" value="value" />
+      <item id="FreePoolSize" code="WASJDBC-6" name="空连接池大小" eleId="BoundedRangeStatistic" attr="FreePoolSize" value="value" />
+      <item id="WaitingThreadCount" code="WASJDBC-7" name="并发等待数" eleId="RangeStatistic" attr="WaitingThreadCount" value="value" />
+      <item id="FaultCount" code="WASJDBC-8" name="故障数" eleId="CountStatistic" attr="FaultCount" value="count" />
+      <item id="PercentUsed" code="WASJDBC-9" name="使用百分率" eleId="RangeStatistic" attr="PercentUsed" value="value" />
+      <item id="UseTime" code="WASJDBC-10" name="平均使用时间" eleId="TimeStatistic" attr="UseTime" value="totalTime" />
+      <item id="WaitTime" code="WASJDBC-11" name="平均等待时间" eleId="TimeStatistic" attr="WaitTime" value="totalTime" />
+    </type>
+    <type id="WASJVM" url="http://${host}:${port}/wasPerfTool/servlet/perfservlet?connetctor=${connector_type}&amp;port=${connector_port}&amp;Module=jvmRuntimeModule"
+      attr="name" parsePath="Node:${node}>Server:${server}" instAttr="name" itemAttr="name">
+      <item id="HeapSize" code="WASJVM-1" name="JVM堆栈大小" eleId="BoundedRangeStatistic" attr="HeapSize" value="value" convertors="kb2MbConvertor;doubleDecimalFormattor"/>
+      <item id="UsedMemory" code="WASJVM-2" name="JVM堆栈利用率" eleId="CountStatistic" attr="UsedMemory" value="count" bsh="if(HeapSize==0){return 0d;}else{return UsedMemory*100/HeapSize;}" convertors="doubleDecimalFormattor"/>
+    </type>
+    <type id="WASTHREADPOOL" url="http://${host}:${port}/wasPerfTool/servlet/perfservlet?connetctor=${connector_type}&amp;port=${connector_port}&amp;Module=threadPoolModule" attr="name"
+      parsePath="Node:${node}>Server:${server}>Stat:线程池" instAttr="name" itemAttr="name">
+      <item id="CreateCount" code="WASTHREADPOOL-1" name="线程创建数" eleId="CountStatistic" attr="CreateCount" value="count" />
+      <item id="DestroyCount" code="WASTHREADPOOL-2" name="线程销毁数" eleId="CountStatistic" attr="DestroyCount" value="count" />
+      <item id="ActiveCount" code="WASTHREADPOOL-3" name="活动线程数" eleId="BoundedRangeStatistic" attr="ActiveCount" value="value" />
+      <item id="PoolSize" code="WASTHREADPOOL-4" name="线程池大小" eleId="BoundedRangeStatistic" attr="PoolSize" value="value" />
+      <item id="PercentMaxed" code="WASTHREADPOOL-5" name="最大百分数" eleId="BoundedRangeStatistic" attr="PercentMaxed" value="value" />
+      <item id="LockCount" code="WASTHREADPOOL-6" name="未释放线程" eleId="CountStatistic" attr="CreateCount" value="count" bsh="CreateCount-DestroyCount-ActiveCount" />
+      <item id="PoolUsedRate" code="WASTHREADPOOL-7" name="线程池利用率" eleId="CountStatistic" attr="CreateCount" value="count" bsh="if(CreateCount-DestroyCount==0){return 0d;}else{return ActiveCount*100/(CreateCount-DestroyCount);}" convertors="doubleDecimalFormattor"/>
+    </type>
+    <type id="WASWEBAPP" url="  http://${host}:${port}/wasPerfTool/servlet/perfservlet?connetctor=${connector_type}&amp;port=${connector_port}&amp;Module=webAppModule"
+      attr="name" parsePath="Node:${node}>Server:${server}>Stat:Web 应用程序" instAttr="name" itemAttr="name">
+      <item id="LoadedServletCount" code="WASWEBAPP-1" name="装入Servlet数" eleId="CountStatistic" attr="已装入的 servlet 数" value="count" />
+      <item id="ReloadCount" code="WASWEBAPP-2" name="重新装入Servlet数" eleId="CountStatistic" attr="重新装入次数" value="count" />
+      <item id="RequestCount" code="WASWEBAPP-3" name="Servlet处理请求总数" eleId="Stat:servlet>CountStatistic" attr="请求数" value="count" />
+      <item id="ConcurrentRequests" code="WASWEBAPP-4" name="并发处理请求数" eleId="Stat:servlet>RangeStatistic" attr="并发请求" value="value" />
+      <item id="ServiceTime" code="WASWEBAPP-5" name="完成Servlet请求平均响应时间" eleId="Stat:servlet>TimeStatistic" attr="服务时间" value="totalTime" />
+      <item id="ServiceTime" code="WASWEBAPP-6" name="Servlet/Jsp错误总数" eleId="Stat:servlet>CountStatistic" attr="错误数" value="count" />
+    </type>
+    <type id="WASSERVLET" url="http://${host}:${port}/wasPerfTool/servlet/perfservlet?connetctor=${connector_type}&amp;port=${connector_port}&amp;Module=servletSessionsModule" attr="name"
+      parsePath="Node:${node}>Server:${server}>Stat:Servlet 会话管理器" instAttr="name" itemAttr="name">
+      <item id="CreateCount" code="WASSERVLET-1" name="创建会话数数" eleId="CountStatistic" attr="CreateCount" value="count" />
+      <item id="InvalidateCount" code="WASSERVLET-2" name="无效会话数" eleId="CountStatistic" attr="InvalidateCount" value="count" />
+      <item id="TimeoutInvalidationCount" code="WASSERVLET-3" name="超时会话数" eleId="CountStatistic" attr="TimeoutInvalidationCount" value="count"/>
+      <item id="NewCount" code="WASSERVLET-4" name="新建会话数" eleId="RangeStatistic" attr="ActiveCount" value="value" bsh="CreateCount-InvalidateCount+TimeoutInvalidationCount"/>
+      <item id="ActiveCount" code="WASSERVLET-5" name="活动会话数" eleId="RangeStatistic" attr="ActiveCount" value="value" />
+    </type>
+    <type id="WAS-TRANS-PMI" url="http://${host}:${port}/wasPerfTool/servlet/perfservlet?connetctor=${connector_type}&amp;port=${connector_port}&amp;Module=transactionModule"
+      attr="name" parsePath="Node:${node}>Server:${server}" instAttr="name" itemAttr="name">
+      <item id="GlobalBegunCount" code="WAS-TRANS-PMI-1" name="全局事务总数" eleId="CountStatistic" attr="GlobalBegunCount" value="count" />
+      <item id="LocalBegunCount" code="WAS-TRANS-PMI-2" name="本地事务的总数" eleId="CountStatistic" attr="LocalBegunCount" value="count" />
+      <item id="GlobalTranTime" code="WAS-TRANS-PMI-3" name="全局事务响应时间" eleId="TimeStatistic" attr="GlobalTranTime" value="totalTime" />
+      <item id="LocalTranTime" code="WAS-TRANS-PMI-4" name="本地事务响应时间" eleId="TimeStatistic" attr="LocalTranTime" value="totalTime" />
+      <item id="GlobalTimeoutCount" code="WAS-TRANS-PMI-5" name="超时全局事务数" eleId="CountStatistic" attr="GlobalTimeoutCount" value="count" />
+      <item id="LocalTimeoutCount" code="WAS-TRANS-PMI-6" name="超时本地事务数" eleId="CountStatistic" attr="LocalTimeoutCount" value="count" />
+      <item id="ActiveCount" code="WAS-TRANS-PMI-7" name="并发活动全局事务数" eleId="CountStatistic" attr="ActiveCount" value="count" />
+      <item id="LocalActiveCount" code="WAS-TRANS-PMI-8" name="并发活动本地事务数" eleId="CountStatistic" attr="LocalActiveCount" value="count" />
+      <item id="GlobalTimeoutRate" code="WAS-TRANS-PMI-9" name="全局超时事务率" eleId="CountStatistic" attr="GlobalBegunCount" value="count" bsh="if(GlobalBegunCount==0){return 0d;}else{return GlobalTimeoutCount*100/GlobalBegunCount;}" convertors="doubleDecimalFormattor"/>
+      <item id="LocalTimeoutRate" code="WAS-TRANS-PMI-10" name="本地超时事务率" eleId="CountStatistic" attr="GlobalBegunCount" value="count" bsh="if(LocalBegunCount==0){return 0d;}else{return LocalTimeoutCount*100/LocalBegunCount;}" convertors="doubleDecimalFormattor"/>
+    </type>
+    <type id="WAS-J2C-PMI" url="http://${host}:${port}/wasPerfTool/servlet/perfservlet?Module=j2cModule" attr="name"
+      parsePath="Node:${node}>Server:${server}>Stat:JCA 连接池>Stat:*" instAttr="name" itemAttr="name">
+      <item id="TotalTime" code="WAS-J2C-PMI-1" name="J2C使用总时间" eleId="TimeStatistic" attr="UseTime" value="totalTime" convertors="msel2SecConvertor;doubleDecimalFormattor"/>
+      <item id="IncreasedTime" code="WAS-J2C-PMI-2" name="J2C使用时间增量" eleId="TimeStatistic" attr="UseTime" value="totalTime" convertors="msel2SecConvertor;doubleDecimalFormattor"/>
+    </type>
+    <type id="WAS-EJB-PMI" url="http://${host}:${port}/wasPerfTool/servlet/perfservlet?connetctor=${connector_type}&amp;port=${connector_port}&amp;Module=beanModule&amp;version=5" attr="name"
+      parsePath="Node:${node}>Server:${server}>beanModule">
+      <item id="MethodResponseTime" code="WAS-EJB-PMI-1" name="Bean方法响应时间(毫秒)" eleId="MethodResponseTime>PerfStatInfo" value="mean" />
+      <item id="ActivationTime" code="WAS-EJB-PMI-2" name="Bean活动时间(毫秒)" eleId="ActivationTime>PerfStatInfo" value="mean" />
+      <item id="PassivationTime" code="WAS-EJB-PMI-3" name="Bean钝化时间(毫秒)" eleId="PassivationTime>PerfStatInfo" value="mean" />
+      <item id="CreateTime" code="WAS-EJB-PMI-4" name="Bean创建时间(毫秒)" eleId="CreateCount>PerfNumericInfo" value="val" />
+      <item id="StoreTime" code="WAS-EJB-PMI-5" name="Bean持久化时间(毫秒)" eleId="StoreCount>PerfNumericInfo" value="val" />
+      <item id="LoadTime" code="WAS-EJB-PMI-6" name="Bean装载时间(毫秒)" eleId="LoadCount>PerfNumericInfo" value="val"/>
+      <item id="RemoveTime" code="WAS-EJB-PMI-7" name="Bean调用时间(毫秒)" eleId="RemoveCount>PerfNumericInfo" value="val"/>
+    </type>	
+    <type id="WAS-CACHE-PMI" url="http://${host}:${port}/wasPerfTool/servlet/perfservlet?connetctor=${connector_type}&amp;port=${connector_port}&amp;Module=cacheModule" attr="name"
+      parsePath="Node:${node}>Server:${server}>Stat:动态高速缓存" instAttr="name" itemAttr="name">
+      <item id="MaxInMemoryCacheEntryCount" code="WAS-CACHE-PMI-1" name="最大高速缓存数" eleId="CountStatistic" attr="MaxInMemoryCacheEntryCount" value="count" />
+      <item id="InMemoryCacheEntryCount" code="WAS-CACHE-PMI-2" name="当前高速缓存数" eleId="CountStatistic" attr="InMemoryCacheEntryCount" value="count" />
+      <item id="CacheUsedRate" code="WAS-CACHE-PMI-3" name="高速缓存使用率" eleId="CountStatistic" attr="MaxInMemoryCacheEntryCount" value="count" bsh="if(MaxInMemoryCacheEntryCount==0){return 0d;}else{return InMemoryCacheEntryCount*100/MaxInMemoryCacheEntryCount;}" convertors="doubleDecimalFormattor"/>
+      <item id="CacheUnHitRate" code="WAS-CACHE-PMI-4" name="高速缓存不命中率" eleId="CountStatistic" attr="MaxInMemoryCacheEntryCount"  value="count" bsh="return 0d;" convertors="doubleDecimalFormattor"/>
+    </type>
+  </websphere>
+  <websphere version="8.5.5.0">
+    <type id="WASJDBC" url="http://${host}:${port}/wasPerfTool/servlet/perfservlet?connetctor=${connector_type}&amp;port=${connector_port}&amp;Module=connectionPoolModule"
+      attr="name" parsePath="Node:${node}>Server:${server}>Stat:JDBC 连接池>Stat:*" instAttr="name" itemAttr="name">
+      <item id="CreateCount" code="WASJDBC-1" name="创建连接数" eleId="CountStatistic" attr="CreateCount" value="count" />
+      <item id="CloseCount" code="WASJDBC-2" name="关闭连接数" eleId="CountStatistic" attr="CloseCount" value="count" />
+      <item id="AllocateCount" code="WASJDBC-3" name="分配连接数" eleId="CountStatistic" attr="AllocateCount" value="count" />
+      <item id="ReturnCount" code="WASJDBC-4" name="返回连接数" eleId="CountStatistic" attr="ReturnCount" value="count" />
+      <item id="PoolSize" code="WASJDBC-5" name="连接池大小" eleId="BoundedRangeStatistic" attr="PoolSize" value="value" />
+      <item id="FreePoolSize" code="WASJDBC-6" name="空连接池大小" eleId="BoundedRangeStatistic" attr="FreePoolSize" value="value" />
+      <item id="WaitingThreadCount" code="WASJDBC-7" name="并发等待数" eleId="RangeStatistic" attr="WaitingThreadCount" value="value" />
+      <item id="FaultCount" code="WASJDBC-8" name="故障数" eleId="CountStatistic" attr="FaultCount" value="count" />
+      <item id="PercentUsed" code="WASJDBC-9" name="使用百分率" eleId="RangeStatistic" attr="PercentUsed" value="value" />
+      <item id="UseTime" code="WASJDBC-10" name="平均使用时间" eleId="TimeStatistic" attr="UseTime" value="totalTime" />
+      <item id="WaitTime" code="WASJDBC-11" name="平均等待时间" eleId="TimeStatistic" attr="WaitTime" value="totalTime" />
+    </type>
+    <type id="WASJVM" url="http://${host}:${port}/wasPerfTool/servlet/perfservlet?connetctor=${connector_type}&amp;port=${connector_port}&amp;Module=jvmRuntimeModule"
+      attr="name" parsePath="Node:${node}>Server:${server}" instAttr="name" itemAttr="name">
+      <item id="HeapSize" code="WASJVM-1" name="JVM堆栈大小" eleId="BoundedRangeStatistic" attr="HeapSize" value="value" convertors="kb2MbConvertor;doubleDecimalFormattor"/>
+      <item id="UsedMemory" code="WASJVM-2" name="JVM堆栈利用率" eleId="CountStatistic" attr="UsedMemory" value="count" bsh="if(HeapSize==0){return 0d;}else{return UsedMemory*100/HeapSize;}" convertors="doubleDecimalFormattor"/>
+    </type>
+    <type id="WASTHREADPOOL" url="http://${host}:${port}/wasPerfTool/servlet/perfservlet?connetctor=${connector_type}&amp;port=${connector_port}&amp;Module=threadPoolModule" attr="name"
+      parsePath="Node:${node}>Server:${server}>Stat:线程池" instAttr="name" itemAttr="name">
+      <item id="CreateCount" code="WASTHREADPOOL-1" name="线程创建数" eleId="CountStatistic" attr="CreateCount" value="count" />
+      <item id="DestroyCount" code="WASTHREADPOOL-2" name="线程销毁数" eleId="CountStatistic" attr="DestroyCount" value="count" />
+      <item id="ActiveCount" code="WASTHREADPOOL-3" name="活动线程数" eleId="BoundedRangeStatistic" attr="ActiveCount" value="value" />
+      <item id="PoolSize" code="WASTHREADPOOL-4" name="线程池大小" eleId="BoundedRangeStatistic" attr="PoolSize" value="value" />
+      <item id="PercentMaxed" code="WASTHREADPOOL-5" name="最大百分数" eleId="BoundedRangeStatistic" attr="PercentMaxed" value="value" />
+      <item id="LockCount" code="WASTHREADPOOL-6" name="未释放线程" eleId="CountStatistic" attr="CreateCount" value="count" bsh="CreateCount-DestroyCount-ActiveCount" />
+      <item id="PoolUsedRate" code="WASTHREADPOOL-7" name="线程池利用率" eleId="CountStatistic" attr="CreateCount" value="count" bsh="if(CreateCount-DestroyCount==0){return 0d;}else{return ActiveCount*100/(CreateCount-DestroyCount);}" convertors="doubleDecimalFormattor"/>
+    </type>
+    <type id="WASWEBAPP" url="  http://${host}:${port}/wasPerfTool/servlet/perfservlet?connetctor=${connector_type}&amp;port=${connector_port}&amp;Module=webAppModule"
+      attr="name" parsePath="Node:${node}>Server:${server}>Stat:Web 应用程序" instAttr="name" itemAttr="name">
+      <item id="LoadedServletCount" code="WASWEBAPP-1" name="装入Servlet数" eleId="CountStatistic" attr="LoadedServletCount" value="count" />
+      <item id="ReloadCount" code="WASWEBAPP-2" name="重新装入Servlet数" eleId="CountStatistic" attr="ReloadCount" value="count" />
+      <item id="RequestCount" code="WASWEBAPP-3" name="Servlet处理请求总数" eleId="Stat:servlet>CountStatistic" attr="RequestCount" value="count" />
+      <item id="ConcurrentRequests" code="WASWEBAPP-4" name="并发处理请求数" eleId="Stat:servlet>RangeStatistic" attr="ConcurrentRequests" value="value" />
+      <item id="ServiceTime" code="WASWEBAPP-5" name="Servlet请求平均响应时间" eleId="Stat:servlet>TimeStatistic" attr="ServiceTime" value="totalTime" bsh="if(RequestCount==0){return 0d;}else{return ServiceTime/RequestCount;}" convertors="doubleDecimalFormattor"/>
+      <item id="ServiceTime" code="WASWEBAPP-6" name="Servlet/Jsp错误总数" eleId="Stat:servlet>CountStatistic" attr="ErrorCount" value="count" />
+    </type>
+    <type id="WASSERVLET" url="http://${host}:${port}/wasPerfTool/servlet/perfservlet?connetctor=${connector_type}&amp;port=${connector_port}&amp;Module=servletSessionsModule" attr="name"
+      parsePath="Node:${node}>Server:${server}>Stat:Servlet 会话管理器" instAttr="name" itemAttr="name">
+      <item id="CreateCount" code="WASSERVLET-1" name="创建会话数数" eleId="CountStatistic" attr="CreateCount" value="count" />
+      <item id="InvalidateCount" code="WASSERVLET-2" name="无效会话数" eleId="CountStatistic" attr="InvalidateCount" value="count" />
+      <item id="TimeoutInvalidationCount" code="WASSERVLET-3" name="超时会话数" eleId="CountStatistic" attr="TimeoutInvalidationCount" value="count"/>
+      <item id="NewCount" code="WASSERVLET-4" name="新建会话数" eleId="RangeStatistic" attr="ActiveCount" value="value" bsh="CreateCount-InvalidateCount+TimeoutInvalidationCount"/>
+      <item id="ActiveCount" code="WASSERVLET-5" name="活动会话数" eleId="RangeStatistic" attr="ActiveCount" value="value" />
+    </type>
+    <type id="WAS-TRANS-PMI" url="http://${host}:${port}/wasPerfTool/servlet/perfservlet?connetctor=${connector_type}&amp;port=${connector_port}&amp;Module=transactionModule"
+      attr="name" parsePath="Node:${node}>Server:${server}" instAttr="name" itemAttr="name">
+      <item id="GlobalBegunCount" code="WAS-TRANS-PMI-1" name="全局事务总数" eleId="CountStatistic" attr="GlobalBegunCount" value="count" />
+      <item id="LocalBegunCount" code="WAS-TRANS-PMI-2" name="本地事务的总数" eleId="CountStatistic" attr="LocalBegunCount" value="count" />
+      <item id="GlobalTranTime" code="WAS-TRANS-PMI-3" name="全局事务响应时间" eleId="TimeStatistic" attr="GlobalTranTime" value="totalTime" />
+      <item id="LocalTranTime" code="WAS-TRANS-PMI-4" name="本地事务响应时间" eleId="TimeStatistic" attr="LocalTranTime" value="totalTime" />
+      <item id="GlobalTimeoutCount" code="WAS-TRANS-PMI-5" name="超时全局事务数" eleId="CountStatistic" attr="GlobalTimeoutCount" value="count" />
+      <item id="LocalTimeoutCount" code="WAS-TRANS-PMI-6" name="超时本地事务数" eleId="CountStatistic" attr="LocalTimeoutCount" value="count" />
+      <item id="ActiveCount" code="WAS-TRANS-PMI-7" name="并发活动全局事务数" eleId="CountStatistic" attr="ActiveCount" value="count" />
+      <item id="LocalActiveCount" code="WAS-TRANS-PMI-8" name="并发活动本地事务数" eleId="CountStatistic" attr="LocalActiveCount" value="count" />
+      <item id="GlobalTimeoutRate" code="WAS-TRANS-PMI-9" name="全局超时事务率" eleId="CountStatistic" attr="GlobalBegunCount" value="count" bsh="if(GlobalBegunCount==0){return 0d;}else{return GlobalTimeoutCount*100/GlobalBegunCount;}" convertors="doubleDecimalFormattor"/>
+      <item id="LocalTimeoutRate" code="WAS-TRANS-PMI-10" name="本地超时事务率" eleId="CountStatistic" attr="GlobalBegunCount" value="count" bsh="if(LocalBegunCount==0){return 0d;}else{return LocalTimeoutCount*100/LocalBegunCount;}" convertors="doubleDecimalFormattor"/>
+    </type>
+    <type id="WAS-CACHE-PMI" url="http://${host}:${port}/wasPerfTool/servlet/perfservlet?connetctor=${connector_type}&amp;port=${connector_port}&amp;Module=cacheModule" attr="name"
+      parsePath="Node:${node}>Server:${server}>Stat:动态高速缓存" instAttr="name" itemAttr="name">
+      <item id="MaxInMemoryCacheEntryCount" code="WAS-CACHE-PMI-1" name="最大高速缓存数" eleId="CountStatistic" attr="MaxInMemoryCacheEntryCount" value="count" />
+      <item id="InMemoryCacheEntryCount" code="WAS-CACHE-PMI-2" name="当前高速缓存数" eleId="CountStatistic" attr="InMemoryCacheEntryCount" value="count" />
+      <item id="CacheUsedRate" code="WAS-CACHE-PMI-3" name="高速缓存使用率" eleId="CountStatistic" attr="MaxInMemoryCacheEntryCount" value="count" bsh="if(MaxInMemoryCacheEntryCount==0){return 0d;}else{return InMemoryCacheEntryCount*100/MaxInMemoryCacheEntryCount;}" convertors="doubleDecimalFormattor"/>
+      <item id="CacheUnHitRate" code="WAS-CACHE-PMI-4" name="高速缓存不命中率" eleId="CountStatistic" attr="MaxInMemoryCacheEntryCount"  value="count" bsh="return 0d;" convertors="doubleDecimalFormattor"/>
+    </type>
+  </websphere>
+</websphere-groups>

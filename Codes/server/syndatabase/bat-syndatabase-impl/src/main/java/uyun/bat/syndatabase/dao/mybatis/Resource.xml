@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="uyun.bat.syndatabase.dao.ResourceDao">
+	
+	<resultMap type="uyun.bat.syndatabase.entity.Tag" id="entityMap">
+		<result property="id" column="id" jdbcType="BINARY" />
+		<result property="key" column="tagk" />
+		<result property="value" column="tagv" />
+	</resultMap>
+	
+	<resultMap type="uyun.bat.datastore.api.entity.Resource" id="resourceResultMap">
+		<result property="id" column="id" jdbcType="BINARY"
+			typeHandler="uyun.whale.common.mybatis.type.UUIDTypeHandler" />
+		<result property="modified" column="modified" />
+		<result property="hostname" column="hostname" />
+		<result property="ipaddr" column="ipaddr" />
+		<result property="describtion" column="describtion" />
+		<result property="agentId" column="agent_id" />
+		<result property="tenantId" column="tenant_id"
+			typeHandler="uyun.whale.common.mybatis.type.UUIDTypeHandler" />
+		<result property="resourceTypeName" column="type" />
+		<result property="onlineStatusName" column="online_status" />
+		<result property="alertStatusName" column="alert_status" />
+		<result property="lastCollectTime" column="last_collect_time" />
+		<result property="apps" column="res_app" jdbcType="BLOB"
+			typeHandler="uyun.bat.syndatabase.entity.ListStringTypeHandler" />
+		<result property="resTags" column="res_tag" jdbcType="BLOB"
+			typeHandler="uyun.bat.syndatabase.entity.ListStringTypeHandler" />
+		<result property="createTime" column="create_time" />
+		<result property="os" column="os" />
+        <result property="userTags" column="user_tag" jdbcType="VARCHAR"
+			typeHandler="uyun.bat.syndatabase.entity.ListStringTypeHandler" />
+		<result property="agentlessTags" column="agentless_tag" jdbcType="VARCHAR"
+			typeHandler="uyun.bat.syndatabase.entity.ListStringTypeHandler" />
+	</resultMap>
+	
+	<select id="getAllResTagByKey" resultMap="entityMap" parameterType="java.lang.String">
+		select * from `res_tag` where `tagk` = #{key}
+	</select>
+	
+	<select id="queryAllRes" resultMap="resourceResultMap">
+		select * from `resource`
+	</select>
+	
+	<update id="updateResTag" parameterType="java.util.List">
+		<foreach collection="list" item="item" index="index" open="" close="" separator=";">
+			update res_tag set `tagv` = #{item.value} where `id` = #{item.id, typeHandler=uyun.whale.common.mybatis.type.UUIDTypeHandler}
+		</foreach>
+	</update>
+	
+	<select id="getAllResId" resultType="java.lang.String">
+		select hex(`id`) from resource
+	</select>
+	
+	<update id="updateResId" parameterType="java.util.List">
+		<foreach collection="list" item="item" index="index" open="" close="" separator=";">
+			update resource set `id` = #{item.newResId, typeHandler=uyun.whale.common.mybatis.type.UUIDTypeHandler} 
+			where `id` = #{item.oldResId, typeHandler=uyun.whale.common.mybatis.type.UUIDTypeHandler}
+		</foreach>
+	</update>
+	
+	<update id="updateResIdForApp" parameterType="java.util.List">
+		<foreach collection="list" item="item" index="index" open="" close="" separator=";">
+			update res_app set `id` = #{item.newResId, typeHandler=uyun.whale.common.mybatis.type.UUIDTypeHandler} 
+			where `id` = #{item.oldResId, typeHandler=uyun.whale.common.mybatis.type.UUIDTypeHandler}
+		</foreach>
+	</update>
+	
+	<update id="updateResIdForTag" parameterType="java.util.List">
+		<foreach collection="list" item="item" index="index" open="" close="" separator=";">
+			update res_tag set `id` = #{item.newResId, typeHandler=uyun.whale.common.mybatis.type.UUIDTypeHandler} 
+			where `id` = #{item.oldResId, typeHandler=uyun.whale.common.mybatis.type.UUIDTypeHandler}
+		</foreach>
+	</update>
+	
+	<update id="updateResIdForDetail" parameterType="java.util.List">
+		<foreach collection="list" item="item" index="index" open="" close="" separator=";">
+			update res_detail set `resource_id` = #{item.newResId, typeHandler=uyun.whale.common.mybatis.type.UUIDTypeHandler} 
+			where `resource_id` = #{item.oldResId, typeHandler=uyun.whale.common.mybatis.type.UUIDTypeHandler}
+		</foreach>
+	</update>
+	
+	<update id="updateResIdForMonitor" parameterType="java.util.List">
+		<foreach collection="list" item="item" index="index" open="" close="" separator=";">
+			update resource_monitor_record set `resource_id` = #{item.newResId, typeHandler=uyun.whale.common.mybatis.type.UUIDTypeHandler} 
+			where `resource_id` = #{item.oldResId, typeHandler=uyun.whale.common.mybatis.type.UUIDTypeHandler}
+		</foreach>
+	</update>
+
+</mapper>

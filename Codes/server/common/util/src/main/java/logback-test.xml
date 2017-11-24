@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+	<appender name="stdout" class="ch.qos.logback.core.ConsoleAppender">
+		<encoder>
+			<pattern>
+				%d{yyyy-MM-dd HH:mm:ss.SSS}|%contextName|%level|Test|%class|%thread|%method|%line|%msg%n
+			</pattern>
+		</encoder>
+	</appender>
+
+	<root>
+		<level value="INFO"/>
+		<appender-ref ref="stdout"/>
+	</root>
+
+	<logger name="com.alibaba.dubbo" level="WARN"/>
+
+	<logger name="uyun" level="DEBUG"/>
+</configuration>

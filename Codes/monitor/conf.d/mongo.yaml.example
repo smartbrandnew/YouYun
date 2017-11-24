@@ -1,0 +1,20 @@
+init_config:
+
+instances:
+  - server: mongodb://user:pass@host:port/db-name
+    timeout: 30
+
+    tags:
+      - optional_tag1
+      - optional_tag2
+
+    ssl: False
+    ssl_keyfile:
+    ssl_certfile:
+    ssl_cert_reqs:
+    ssl_ca_certs:
+
+    additional_metrics:
+      - metrics.commands
+      - tcmalloc
+      - top

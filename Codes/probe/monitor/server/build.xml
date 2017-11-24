@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<project default="release" xmlns:ivy="antlib:org.apache.ivy.ant" basedir=".">
+	<tstamp>
+		<format property="build.time" pattern="yyyy-MM-dd HH:mm:ss" />
+	</tstamp>
+	<tstamp>
+		<format property="yyyymmdd" pattern="yyyyMMdd" />
+	</tstamp>
+	<property environment="env" />
+	<property file="build.properties" />
+
+	<path id="module.lib">
+		<fileset dir="${ivy.retrieve.lib.dir}"/>		
+	</path>
+
+	<target name="resolve">
+		<ivy:retrieve pattern="${ivy.retrieve.lib.dir}/[conf]/[artifact].[ext]" sync="true"/>		
+	</target>
+
+	<target name="clean">
+		<delete dir="${module.target.dir}"/>
+		<delete dir="${module.dist.dir}"/>
+		<delete dir="${module.temp.dir}"/>
+		<delete dir="${module.lib.dir}"/>
+		<delete dir="${ivy.retrieve.lib.dir}"/>
+	</target>
+
+	<target name="compile" depends="resolve">
+		<mkdir dir="${module.target.dir}"/>
+
+		<javac srcdir="${module.src.dir}" destdir="${module.target.dir}" includeantruntime="no" encoding="UTF-8" debug="on">
+			<classpath refid="module.lib" />
+		</javac>
+		
+		<copy todir="${module.target.dir}" preservelastmodified="true">
+			<fileset dir="${module.src.dir}">
+				<exclude name="**/*.java" />
+				<exclude name="**/.svn" />
+			</fileset>
+			<fileset dir="${module.dir}/test">
+				<exclude name="**/*.java" />
+				<exclude name="**/.svn" />
+			</fileset>			
+		</copy>
+	</target>
+	
+	<target name="_release-dev">	
+		<copy todir="${module.dist.dir}">
+			<fileset dir="${basedir}">
+				<include name="conf/**" />
+				<include name="webapp/**" />
+				<exclude name="**/.svn" />
+			</fileset>
+		</copy>
+	</target>
+	
+	<target name="release" depends="_release-jar">	
+		<copy todir="${module.dist.dir}">
+			<fileset dir="${basedir}">
+				<include name="bin/**" />
+				<include name="conf/**" />
+				<include name="webapp/**" />
+				<exclude name="conf/jdbc.properties" />
+				<exclude name="**/.svn" />
+			</fileset>
+		</copy>
+		
+		<copy todir="${module.dist.dir}/webapp/WEB-INF/lib">
+			<fileset dir="${ivy.retrieve.lib.dir}/default">
+				<include name="*.jar" />
+			</fileset>
+		</copy>
+		
+		<unzip src="${ivy.retrieve.lib.dir}/full/platform.research.classprotect-janel.zip" dest="temp/janel" overwrite="false"/>
+		<copy file="temp/janel/janel console x64.exe" tofile="${module.dist.dir}/bin/carrier-monitor.exe"/>
+		<unzip src="${ivy.retrieve.lib.dir}/full/carrier.monitor.impl.env.zip" dest="temp/monitor/impl" overwrite="false"/>
+		
+		<copy file="${module.dist.dir}/webapp/WEB-INF/lib/platform.module.autosync.client.startup.jar" tofile="${module.dist.dir}/webapp/WEB-INF/lib/platform.module.autosync.client.startup-2.jar"/>		
+	</target>
+	
+	<target name="_clean-all" depends="compile">
+		<ant antfile="build.xml" dir="../server" target="clean" inheritAll="false"/>
+		<ant antfile="build.xml" dir="../probe" target="clean" inheritAll="false"/>
+	</target>
+	
+	<target name="_release-patch">
+		<zip destfile="${module.dist.dir}/cos-monitor-${yyyymmdd}.zip">
+			<zipfileset dir="${module.dist.dir}/.." prefix="coss">
+				<include name="monitor/webapp/WEB-INF/lib/carrier*.jar" />
+			</zipfileset>
+			<zipfileset dir="${module.dist.dir}/../../dist-probe" prefix="probe">
+				<include name="webapp/WEB-INF/lib/carrier*.jar" />
+			</zipfileset>			
+			<zipfileset dir="${module.dist.dir}/../../dist-client" prefix="client">
+				<include name="lib/carrier*.jar" />
+			</zipfileset>		
+		</zip>
+	</target>
+	
+	<target name="_release-all">
+		<ant antfile="build.xml" dir="../server-api" target="publish" inheritAll="false"/>
+		<ant antfile="build.xml" dir="../probe-api" target="publish" inheritAll="false"/>
+		<ant antfile="build.xml" dir="../base" target="publish" inheritAll="false"/>
+		<ant antfile="build.xml" dir="../impl" target="publish" inheritAll="false"/>
+		<!--
+		<ant antfile="build.xml" dir="../server" target="release" inheritAll="false"/>
+		-->
+		<ant antfile="build.xml" dir="../probe" target="release" inheritAll="false"/>
+		<!--
+		<ant antfile="build.xml" dir="../client" target="release" inheritAll="false"/>
+		-->
+	</target>
+
+	<target name="_release-jar" depends="compile">			
+		<mkdir dir="${module.dist.dir}/webapp/WEB-INF/lib" /> 
+        <jar destfile="${module.dist.dir}/webapp/WEB-INF/lib/${module.name}.jar">
+             <manifest>
+                  <attribute name="Implementation-Version" value="${module.version}" />
+                  <attribute name="Build-Time" value="${build.time}" />
+                  <attribute name="Build-Machine" value="${env.COMPUTERNAME}" />
+             </manifest>
+             <fileset dir="${module.target.dir}" />                               
+        </jar>		
+	</target>	
+</project>

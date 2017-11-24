@@ -1,0 +1,92 @@
+#!/bin/bash
+{description}
+
+ANT_MANAGER_SERVICE={service_name}
+ANT_PYTHON={python}
+ANT_DIR={ant_dir}
+ANT_SU_CMD="{ant_su_cmd}"
+
+
+get_pid()
+{{
+    ps -ef | grep "$ANT_PYTHON"|grep "upgrade" | grep -v grep | awk '{{print $2}}'
+}}
+
+is_running()
+{{
+    [ -n "$(get_pid)" ]
+}}
+
+status()
+{{
+    echo -e "\033[32m"
+    if is_running; then
+        echo "$ANT_MANAGER_SERVICE is running..."
+    else
+        echo -e "\033[31m"
+        echo "$ANT_MANAGER_SERVICE service is not running..."
+    fi
+    echo -e "\033[0m"
+}}
+
+start()
+{{
+    echo -e "\033[32m"
+    if is_running; then
+        echo -e "\033[31m"
+        echo "$ANT_MANAGER_SERVICE is running..."
+    else
+        echo "start $ANT_MANAGER_SERVICE..."
+        if [ -n "$ANT_SU_CMD" ]; then
+            $ANT_SU_CMD "$ANT_DIR/bin/start_upgrade.sh"
+        else
+            "$ANT_DIR/bin/start_upgrade.sh"
+        fi
+        sleep 1
+        if is_running; then
+            echo "$ANT_MANAGER_SERVICE start successfully."
+        else
+            echo -e "\031[0m"
+            echo "$ANT_MANAGER_SERVICE start failed，please try again..."
+            echo -e "\033[0m"
+        fi
+    fi
+    echo -e "\033[0m"
+}}
+
+stop()
+{{
+    echo -e "\033[32m"
+    if is_running; then
+        echo "stop $ANT_MANAGER_SERVICE..."
+        "$ANT_DIR/bin/stop_upgrade.sh"
+        if is_running; then
+            echo -e "\033[31m"
+            "$ANT_MANAGER_SERVICE stop failed, please try again..."
+            echo -e "\033[0m"
+        else
+            echo "$ANT_MANAGER_SERVICE stop successfully."
+        fi
+    else
+        echo -e "\033[31m"
+        echo "$ANT_MANAGER_SERVICE service is not running..."
+        echo -e "\033[0m"
+    fi
+    echo -e "\033[0m"
+}}
+
+restart()
+{{
+    stop
+    start
+}}
+
+
+case "$1" in
+    status|start|stop|restart)
+        "$1"
+        ;;
+    *)
+        echo "Usage: $0 {{status|start|stop|restart}}"
+        ;;
+esac

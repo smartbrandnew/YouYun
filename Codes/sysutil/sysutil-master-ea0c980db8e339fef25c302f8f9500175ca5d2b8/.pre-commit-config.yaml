@@ -1,0 +1,4 @@
+- repo: https://git.uyunsoft.cn/contrib/pre-commit-yapf.git
+  sha: 'v0.16.2'
+  hooks:
+  - id: yapf

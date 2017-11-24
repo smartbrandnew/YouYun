@@ -1,0 +1,240 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="uyun.bat.monitor.impl.dao.MonitorDao">
+	<resultMap type="uyun.bat.monitor.api.entity.Monitor" id="monitorResultMap">
+		<result property="id" column="id"
+			typeHandler="uyun.whale.common.mybatis.type.UUIDTypeHandler" />
+		<result property="creatorId" column="creator_id"
+			typeHandler="uyun.whale.common.mybatis.type.UUIDTypeHandler" />
+		<result property="message" column="message" jdbcType="LONGVARCHAR" />
+		<result property="name" column="name" jdbcType="VARCHAR" />
+		<result property="query" column="query" jdbcType="VARCHAR" />
+		<result property="monitorType" column="type" jdbcType="TINYINT"
+			typeHandler="uyun.bat.monitor.impl.dao.mybatis.MonitorTypeTinyintTypeHandler" />
+		<result property="monitorState" column="state" jdbcType="TINYINT"
+			typeHandler="uyun.bat.monitor.impl.dao.mybatis.MonitorStateTinyintTypeHandler" />
+		<result property="tenantId" column="tenant_id"
+			typeHandler="uyun.whale.common.mybatis.type.UUIDTypeHandler" />
+		<result property="notify" column="notify" jdbcType="BIT" />
+		<result property="enable" column="enable" jdbcType="BIT" />
+		<result property="modified" column="modified" jdbcType="DATE" />
+		<result property="notifyUserIdList" column="notify_user_ids"
+			jdbcType="VARCHAR" typeHandler="uyun.bat.monitor.impl.dao.mybatis.ListStringTypeHandler" />
+		<result property="options" column="options" jdbcType="LONGVARCHAR"
+			typeHandler="uyun.bat.monitor.impl.dao.mybatis.OptionsStringTypeHandler" />
+		<result property="createTime" column="create_time" jdbcType="DATE" />
+		<result property="autoRecoveryParams" column="auto_recovery_params" jdbcType="LONGVARCHAR"
+			typeHandler="uyun.bat.monitor.impl.dao.mybatis.AutoRecoveryParamsStringTypeHandler" />
+	</resultMap>
+
+	<sql id="monitor_column">
+		id, creator_id, message, name, query, type, state,
+		tenant_id, notify,enable,modified,notify_user_ids,options,create_time,auto_recovery_params
+	</sql>
+
+	<select id="getMonitorList" parameterType="java.lang.String"
+		resultMap="monitorResultMap">
+		select
+		<include refid="monitor_column" />
+		from monitor
+		where tenant_id =
+		#{tenantId,typeHandler=uyun.whale.common.mybatis.type.UUIDTypeHandler}
+	</select>
+
+	<select id="getMonitorsByFilter" parameterType="uyun.bat.monitor.api.entity.SimpleMonitorQuery"
+		resultMap="monitorResultMap">
+		select
+		<include refid="monitor_column" />
+		from monitor
+		where tenant_id = #{tenantId,
+		typeHandler=uyun.whale.common.mybatis.type.UUIDTypeHandler}
+		<if test="name != null">
+			and name like CONCAT(CONCAT('%', #{name}), '%')
+		</if>
+		<if test="monitorState!=null and monitorState.size()>0">
+			and (state in
+			<foreach collection="monitorState" item="item" index="index"
+				open="(" close=")" separator=",">
+				#{item,typeHandler=uyun.bat.monitor.impl.dao.mybatis.MonitorStateTinyintTypeHandler}
+			</foreach>
+		</if>
+		<if test="monitorState!=null and monitorState.size()>0 and enable == null">
+			)
+		</if>
+		<if test="monitorState!=null and monitorState.size()>0 and enable != null">
+			or enable
+			=#{enable})
+		</if>
+		<if test="monitorState.size()==0 and enable != null">
+			and enable
+			=#{enable}
+		</if>
+		ORDER BY enable DESC ,state DESC
+	</select>
+
+	<select id="getMonitorById" resultMap="monitorResultMap">
+		select
+		<include refid="monitor_column" />
+		from monitor
+		where id =
+		#{1,typeHandler=uyun.whale.common.mybatis.type.UUIDTypeHandler} and
+		tenant_id =
+		#{0,typeHandler=uyun.whale.common.mybatis.type.UUIDTypeHandler}
+	</select>
+
+	<select id="getCount" parameterType="java.lang.String"
+		resultType="uyun.bat.monitor.api.entity.MonitorCount">
+		select state,enable,count(*) as count
+		from monitor
+		where
+		tenant_id =
+		#{tenantId,typeHandler=uyun.whale.common.mybatis.type.UUIDTypeHandler}
+		GROUP BY state,enable
+	</select>
+
+	<insert id="createMonitor" parameterType="uyun.bat.monitor.api.entity.Monitor">
+		insert IGNORE into monitor
+		values(
+		#{id,typeHandler=uyun.whale.common.mybatis.type.UUIDTypeHandler},
+		#{creatorId,
+		typeHandler=uyun.whale.common.mybatis.type.UUIDTypeHandler},
+		#{message},
+		#{name},
+		#{query},
+		#{monitorType,typeHandler=uyun.bat.monitor.impl.dao.mybatis.MonitorTypeTinyintTypeHandler},
+		#{monitorState,typeHandler=uyun.bat.monitor.impl.dao.mybatis.MonitorStateTinyintTypeHandler},
+		#{tenantId,
+		typeHandler=uyun.whale.common.mybatis.type.UUIDTypeHandler},
+		#{notify}, #{enable},#{modified},
+		#{notifyUserIdList,typeHandler=uyun.bat.monitor.impl.dao.mybatis.ListStringTypeHandler},
+		#{options,typeHandler=uyun.bat.monitor.impl.dao.mybatis.OptionsStringTypeHandler},
+		#{createTime},
+		#{autoRecoveryParams,typeHandler=uyun.bat.monitor.impl.dao.mybatis.AutoRecoveryParamsStringTypeHandler}
+		)
+	</insert>
+
+	<delete id="deleteMonitor">
+		delete from monitor where id =
+		#{1,typeHandler=uyun.whale.common.mybatis.type.UUIDTypeHandler} and
+		tenant_id =
+		#{0,typeHandler=uyun.whale.common.mybatis.type.UUIDTypeHandler}
+	</delete>
+
+	<update id="updateMonitor" parameterType="uyun.bat.monitor.api.entity.Monitor">
+		update monitor
+		<set>
+			<if test="message != null">
+				message = #{message},
+			</if>
+			<if test="name != null">
+				name = #{name},
+			</if>
+			<if test="query != null">
+				query = #{query},
+			</if>
+			<if test="monitorState != null">
+				state =
+				#{monitorState,typeHandler=uyun.bat.monitor.impl.dao.mybatis.MonitorStateTinyintTypeHandler},
+			</if>
+			<if test="notify != null">
+				notify = #{notify},
+			</if>
+			<if test="enable != null">
+				enable = #{enable},
+			</if>
+			<if test="modified != null">
+				modified = #{modified},
+			</if>
+			<if test="notifyUserIdList != null">
+				notify_user_ids =
+				#{notifyUserIdList,typeHandler=uyun.bat.monitor.impl.dao.mybatis.ListStringTypeHandler},
+			</if>
+			<if test="options != null">
+				options =
+				#{options,typeHandler=uyun.bat.monitor.impl.dao.mybatis.OptionsStringTypeHandler},
+			</if>
+				auto_recovery_params =
+				#{autoRecoveryParams,typeHandler=uyun.bat.monitor.impl.dao.mybatis.AutoRecoveryParamsStringTypeHandler}
+
+		</set>
+		where id =
+		#{id,typeHandler=uyun.whale.common.mybatis.type.UUIDTypeHandler} and
+		tenant_id =
+		#{tenantId,typeHandler=uyun.whale.common.mybatis.type.UUIDTypeHandler}
+	</update>
+
+	<select id="getMonitors" resultMap="monitorResultMap">
+		select
+		<include refid="monitor_column" />
+		from monitor
+		where tenant_id = #{0,
+		typeHandler=uyun.whale.common.mybatis.type.UUIDTypeHandler} and enable
+		= 1 and type =
+		#{1,typeHandler=uyun.bat.monitor.impl.dao.mybatis.MonitorTypeTinyintTypeHandler}
+	</select>
+
+	<update id="updateMonitorStatus" parameterType="uyun.bat.monitor.api.entity.Monitor">
+		update monitor
+		<set>
+			<if test="monitorState != null">
+				state =
+				#{monitorState,typeHandler=uyun.bat.monitor.impl.dao.mybatis.MonitorStateTinyintTypeHandler},
+			</if>
+		</set>
+		where id =
+		#{id,typeHandler=uyun.whale.common.mybatis.type.UUIDTypeHandler} and
+		enable = 1 and tenant_id = #{tenantId,
+		typeHandler=uyun.whale.common.mybatis.type.UUIDTypeHandler};
+	</update>
+
+	<select id="getCheckEventMonitors" resultMap="monitorResultMap">
+		select
+		<include refid="monitor_column" />
+		from monitor
+		where
+		type =
+		#{0,typeHandler=uyun.bat.monitor.impl.dao.mybatis.MonitorTypeTinyintTypeHandler}
+		and
+		state=#{1,typeHandler=uyun.bat.monitor.impl.dao.mybatis.MonitorStateTinyintTypeHandler}
+		and
+		options like CONCAT(CONCAT('%', #{2}), '%')
+		order by tenant_id
+	</select>
+
+	<select id="getMonitorCountByDate" resultType="uyun.bat.monitor.api.entity.MonitorCountVO">
+		select
+		count(id) as count,
+		lower(hex(tenant_id)) as tenantId
+		from monitor
+		where
+		<![CDATA[create_time>=#{0} and create_time<=#{1}]]>
+		GROUP BY tenant_id
+	</select>
+
+	<select id="getMonitorCount" resultType="uyun.bat.monitor.api.entity.MonitorCountVO">
+		select
+		count(id) as
+		count,
+		lower(hex(tenant_id)) as tenantId
+		from monitor
+		GROUP BY tenant_id
+	</select>
+
+	<select id="getCountByTenantId" resultType="int">
+		select
+		count(id)
+		from
+		monitor
+		where tenant_id =
+		#{tenantId,typeHandler=uyun.whale.common.mybatis.type.UUIDTypeHandler}
+	</select>
+
+	<select id="getIdListByTenantId" resultType="String">
+		select
+		lower(hex(id))
+		from
+		monitor
+		where tenant_id =
+		#{tenantId,typeHandler=uyun.whale.common.mybatis.type.UUIDTypeHandler}
+	</select>
+</mapper>

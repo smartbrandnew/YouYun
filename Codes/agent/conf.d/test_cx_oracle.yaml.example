@@ -1,0 +1,11 @@
+init_config:
+
+instances:
+  - server: 127.0.0.1/orcl
+    user: tester
+    pass: 123456
+    # scan_on or scan_off
+    tablespace_scan: scan_off
+    # tags:                  # Optional
+    #   - optional_tag1
+    #   - optional_tag2
